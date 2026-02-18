@@ -12,7 +12,9 @@ body { margin:0; font-family:Arial; background:#eef2f7; }
 .card { background:white; padding:15px; border-radius:10px; margin-bottom:12px; box-shadow:0 3px 8px rgba(0,0,0,0.08); }
 .button { background:#1f3c88; color:white; padding:8px 12px; border-radius:6px; text-decoration:none; display:inline-block; margin-top:5px; }
 .save-btn { background:#ff914d; border:none; padding:6px 10px; border-radius:5px; cursor:pointer; color:white; margin-top:8px; }
-input, select { padding:8px; margin-right:8px; margin-bottom:10px; }
+input, select, textarea { padding:8px; margin-bottom:8px; width:100%; max-width:400px; }
+form { margin-top:20px; background:white; padding:15px; border-radius:10px; }
+h3 { margin-top:30px; }
 </style>
 </head>
 
@@ -53,6 +55,25 @@ input, select { padding:8px; margin-right:8px; margin-bottom:10px; }
 <h3>All Resources</h3>
 <div id="resourceList"></div>
 
+<h3>Suggest a Resource</h3>
+
+<form onsubmit="submitSuggestion(event)">
+<input type="text" id="suggestName" placeholder="Organization Name" required>
+<input type="text" id="suggestCity" placeholder="City" required>
+<select id="suggestCategory" required>
+<option value="">Select Category</option>
+<option>Housing</option>
+<option>Employment</option>
+<option>Health</option>
+</select>
+<input type="text" id="suggestWebsite" placeholder="Website URL">
+<textarea id="suggestNotes" placeholder="Additional Notes"></textarea>
+<button class="button" type="submit">Submit Suggestion</button>
+</form>
+
+<h3>Community Suggestions</h3>
+<div id="suggestionList"></div>
+
 </div>
 
 <script src="resources-data.js"></script>
@@ -68,7 +89,7 @@ function renderResources() {
 
   resources.forEach(resource => {
     if (
-      (resource.name.toLowerCase().includes(search)) &&
+      resource.name.toLowerCase().includes(search) &&
       (city === "" || resource.city === city) &&
       (category === "" || resource.category === category)
     ) {
@@ -83,7 +104,7 @@ function createCard(resource) {
       <strong>${resource.name}</strong><br>
       ${resource.city} – ${resource.category}<br>
       ${resource.phone ? `📞 <a href="tel:${resource.phone}">${resource.phone}</a><br>` : ""}
-      🌐 <a href="${resource.website}" target="_blank">Website</a><br>
+      ${resource.website ? `🌐 <a href="${resource.website}" target="_blank">Website</a><br>` : ""}
       <button class="save-btn" onclick='saveResource(${JSON.stringify(resource)})'>Save</button>
     </div>
   `;
@@ -111,8 +132,45 @@ function renderSaved() {
   });
 }
 
+function submitSuggestion(event) {
+  event.preventDefault();
+
+  const suggestion = {
+    name: document.getElementById("suggestName").value,
+    city: document.getElementById("suggestCity").value,
+    category: document.getElementById("suggestCategory").value,
+    website: document.getElementById("suggestWebsite").value,
+    notes: document.getElementById("suggestNotes").value
+  };
+
+  let suggestions = JSON.parse(localStorage.getItem("suggestions")) || [];
+  suggestions.push(suggestion);
+  localStorage.setItem("suggestions", JSON.stringify(suggestions));
+
+  event.target.reset();
+  renderSuggestions();
+}
+
+function renderSuggestions() {
+  const suggestionList = document.getElementById("suggestionList");
+  suggestionList.innerHTML = "";
+  let suggestions = JSON.parse(localStorage.getItem("suggestions")) || [];
+
+  suggestions.forEach(s => {
+    suggestionList.innerHTML += `
+      <div class="card">
+        <strong>${s.name}</strong><br>
+        ${s.city} – ${s.category}<br>
+        ${s.website ? `🌐 <a href="${s.website}" target="_blank">Website</a><br>` : ""}
+        ${s.notes ? `<em>${s.notes}</em>` : ""}
+      </div>
+    `;
+  });
+}
+
 renderResources();
 renderSaved();
+renderSuggestions();
 </script>
 
 </body>
