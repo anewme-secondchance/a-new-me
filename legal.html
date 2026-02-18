@@ -1,28 +1,217 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Legal & ID</title>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Legal & ID – A New Me</title>
+<link rel="manifest" href="manifest.json">
+
 <style>
-body { font-family: Arial; background:#f4f6f8; padding:20px; }
-.card { background:white; padding:20px; margin-bottom:20px; border-radius:10px; }
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+  background: #eef2f7;
+}
+
+.header {
+  background: #1f3c88;
+  color: white;
+  padding: 18px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.container {
+  padding: 20px;
+  padding-bottom: 90px;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+
+select, input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-top: 8px;
+  margin-bottom: 15px;
+}
+
+button {
+  background: #ff914d;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 10px;
+  width: 100%;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.result {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: white;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  box-shadow: 0 -4px 10px rgba(0,0,0,0.08);
+}
+
+.bottom-nav a {
+  text-decoration: none;
+  color: #1f3c88;
+  font-size: 13px;
+}
 </style>
 </head>
 <body>
 
-<h1>ID & Record Relief</h1>
+<div class="header">⚖ Legal & ID Help</div>
+
+<div class="container">
 
 <div class="card">
-<h2>ID Checklist</h2>
-<p>State ID, Social Security Card, Birth Certificate, Proof of Address.</p>
+<h3>ID & Document Checklist</h3>
+<label><input type="checkbox" id="stateID"> State ID / Driver’s License</label><br>
+<label><input type="checkbox" id="ssc"> Social Security Card</label><br>
+<label><input type="checkbox" id="birthCert"> Birth Certificate</label><br>
+<label><input type="checkbox" id="proofAddress"> Proof of Address</label><br>
+<label><input type="checkbox" id="resumeDoc"> Resume</label><br>
+<button onclick="saveChecklist()">Save Checklist</button>
 </div>
 
 <div class="card">
-<h2>Expungement & Nondisclosure</h2>
-<p>Check eligibility. Understand waiting periods.</p>
+<h3>Expungement / Record-Sealing Checker</h3>
+
+<select id="caseOutcome">
+<option value="">Select Case Outcome</option>
+<option value="dismissed">Dismissed</option>
+<option value="notguilty">Not Guilty</option>
+<option value="nobill">No-Billed</option>
+<option value="deferred">Deferred Adjudication</option>
+<option value="convicted">Convicted</option>
+</select>
+
+<select id="chargeLevel">
+<option value="">Charge Level</option>
+<option value="classc">Class C</option>
+<option value="misdemeanor">Class A/B Misdemeanor</option>
+<option value="felony">Felony</option>
+</select>
+
+<input type="number" id="yearsPassed" placeholder="Years Since Case Closed">
+
+<button onclick="checkEligibility()">Check Eligibility</button>
+
+<div class="result" id="eligibilityResult"></div>
+
 </div>
 
-<a href="index.html">⬅ Back Home</a>
+<div class="card">
+<h3>Offenses NOT Eligible for Nondisclosure</h3>
+<ul>
+<li>Family Violence</li>
+<li>Protective Order Violations</li>
+<li>Stalking</li>
+<li>Murder / Capital Murder</li>
+<li>Human Trafficking</li>
+<li>Sex Offenses</li>
+<li>Child Endangerment</li>
+</ul>
+</div>
+
+</div>
+
+<div class="bottom-nav">
+<a href="index.html">🏠</a>
+<a href="resources.html">📚</a>
+<a href="goals.html">🎯</a>
+<a href="mindset.html">🧠</a>
+<a href="printable.html">🖨</a>
+</div>
+
+<script>
+
+function saveChecklist() {
+  const checklist = {
+    stateID: stateID.checked,
+    ssc: ssc.checked,
+    birthCert: birthCert.checked,
+    proofAddress: proofAddress.checked,
+    resumeDoc: resumeDoc.checked
+  };
+
+  localStorage.setItem("checklist", JSON.stringify(checklist));
+}
+
+function loadChecklist() {
+  const checklist = JSON.parse(localStorage.getItem("checklist"));
+  if (!checklist) return;
+
+  stateID.checked = checklist.stateID;
+  ssc.checked = checklist.ssc;
+  birthCert.checked = checklist.birthCert;
+  proofAddress.checked = checklist.proofAddress;
+  resumeDoc.checked = checklist.resumeDoc;
+}
+
+function checkEligibility() {
+  const outcome = caseOutcome.value;
+  const level = chargeLevel.value;
+  const years = Number(yearsPassed.value);
+
+  let message = "Consult a legal aid office for final confirmation.";
+
+  if (outcome === "dismissed" || outcome === "notguilty" || outcome === "nobill") {
+    message = "You may qualify for EXPUNGEMENT.";
+  }
+
+  if (outcome === "deferred" && years >= 1) {
+    message = "You may qualify for NONDISCLOSURE.";
+  }
+
+  if (outcome === "convicted") {
+    message = "Convictions often do NOT qualify for expungement.";
+  }
+
+  if (level === "classc" && years < 1) {
+    message = "Class C requires 180 days waiting period.";
+  }
+
+  if (level === "misdemeanor" && years < 1) {
+    message = "Misdemeanor requires 1 year waiting period.";
+  }
+
+  if (level === "felony" && years < 3) {
+    message = "Felony arrest without indictment requires 3 years.";
+  }
+
+  eligibilityResult.innerHTML = message;
+}
+
+loadChecklist();
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js');
+}
+
+</script>
 
 </body>
 </html>
