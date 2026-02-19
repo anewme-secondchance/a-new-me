@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Budget & Money | A New Me</title>
+<title>Housing Tracker | A New Me</title>
 
 <style>
 body {
@@ -45,7 +45,7 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-input {
+input, select, textarea {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
@@ -62,6 +62,11 @@ button {
   cursor: pointer;
   margin-top: 10px;
 }
+
+.house-item {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+}
 </style>
 </head>
 
@@ -69,32 +74,37 @@ button {
 
 <div class="app-header">
   <button onclick="goBack()" class="back-btn">← Back</button>
-  <div>Budget & Money</div>
+  <div>Housing Tracker</div>
   <button onclick="logout()" class="logout-btn">Logout</button>
 </div>
 
 <div class="container">
 
 <div class="card">
-<h3>💵 Weekly Take-Home Pay</h3>
-<input type="number" id="income" placeholder="Enter weekly income">
+<h3>🏠 Add Housing Application</h3>
+
+<input type="text" id="property" placeholder="Property / Apartment Name">
+<input type="text" id="landlord" placeholder="Landlord / Contact Name">
+<input type="text" id="phone" placeholder="Contact Phone">
+<input type="date" id="dateApplied">
+
+<select id="status">
+  <option value="Applied">Applied</option>
+  <option value="Viewing Scheduled">Viewing Scheduled</option>
+  <option value="Approved">Approved</option>
+  <option value="Denied">Denied</option>
+</select>
+
+<input type="number" id="deposit" placeholder="Deposit Amount ($)">
+<textarea id="notes" placeholder="Notes..."></textarea>
+
+<button onclick="addHousing()">Save Application</button>
+
 </div>
 
 <div class="card">
-<h3>🏠 Expenses</h3>
-<input type="number" id="rent" placeholder="Rent">
-<input type="number" id="utilities" placeholder="Utilities">
-<input type="number" id="food" placeholder="Food">
-<input type="number" id="transport" placeholder="Transportation">
-<input type="number" id="phone" placeholder="Phone">
-<input type="number" id="savings" placeholder="Savings">
-<input type="number" id="emergency" placeholder="Emergency Fund">
-<button onclick="saveBudget()">Save Budget</button>
-</div>
-
-<div class="card">
-<h3>📊 Remaining Balance</h3>
-<p id="balance">$0</p>
+<h3>📋 My Housing Applications</h3>
+<div id="housingList"></div>
 </div>
 
 </div>
@@ -110,9 +120,11 @@ import {
 
 import {
   getFirestore,
-  doc,
-  setDoc,
-  getDoc
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -130,12 +142,12 @@ const db = getFirestore(app);
 
 let currentUser;
 
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, (user) => {
   if (!user) {
     window.location.href = "auth.html";
   } else {
     currentUser = user;
-    loadBudget();
+    loadHousing();
   }
 });
 
@@ -149,57 +161,63 @@ window.goBack = function() {
   window.location.href = "index.html";
 };
 
-window.saveBudget = async function() {
-  const data = {
-    income: Number(income.value) || 0,
-    rent: Number(rent.value) || 0,
-    utilities: Number(utilities.value) || 0,
-    food: Number(food.value) || 0,
-    transport: Number(transport.value) || 0,
-    phone: Number(phone.value) || 0,
-    savings: Number(savings.value) || 0,
-    emergency: Number(emergency.value) || 0
+window.addHousing = async function() {
+  const housing = {
+    property: property.value,
+    landlord: landlord.value,
+    phone: phone.value,
+    dateApplied: dateApplied.value,
+    status: status.value,
+    deposit: deposit.value,
+    notes: notes.value,
+    createdAt: new Date()
   };
 
-  await setDoc(doc(db, "users", currentUser.uid), data, { merge: true });
+  if (!housing.property) return;
 
-  calculateBalance(data);
-  alert("Budget saved!");
+  await addDoc(collection(db, "users", currentUser.uid, "housing"), housing);
+
+  property.value = "";
+  landlord.value = "";
+  phone.value = "";
+  dateApplied.value = "";
+  deposit.value = "";
+  notes.value = "";
+
+  loadHousing();
 };
 
-async function loadBudget() {
-  const docRef = doc(db, "users", currentUser.uid);
-  const docSnap = await getDoc(docRef);
+async function loadHousing() {
+  const list = document.getElementById("housingList");
+  list.innerHTML = "";
 
-  if (docSnap.exists()) {
+  const querySnapshot = await getDocs(
+    collection(db, "users", currentUser.uid, "housing")
+  );
+
+  querySnapshot.forEach((docSnap) => {
     const data = docSnap.data();
+    const div = document.createElement("div");
+    div.className = "house-item";
 
-    income.value = data.income || "";
-    rent.value = data.rent || "";
-    utilities.value = data.utilities || "";
-    food.value = data.food || "";
-    transport.value = data.transport || "";
-    phone.value = data.phone || "";
-    savings.value = data.savings || "";
-    emergency.value = data.emergency || "";
+    div.innerHTML = `
+      <strong>${data.property}</strong><br>
+      Contact: ${data.landlord || "N/A"} (${data.phone || "N/A"})<br>
+      Applied: ${data.dateApplied || "N/A"}<br>
+      Status: ${data.status}<br>
+      Deposit: $${data.deposit || "0"}<br>
+      Notes: ${data.notes || "None"}<br>
+      <button onclick="deleteHousing('${docSnap.id}')">Delete</button>
+    `;
 
-    calculateBalance(data);
-  }
+    list.appendChild(div);
+  });
 }
 
-function calculateBalance(data) {
-  const totalExpenses =
-    data.rent +
-    data.utilities +
-    data.food +
-    data.transport +
-    data.phone +
-    data.savings +
-    data.emergency;
-
-  const remaining = data.income - totalExpenses;
-  document.getElementById("balance").innerText = "$" + remaining;
-}
+window.deleteHousing = async function(id) {
+  await deleteDoc(doc(db, "users", currentUser.uid, "housing", id));
+  loadHousing();
+};
 
 </script>
 
