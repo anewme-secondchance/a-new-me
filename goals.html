@@ -1,23 +1,168 @@
-<script>
-function goBack() {
-  if (document.referrer !== "") {
-    window.history.back();
-  } else {
-    window.location.href = "index.html";
-  }
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goals Tracker | A New Me</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #eef2f7;
 }
 
-/* Save Goals Automatically */
+.app-header {
+  display: flex;
+  align-items: center;
+  background: #1f3c88;
+  color: white;
+  padding: 15px;
+}
+
+.back-btn {
+  background: white;
+  color: #1f3c88;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.goal-input {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 8px;
+}
+
+.goal-item {
+  margin-top: 10px;
+}
+
+.progress {
+  margin-top: 15px;
+  font-weight: bold;
+  color: #1f3c88;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-header">
+  <button onclick="goBack()" class="back-btn">← Back</button>
+  <div>Goals Tracker</div>
+</div>
+
+<div class="container">
+
+<div class="card">
+<h3>🏠 Housing Goal</h3>
+<input class="goal-input" placeholder="Example: Save $800 for deposit">
+<div class="goal-item">
+<label><input type="checkbox" class="goal-check"> Completed</label>
+</div>
+</div>
+
+<div class="card">
+<h3>💼 Job Goal</h3>
+<input class="goal-input" placeholder="Example: Apply to 5 jobs this week">
+<div class="goal-item">
+<label><input type="checkbox" class="goal-check"> Completed</label>
+</div>
+</div>
+
+<div class="card">
+<h3>💰 Financial Goal</h3>
+<input class="goal-input" placeholder="Example: Save $50 this month">
+<div class="goal-item">
+<label><input type="checkbox" class="goal-check"> Completed</label>
+</div>
+</div>
+
+<div class="card">
+<h3>🧠 Mental Health Goal</h3>
+<input class="goal-input" placeholder="Example: Attend 2 counseling sessions">
+<div class="goal-item">
+<label><input type="checkbox" class="goal-check"> Completed</label>
+</div>
+</div>
+
+<div class="card">
+<h3>🌟 Life Goal</h3>
+<input class="goal-input" placeholder="Example: Reconnect with family">
+<div class="goal-item">
+<label><input type="checkbox" class="goal-check"> Completed</label>
+</div>
+</div>
+
+<div class="card">
+<div class="progress">
+Goals Completed: <span id="progressCount">0</span> / 5
+</div>
+</div>
+
+</div>
+
+<script>
+function goBack() {
+  window.location.href = "index.html";
+}
+
+/* Save Goals Text */
 const goalInputs = document.querySelectorAll(".goal-input");
 
 goalInputs.forEach((input, index) => {
-  const savedValue = localStorage.getItem("goal_" + index);
-  if (savedValue) {
-    input.value = savedValue;
-  }
+  const savedValue = localStorage.getItem("goal_text_" + index);
+  if (savedValue) input.value = savedValue;
 
   input.addEventListener("input", () => {
-    localStorage.setItem("goal_" + index, input.value);
+    localStorage.setItem("goal_text_" + index, input.value);
   });
 });
+
+/* Save Checkboxes */
+const goalChecks = document.querySelectorAll(".goal-check");
+
+function updateProgress() {
+  let completed = 0;
+  goalChecks.forEach((check, index) => {
+    if (check.checked) completed++;
+  });
+  document.getElementById("progressCount").textContent = completed;
+}
+
+goalChecks.forEach((check, index) => {
+  const savedCheck = localStorage.getItem("goal_check_" + index);
+  if (savedCheck === "true") {
+    check.checked = true;
+  }
+
+  check.addEventListener("change", () => {
+    localStorage.setItem("goal_check_" + index, check.checked);
+    updateProgress();
+  });
+});
+
+updateProgress();
 </script>
+
+</body>
+</html>
