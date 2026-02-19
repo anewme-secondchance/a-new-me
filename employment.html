@@ -14,29 +14,28 @@ body {
 
 .app-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   background: #1f3c88;
   color: white;
   padding: 15px;
 }
 
-button {
+.back-btn {
   background: white;
   color: #1f3c88;
   border: none;
   padding: 6px 14px;
   border-radius: 20px;
   cursor: pointer;
+  margin-right: 15px;
   font-weight: bold;
-  margin-top: 10px;
 }
 
 .container {
   padding: 20px;
   max-width: 900px;
   margin: auto;
-  padding-bottom: 80px;
+  padding-bottom: 60px;
 }
 
 .card {
@@ -47,21 +46,29 @@ button {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
+.notice {
+  background: #ffe5e5;
+  padding: 15px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
 textarea {
   width: 100%;
-  min-height: 80px;
+  min-height: 90px;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
   margin-top: 8px;
 }
 
-.notice {
-  background: #ffdddd;
-  padding: 10px;
-  border-radius: 8px;
-  color: #b30000;
-  font-weight: bold;
+button {
+  background: #1f3c88;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
   margin-top: 10px;
 }
 
@@ -70,162 +77,155 @@ a {
   font-weight: bold;
   text-decoration: none;
 }
+
+a:hover {
+  text-decoration: underline;
+}
 </style>
 </head>
 
 <body>
 
 <div class="app-header">
+  <button onclick="goBack()" class="back-btn">← Back</button>
   <div>Employment</div>
-  <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
 
-<div class="card">
-<h3>🔴 Important</h3>
-<div class="notice">
-Not all employers hire individuals with felonies.  
+<div class="card notice">
+🔴 Important: Not all employers hire individuals with felonies.  
 Hiring depends on the charge, how long ago it occurred, and company policy.
 </div>
-</div>
 
+<!-- WHAT TO WEAR -->
 <div class="card">
-<h3>👔 What to Wear</h3>
+<h3>👔 What Men Should Wear</h3>
 <ul>
-<li>Clean button-up or polo</li>
+<li>Clean button-up shirt or polo</li>
 <li>Dark jeans or slacks (no rips)</li>
-<li>Closed-toe shoes</li>
-<li>Neat grooming</li>
+<li>Closed-toe shoes or clean boots</li>
+<li>Neat grooming (trimmed beard, clean haircut)</li>
+<li>Light deodorant (no heavy cologne)</li>
+</ul>
+
+<h3>👗 What Women Should Wear</h3>
+<ul>
+<li>Blouse or modest professional top</li>
+<li>Dress pants or knee-length skirt</li>
+<li>Closed-toe flats or low heels</li>
+<li>Neat hairstyle</li>
+<li>Minimal jewelry</li>
+<li>Light makeup (optional)</li>
 </ul>
 </div>
 
+<!-- INTERVIEW -->
 <div class="card">
 <h3>🎤 Interview Preparation</h3>
+
 <p><strong>Tell Me About Yourself:</strong></p>
-<p>“I’m dependable, hardworking, and focused on long-term stability.”</p>
+<p>“I’m dependable, hardworking, and focused on long-term stability. I bring discipline, teamwork, and a strong work ethic.”</p>
 
 <p><strong>If Asked About Your Record:</strong></p>
-<p>“I made mistakes in the past, but I’ve taken responsibility and completed programs. I’m committed to growth.”</p>
+<p>“I made mistakes in the past, but I’ve taken responsibility and completed programs. I’m committed to growth and contributing positively.”</p>
 </div>
 
+<!-- RESUME -->
 <div class="card">
 <h3>📄 Resume Building</h3>
+
+<p><strong>How to List Prison Work Professionally:</strong></p>
 <ul>
-<li>List prison jobs professionally</li>
+<li>Use the job title, not the facility name</li>
+<li>Focus on skills learned</li>
 <li>Include certifications</li>
 <li>Highlight teamwork & reliability</li>
 </ul>
+
+<h4>Example Resume Entry:</h4>
+
+<p><strong>Kitchen Worker</strong><br>
+Food Service Department | 2019 – 2023</p>
+
+<ul>
+<li>Prepared meals for over 1,500 individuals daily</li>
+<li>Maintained sanitation and safety standards</li>
+<li>Worked efficiently in a fast-paced team environment</li>
+<li>Completed Food Handler Certification</li>
+</ul>
+
+<p><strong>Maintenance Assistant</strong><br>
+Facility Operations | 2020 – 2023</p>
+
+<ul>
+<li>Performed plumbing and electrical repairs</li>
+<li>Followed OSHA safety guidelines</li>
+<li>Maintained daily work logs</li>
+<li>Assisted in preventative maintenance programs</li>
+</ul>
 </div>
 
+<!-- SKILLED TRADES -->
 <div class="card">
 <h3>🏗️ Skilled Trades & Certifications</h3>
-<ul>
-<li><a href="https://www.apprenticeship.gov" target="_blank">National Apprenticeships</a></li>
-<li><a href="https://www.tdlr.texas.gov" target="_blank">Texas Licensing & Regulation</a></li>
-<li><a href="https://www.careeronestop.org" target="_blank">CareerOneStop Training Finder</a></li>
-</ul>
+
+<p><a href="https://www.apprenticeship.gov/" target="_blank">National Apprenticeships</a></p>
+<p><a href="https://www.tdlr.texas.gov/" target="_blank">Texas Licensing & Regulation</a></p>
+<p><a href="https://www.careeronestop.org/TrainingFinder/" target="_blank">CareerOneStop Training Finder</a></p>
+
 </div>
 
+<!-- JOB SEARCH -->
 <div class="card">
 <h3>📌 Felon-Friendly Job Search</h3>
-<ul>
-<li><a href="https://www.honestjobs.com" target="_blank">Honest Jobs</a></li>
-<li><a href="https://www.indeed.com" target="_blank">Indeed</a></li>
-<li><a href="https://www.glassdoor.com" target="_blank">Glassdoor</a></li>
-<li><a href="https://www.craigslist.org" target="_blank">Craigslist</a></li>
-</ul>
+
+<p><a href="https://www.honestjobs.com/" target="_blank">Honest Jobs</a></p>
+<p><a href="https://www.indeed.com/" target="_blank">Indeed</a></p>
+<p><a href="https://www.glassdoor.com/" target="_blank">Glassdoor</a></p>
+<p><a href="https://www.craigslist.org/" target="_blank">Craigslist</a></p>
+
 </div>
 
+<!-- PRACTICE -->
 <div class="card">
-<h3>📝 Practice Answers (Saved to Your Account)</h3>
+<h3>📝 Practice Answers</h3>
 
 <label>30-Second Introduction</label>
-<textarea id="intro"></textarea>
+<textarea id="practice1"></textarea>
 
 <label>Why Should We Hire You?</label>
-<textarea id="hire"></textarea>
+<textarea id="practice2"></textarea>
 
 <label>How Have You Grown?</label>
-<textarea id="growth"></textarea>
+<textarea id="practice3"></textarea>
 
 <button onclick="savePractice()">Save Practice</button>
 
-</div>
+<p id="saveMessage"></p>
 
 </div>
 
-<script type="module">
+</div>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { 
-  getAuth,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+<script>
 
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA4O2nEtjdy9fSh66gnHH6jsbKKSWdJt4c",
-  authDomain: "a-new-me-1a17a.firebaseapp.com",
-  projectId: "a-new-me-1a17a",
-  storageBucket: "a-new-me-1a17a.firebasestorage.app",
-  messagingSenderId: "362235516132",
-  appId: "1:362235516132:web:1465c3ec03ce1d3f4608f1"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-let currentUser;
-
-onAuthStateChanged(auth, async user => {
-  if (!user) {
-    window.location.href = "auth.html";
-  } else {
-    currentUser = user;
-    loadPractice();
-  }
-});
-
-window.logout = function() {
-  signOut(auth).then(() => {
-    window.location.href = "auth.html";
-  });
-};
-
-window.savePractice = async function() {
-  const data = {
-    intro: document.getElementById("intro").value,
-    hire: document.getElementById("hire").value,
-    growth: document.getElementById("growth").value
-  };
-
-  await setDoc(doc(db, "users", currentUser.uid), {
-    employmentPractice: data
-  }, { merge: true });
-
-  alert("Saved ✓");
-};
-
-async function loadPractice() {
-  const docSnap = await getDoc(doc(db, "users", currentUser.uid));
-  if (docSnap.exists()) {
-    const data = docSnap.data();
-    if (data.employmentPractice) {
-      document.getElementById("intro").value = data.employmentPractice.intro || "";
-      document.getElementById("hire").value = data.employmentPractice.hire || "";
-      document.getElementById("growth").value = data.employmentPractice.growth || "";
-    }
-  }
+function goBack() {
+  window.location.href = "index.html";
 }
+
+function savePractice() {
+  localStorage.setItem("practice1", document.getElementById("practice1").value);
+  localStorage.setItem("practice2", document.getElementById("practice2").value);
+  localStorage.setItem("practice3", document.getElementById("practice3").value);
+  document.getElementById("saveMessage").innerText = "Saved ✓";
+}
+
+window.onload = function() {
+  document.getElementById("practice1").value = localStorage.getItem("practice1") || "";
+  document.getElementById("practice2").value = localStorage.getItem("practice2") || "";
+  document.getElementById("practice3").value = localStorage.getItem("practice3") || "";
+};
 
 </script>
 
