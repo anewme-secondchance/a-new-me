@@ -3,76 +3,87 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A New Me</title>
+<title>A New Me | Reentry Support</title>
 
 <style>
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: 'Segoe UI', Arial, sans-serif;
   background: #eef2f7;
 }
 
 /* Header */
-.hero {
-  background: linear-gradient(135deg, #1f3c88, #2c5cc5);
+.header {
+  background: linear-gradient(135deg, #1f3c88, #2a5298);
   color: white;
-  padding: 40px 20px;
   text-align: center;
+  padding: 30px 20px;
 }
 
-.hero h1 {
+.header h1 {
   margin: 0;
   font-size: 28px;
 }
 
-.hero p {
-  margin-top: 10px;
-  font-size: 16px;
+.header p {
+  margin-top: 8px;
+  font-size: 14px;
+  opacity: 0.9;
 }
 
-/* Grid Layout */
+/* Container */
 .container {
   padding: 20px;
   max-width: 1000px;
   margin: auto;
 }
 
+/* Grid Layout */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 15px;
 }
 
+/* Cards */
 .card {
   background: white;
-  padding: 20px;
-  border-radius: 15px;
+  padding: 25px 15px;
+  border-radius: 14px;
   text-align: center;
   text-decoration: none;
   color: #1f3c88;
   font-weight: bold;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  transition: transform 0.2s ease;
+  box-shadow: 0 5px 12px rgba(0,0,0,0.08);
+  transition: 0.2s ease;
 }
 
 .card:hover {
   transform: translateY(-4px);
-  background: #ff914d;
-  color: white;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.15);
 }
 
-.icon {
-  font-size: 28px;
+.card span {
+  display: block;
+  font-size: 26px;
   margin-bottom: 10px;
+}
+
+/* Footer */
+.footer {
+  text-align: center;
+  padding: 20px;
+  font-size: 13px;
+  color: #555;
 }
 </style>
 </head>
 
 <body>
 
-<div class="hero">
+<div class="header">
   <h1>A New Me</h1>
-  <p>Your Second Chance Starts Here</p>
+  <p>Rebuilding. Restoring. Moving Forward.</p>
 </div>
 
 <div class="container">
@@ -80,52 +91,66 @@ body {
 <div class="grid">
 
 <a href="resources.html" class="card">
-<div class="icon">📚</div>
-Resources
+  <span>📚</span>
+  Resources
 </a>
 
 <a href="stability.html" class="card">
-<div class="icon">📋</div>
-Stability Plan
+  <span>📋</span>
+  Stability Plan
 </a>
 
 <a href="employment.html" class="card">
-<div class="icon">💼</div>
-Employment
+  <span>💼</span>
+  Employment
 </a>
 
 <a href="housing.html" class="card">
-<div class="icon">🏠</div>
-Housing
+  <span>🏠</span>
+  Housing
 </a>
 
 <a href="money.html" class="card">
-<div class="icon">💰</div>
-Budget & Money
+  <span>💰</span>
+  Budget & Money
 </a>
 
 <a href="legal.html" class="card">
-<div class="icon">⚖</div>
-Legal Help
+  <span>⚖</span>
+  Legal Help
+</a>
+
+<a href="education.html" class="card">
+  <span>🎓</span>
+  Education & GED
+</a>
+
+<a href="digital.html" class="card">
+  <span>💻</span>
+  Digital Literacy
 </a>
 
 <a href="family.html" class="card">
-<div class="icon">👨‍👩‍👧</div>
-Family
+  <span>👨‍👩‍👧</span>
+  Family
 </a>
 
 <a href="mindset.html" class="card">
-<div class="icon">🧠</div>
-Mindset
+  <span>🧠</span>
+  Mindset
 </a>
 
 <a href="goals.html" class="card">
-<div class="icon">🎯</div>
-Goals Tracker
+  <span>🎯</span>
+  Goals Tracker
 </a>
 
 </div>
 
+</div>
+
+<div class="footer">
+  Every day is a chance to rebuild. Progress over perfection.
 </div>
 
 </body>
