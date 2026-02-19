@@ -1,79 +1,39 @@
 const resources = [
+
   {
-    name: "PATH (People Attempting to Help)",
-    city: "Tyler",
-    category: "Housing",
-    phone: "9035977284",
-    website: "https://pathhelps.org/"
-  },
-  {
-    name: "Goodwill Industries of East Texas",
+    name: "Tyler Public Library",
     city: "Tyler",
     category: "Employment",
-    phone: "9035938438",
-    website: "https://goodwilleasttexas.com/"
+    phone: "903-593-7323",
+    website: "https://www.tylerlibrary.com",
+    notes: "Free public computers, internet access, printing, job search assistance, and resume help."
   },
+
   {
-    name: "Volunteers of America Texas",
-    city: "Dallas",
-    category: "Housing",
-    phone: "8175297300",
-    website: "https://www.voatx.org/"
-  },
-  {
-    name: "Miles of Freedom",
-    city: "Dallas",
+    name: "Texas Workforce Commission",
+    city: "Tyler",
     category: "Employment",
-    phone: "",
-    website: "https://milesoffreedom.org/"
+    phone: "800-939-6631",
+    website: "https://www.twc.texas.gov",
+    notes: "Job search assistance, training programs, and unemployment services."
   },
+
   {
-    name: "Tarrant County Reentry Center",
-    city: "Fort Worth",
-    category: "Housing",
-    phone: "8176326000",
-    website: "https://www.tcreentry.org/"
-  },
-  {
-    name: "ACCESS Harris County",
-    city: "Houston",
-    category: "Housing",
-    phone: "",
-    website: "https://publichealth.harriscountytx.gov/"
-  },
-  {
-    name: "The Harris Center",
-    city: "Houston",
+    name: "East Texas Crisis Center",
+    city: "Tyler",
     category: "Health",
-    phone: "7139707000",
-    website: "https://www.theharriscenter.org/"
+    phone: "903-595-5591",
+    website: "https://www.etcc.org",
+    notes: "Crisis intervention and counseling services."
   },
+
   {
-    name: "Bee Busy Wellness Center",
-    city: "Houston",
-    category: "Health",
-    phone: "7137712292",
-    website: "https://beebusy.org/"
-  },
-  {
-    name: "Bexar County Reentry Center",
-    city: "San Antonio",
+    name: "The Salvation Army",
+    city: "Tyler",
     category: "Housing",
-    phone: "2103356640",
-    website: "https://www.bexar.org/3509/Reentry-Center"
-  },
-  {
-    name: "Crosspoint, Inc.",
-    city: "San Antonio",
-    category: "Housing",
-    phone: "2102250864",
-    website: "https://crosspointinc.org/"
-  },
-  {
-    name: "Project RIO",
-    city: "Austin",
-    category: "Employment",
-    phone: "",
-    website: "https://www.texasworkforce.org/project-rio"
+    phone: "903-592-4361",
+    website: "https://salvationarmytyler.org",
+    notes: "Emergency shelter and housing assistance."
   }
+
 ];
