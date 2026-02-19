@@ -8,42 +8,29 @@
 <style>
 body {
   margin: 0;
-  font-family: Arial;
+  font-family: Arial, sans-serif;
   background: #eef2f7;
 }
 
-/* App Header */
 .app-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   background: #1f3c88;
   color: white;
   padding: 15px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
-.back-btn {
+.back-btn, .logout-btn {
   background: white;
   color: #1f3c88;
   border: none;
   padding: 6px 14px;
   border-radius: 20px;
-  font-size: 14px;
   cursor: pointer;
-  margin-right: 15px;
-}
-
-.back-btn:hover {
-  background: #ff914d;
-  color: white;
-}
-
-.page-title {
-  font-size: 18px;
   font-weight: bold;
 }
 
-/* Content */
 .container {
   padding: 20px;
   max-width: 900px;
@@ -58,29 +45,22 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-label {
-  display: block;
-  margin-top: 10px;
-  font-weight: bold;
-}
-
-.budget-input {
+input {
   width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  margin-bottom: 10px;
-  border-radius: 6px;
+  padding: 10px;
+  border-radius: 8px;
   border: 1px solid #ccc;
+  margin-top: 8px;
 }
 
-.remaining-box {
+button {
   background: #1f3c88;
   color: white;
-  padding: 15px;
-  border-radius: 10px;
-  margin-top: 15px;
-  font-size: 18px;
-  text-align: center;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
 }
 </style>
 </head>
@@ -89,75 +69,138 @@ label {
 
 <div class="app-header">
   <button onclick="goBack()" class="back-btn">← Back</button>
-  <div class="page-title">Budget & Money</div>
+  <div>Budget & Money</div>
+  <button onclick="logout()" class="logout-btn">Logout</button>
 </div>
 
 <div class="container">
 
 <div class="card">
-<h3>Weekly Budget Planner</h3>
+<h3>💵 Weekly Take-Home Pay</h3>
+<input type="number" id="income" placeholder="Enter weekly income">
+</div>
 
-<label>Weekly Income</label>
-<input class="budget-input" type="number" placeholder="Enter weekly income">
+<div class="card">
+<h3>🏠 Expenses</h3>
+<input type="number" id="rent" placeholder="Rent">
+<input type="number" id="utilities" placeholder="Utilities">
+<input type="number" id="food" placeholder="Food">
+<input type="number" id="transport" placeholder="Transportation">
+<input type="number" id="phone" placeholder="Phone">
+<input type="number" id="savings" placeholder="Savings">
+<input type="number" id="emergency" placeholder="Emergency Fund">
+<button onclick="saveBudget()">Save Budget</button>
+</div>
 
-<label>Rent</label>
-<input class="budget-input" type="number" placeholder="Rent amount">
-
-<label>Food</label>
-<input class="budget-input" type="number" placeholder="Food budget">
-
-<label>Transportation</label>
-<input class="budget-input" type="number" placeholder="Transportation">
-
-<label>Phone</label>
-<input class="budget-input" type="number" placeholder="Phone bill">
-
-<label>Savings</label>
-<input class="budget-input" type="number" placeholder="Savings">
-
-<div class="remaining-box">
-Total Remaining: $<span id="remaining">0</span>
+<div class="card">
+<h3>📊 Remaining Balance</h3>
+<p id="balance">$0</p>
 </div>
 
 </div>
 
-</div>
+<script type="module">
 
-<script>
-function goBack() {
-  if (document.referrer !== "") {
-    window.history.back();
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA4O2nEtjdy9fSh66gnHH6jsbKKSWdJt4c",
+  authDomain: "a-new-me-1a17a.firebaseapp.com",
+  projectId: "a-new-me-1a17a",
+  storageBucket: "a-new-me-1a17a.firebasestorage.app",
+  messagingSenderId: "362235516132",
+  appId: "1:362235516132:web:1465c3ec03ce1d3f4608f1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser;
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "auth.html";
   } else {
-    window.location.href = "index.html";
+    currentUser = user;
+    loadBudget();
+  }
+});
+
+window.logout = function() {
+  signOut(auth).then(() => {
+    window.location.href = "auth.html";
+  });
+};
+
+window.goBack = function() {
+  window.location.href = "index.html";
+};
+
+window.saveBudget = async function() {
+  const data = {
+    income: Number(income.value) || 0,
+    rent: Number(rent.value) || 0,
+    utilities: Number(utilities.value) || 0,
+    food: Number(food.value) || 0,
+    transport: Number(transport.value) || 0,
+    phone: Number(phone.value) || 0,
+    savings: Number(savings.value) || 0,
+    emergency: Number(emergency.value) || 0
+  };
+
+  await setDoc(doc(db, "users", currentUser.uid), data, { merge: true });
+
+  calculateBalance(data);
+  alert("Budget saved!");
+};
+
+async function loadBudget() {
+  const docRef = doc(db, "users", currentUser.uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+
+    income.value = data.income || "";
+    rent.value = data.rent || "";
+    utilities.value = data.utilities || "";
+    food.value = data.food || "";
+    transport.value = data.transport || "";
+    phone.value = data.phone || "";
+    savings.value = data.savings || "";
+    emergency.value = data.emergency || "";
+
+    calculateBalance(data);
   }
 }
 
-/* Budget Save + Auto Calculate */
-const inputs = document.querySelectorAll(".budget-input");
+function calculateBalance(data) {
+  const totalExpenses =
+    data.rent +
+    data.utilities +
+    data.food +
+    data.transport +
+    data.phone +
+    data.savings +
+    data.emergency;
 
-function calculateRemaining() {
-  let values = [];
-  inputs.forEach((input, index) => {
-    const saved = localStorage.getItem("budget_" + index);
-    if (saved !== null) input.value = saved;
-    values.push(Number(input.value) || 0);
-  });
-
-  const income = values[0] || 0;
-  const expenses = values.slice(1).reduce((a, b) => a + b, 0);
-  const remaining = income - expenses;
-
-  document.getElementById("remaining").textContent = remaining;
+  const remaining = data.income - totalExpenses;
+  document.getElementById("balance").innerText = "$" + remaining;
 }
 
-inputs.forEach((input, index) => {
-  input.addEventListener("input", () => {
-    localStorage.setItem("budget_" + index, input.value);
-    calculateRemaining();
-  });
-});
-
-calculateRemaining();
 </script>
 
 </body>
