@@ -1,25 +1,114 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Daily Reset</title>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mindset | A New Me</title>
+
 <style>
-body { font-family: Arial; background:#f4f6f8; padding:20px; }
-.card { background:white; padding:20px; margin-bottom:20px; border-radius:10px; }
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #eef2f7;
+}
+
+/* App Header */
+.app-header {
+  display: flex;
+  align-items: center;
+  background: #1f3c88;
+  color: white;
+  padding: 15px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.back-btn {
+  background: white;
+  color: #1f3c88;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+.back-btn:hover {
+  background: #ff914d;
+  color: white;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Content */
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+ul {
+  padding-left: 20px;
+}
 </style>
 </head>
+
 <body>
 
-<h1>Daily Reset</h1>
-
-<div class="card">
-<h2>Reflect</h2>
-<p>What went well today?</p>
-<p>What step forward did you take?</p>
-<p>What can you improve tomorrow?</p>
+<div class="app-header">
+  <button onclick="goBack()" class="back-btn">← Back</button>
+  <div class="page-title">Mindset</div>
 </div>
 
-<a href="index.html">⬅ Back Home</a>
+<div class="container">
+
+<div class="card">
+<h3>Daily Reflection Prompts</h3>
+<ul>
+<li>What went well today?</li>
+<li>What is one step forward I took?</li>
+<li>What can I improve tomorrow?</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>Building Confidence</h3>
+<ul>
+<li>Celebrate small wins.</li>
+<li>Focus on progress, not perfection.</li>
+<li>Replace negative thoughts with action steps.</li>
+<li>Stay consistent even when motivation is low.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>Encouragement</h3>
+<p>Your past does not define your future. Your effort today does.</p>
+<p>Every positive step counts.</p>
+</div>
+
+</div>
+
+<script>
+function goBack() {
+  if (document.referrer !== "") {
+    window.history.back();
+  } else {
+    window.location.href = "index.html";
+  }
+}
+</script>
 
 </body>
 </html>
