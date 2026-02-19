@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Education | A New Me</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #eef2f7;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  background: #1f3c88;
+  color: white;
+  padding: 15px;
+}
+
+.back-btn {
+  background: white;
+  color: #1f3c88;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-right: 15px;
+  font-weight: bold;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+textarea {
+  width: 100%;
+  min-height: 70px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 8px;
+}
+
+a {
+  color: #1f3c88;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app-header">
+  <button onclick="goBack()" class="back-btn">← Back</button>
+  <div class="page-title">Education & GED</div>
+</div>
+
+<div class="container">
+
+<div class="card">
+<h3>📘 GED Information</h3>
+<p>You can earn your GED online or at local testing centers.</p>
+
+<p><strong>Official GED Website:</strong></p>
+<a href="https://ged.com/" target="_blank">https://ged.com</a>
+
+<p><strong>Texas Adult Education Programs:</strong></p>
+<a href="https://tea.texas.gov/academics/college-career-and-military-prep/adult-education-and-literacy" target="_blank">
+Texas Adult Education & Literacy
+</a>
+</div>
+
+<div class="card">
+<h3>📝 GED Enrollment Plan</h3>
+
+<label>Why do I want my GED?</label>
+<textarea id="ged1"></textarea>
+
+<label>My study schedule:</label>
+<textarea id="ged2"></textarea>
+
+<label>My test goal date:</label>
+<textarea id="ged3"></textarea>
+
+</div>
+
+<div class="card">
+<h3>🎓 How To Apply For College</h3>
+
+<p><strong>Step 1: Choose a School</strong></p>
+<ul>
+<li>Community College (affordable)</li>
+<li>Trade School</li>
+<li>University</li>
+</ul>
+
+<p><strong>Step 2: Complete FAFSA (Financial Aid)</strong></p>
+<a href="https://studentaid.gov/" target="_blank">https://studentaid.gov</a>
+
+<p><strong>Step 3: Submit Application</strong></p>
+<p>Most colleges apply online through their website.</p>
+
+<p><strong>Texas Common Application:</strong></p>
+<a href="https://www.applytexas.org/" target="_blank">https://www.applytexas.org</a>
+
+</div>
+
+<div class="card">
+<h3>📋 College Application Practice</h3>
+
+<label>School I Want To Apply To:</label>
+<textarea id="college1"></textarea>
+
+<label>Program or Major:</label>
+<textarea id="college2"></textarea>
+
+<label>Career Goal:</label>
+<textarea id="college3"></textarea>
+
+<label>How will education improve my life?</label>
+<textarea id="college4"></textarea>
+
+</div>
+
+<div class="card">
+<h3>💡 Encouragement</h3>
+<p>
+Education is not about age.  
+It’s about access.  
+It’s about opportunity.  
+It’s about proving to yourself you can do hard things.
+</p>
+
+<p>
+Your past does not block your education.  
+Many colleges accept returning citizens.  
+Financial aid is available.
+</p>
+</div>
+
+</div>
+
+<script>
+function goBack() {
+  window.location.href = "index.html";
+}
+
+/* Auto Save */
+function setupSave(id, key) {
+  const field = document.getElementById(id);
+  const saved = localStorage.getItem(key);
+  if (saved) field.value = saved;
+
+  field.addEventListener("input", () => {
+    localStorage.setItem(key, field.value);
+  });
+}
+
+setupSave("ged1","ged1");
+setupSave("ged2","ged2");
+setupSave("ged3","ged3");
+setupSave("college1","college1");
+setupSave("college2","college2");
+setupSave("college3","college3");
+setupSave("college4","college4");
+</script>
+
+</body>
+</html>
