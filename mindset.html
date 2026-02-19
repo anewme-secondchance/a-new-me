@@ -28,14 +28,22 @@ body {
   border-radius: 20px;
   cursor: pointer;
   margin-right: 10px;
-  font-weight: bold;
+}
+
+.logout-btn {
+  margin-left: auto;
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
 }
 
 .container {
   padding: 20px;
   max-width: 900px;
   margin: auto;
-  padding-bottom: 80px;
 }
 
 .card {
@@ -46,8 +54,9 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-textarea, input {
+textarea {
   width: 100%;
+  min-height: 90px;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -63,25 +72,6 @@ button {
   cursor: pointer;
   margin-top: 10px;
 }
-
-.notification {
-  background: #ff914d;
-  color: white;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.resource-item {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-}
-
-a {
-  color: #1f3c88;
-  font-weight: bold;
-  text-decoration: none;
-}
 </style>
 </head>
 
@@ -89,13 +79,11 @@ a {
 
 <div class="app-header">
   <button onclick="goBack()" class="back-btn">← Back</button>
-  <div style="flex:1;">Mindset</div>
-  <button onclick="logoutUser()" class="back-btn">Logout</button>
+  <div>Mindset</div>
+  <button onclick="logout()" class="logout-btn">Logout</button>
 </div>
 
 <div class="container">
-
-<div id="notificationArea"></div>
 
 <div class="card">
 <h3>🌟 Daily Encouragement</h3>
@@ -104,42 +92,18 @@ a {
 </div>
 
 <div class="card">
-<h3>📱 Daily Motivation Message</h3>
-<p id="smsMessage"></p>
-<button onclick="newSMS()">New Message</button>
+<h3>What went well today?</h3>
+<textarea id="r1"></textarea>
 </div>
 
 <div class="card">
-<h3>Daily Reflection</h3>
-<textarea id="r1" placeholder="What went well today?"></textarea>
-<textarea id="r2" placeholder="What step forward did I take?"></textarea>
-<textarea id="r3" placeholder="What can I improve tomorrow?"></textarea>
+<h3>What is one step forward I took?</h3>
+<textarea id="r2"></textarea>
 </div>
 
 <div class="card">
-<h3>🔥 Consistency Streak</h3>
-<p>Days checked in: <strong id="streakCount">0</strong></p>
-<button onclick="updateStreak()">Mark Today Complete</button>
-</div>
-
-<div class="card">
-<h3>💪 Sobriety Tracker</h3>
-<label><input type="checkbox" id="soberCheck"> I stayed sober today</label>
-<p>Days sober: <strong id="soberCount">0</strong></p>
-</div>
-
-<div class="card">
-<h3>📅 Appointment Tracker</h3>
-<input type="text" id="apptName" placeholder="Appointment Name">
-<input type="datetime-local" id="apptDate">
-<button onclick="addAppt()">Add Appointment</button>
-<div id="apptList"></div>
-</div>
-
-<div class="card">
-<h3>🏥 Texas Mental Health Centers</h3>
-<input type="text" id="searchInput" placeholder="Search by city or ZIP..." onkeyup="filterCenters()">
-<div id="centersList"></div>
+<h3>What can I improve tomorrow?</h3>
+<textarea id="r3"></textarea>
 </div>
 
 </div>
@@ -147,8 +111,19 @@ a {
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { 
+  getFirestore, 
+  doc, 
+  setDoc, 
+  getDoc 
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+/* 🔥 Your Firebase Config */
 const firebaseConfig = {
   apiKey: "AIzaSyA4O2nEtjdy9fSh66gnHH6jsbKKSWdJt4c",
   authDomain: "a-new-me-1a17a.firebaseapp.com",
@@ -160,26 +135,65 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-/* PROTECT PAGE */
-onAuthStateChanged(auth, (user) => {
+/* 🔒 Protect Page */
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "auth.html";
+    return;
   }
+  loadReflections(user.uid);
 });
 
-/* LOGOUT */
-window.logoutUser = function() {
+/* 📝 Save Reflections */
+async function saveReflections(uid) {
+  const r1 = document.getElementById("r1").value;
+  const r2 = document.getElementById("r2").value;
+  const r3 = document.getElementById("r3").value;
+
+  await setDoc(doc(db, "users", uid), {
+    reflections: {
+      r1: r1,
+      r2: r2,
+      r3: r3
+    }
+  }, { merge: true });
+}
+
+/* 📥 Load Reflections */
+async function loadReflections(uid) {
+  const docSnap = await getDoc(doc(db, "users", uid));
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    if (data.reflections) {
+      document.getElementById("r1").value = data.reflections.r1 || "";
+      document.getElementById("r2").value = data.reflections.r2 || "";
+      document.getElementById("r3").value = data.reflections.r3 || "";
+    }
+  }
+
+  ["r1","r2","r3"].forEach(id => {
+    document.getElementById(id).addEventListener("input", () => {
+      saveReflections(uid);
+    });
+  });
+}
+
+/* 🚪 Logout */
+window.logout = function() {
   signOut(auth).then(() => {
     window.location.href = "auth.html";
   });
 };
 
+/* 🔙 Back */
 window.goBack = function() {
   window.location.href = "index.html";
 };
 
-/* QUOTES */
+/* 🌟 Quotes */
 const quotes = [
 "You are not your past. You are your next decision.",
 "Small steps every day build a new life.",
@@ -189,126 +203,11 @@ const quotes = [
 ];
 
 window.newQuote = function() {
-  document.getElementById("dailyQuote").textContent =
-    quotes[Math.floor(Math.random() * quotes.length)];
+  const q = quotes[Math.floor(Math.random() * quotes.length)];
+  document.getElementById("dailyQuote").textContent = q;
 };
 
 newQuote();
-
-/* SMS */
-const smsMessages = [
-"You got through yesterday. You can handle today.",
-"One good decision changes everything.",
-"Keep going. You’re rebuilding something strong.",
-"Consistency beats motivation.",
-"You’re not starting over — you’re starting smarter."
-];
-
-window.newSMS = function() {
-  const msg = smsMessages[Math.floor(Math.random() * smsMessages.length)];
-  document.getElementById("smsMessage").textContent = msg;
-  localStorage.setItem("dailySMS", msg);
-};
-
-if(localStorage.getItem("dailySMS")){
-  document.getElementById("smsMessage").textContent = localStorage.getItem("dailySMS");
-} else {
-  newSMS();
-}
-
-/* REFLECTION SAVE */
-["r1","r2","r3"].forEach(id=>{
-  const el = document.getElementById(id);
-  const saved = localStorage.getItem(id);
-  if(saved) el.value = saved;
-  el.addEventListener("input", ()=>localStorage.setItem(id, el.value));
-});
-
-/* STREAK */
-window.updateStreak = function(){
-  let s = localStorage.getItem("streak");
-  s = s ? parseInt(s) + 1 : 1;
-  localStorage.setItem("streak", s);
-  document.getElementById("streakCount").textContent = s;
-};
-
-if(localStorage.getItem("streak")){
-  document.getElementById("streakCount").textContent = localStorage.getItem("streak");
-}
-
-/* SOBRIETY */
-let sober = localStorage.getItem("soberCount");
-if(sober){
-  document.getElementById("soberCount").textContent = sober;
-}
-
-document.getElementById("soberCheck").addEventListener("change", function(){
-  if(this.checked){
-    sober = sober ? parseInt(sober)+1 : 1;
-    localStorage.setItem("soberCount", sober);
-    document.getElementById("soberCount").textContent = sober;
-  }
-});
-
-/* APPOINTMENTS */
-window.addAppt = function(){
-  const name = apptName.value;
-  const date = apptDate.value;
-  if(!name || !date) return;
-
-  const appts = JSON.parse(localStorage.getItem("appts") || "[]");
-  appts.push({name, date});
-  localStorage.setItem("appts", JSON.stringify(appts));
-  showAppts();
-};
-
-function showAppts(){
-  const list = document.getElementById("apptList");
-  list.innerHTML = "";
-  const appts = JSON.parse(localStorage.getItem("appts") || "[]");
-
-  appts.forEach(a=>{
-    list.innerHTML += `<div class="resource-item">
-      <strong>${a.name}</strong><br>
-      ${new Date(a.date).toLocaleString()}
-    </div>`;
-  });
-}
-
-showAppts();
-
-/* TEXAS CENTERS */
-const centers = [
-{city:"Austin", zip:"78701", name:"Integral Care", link:"https://integralcare.org"},
-{city:"Dallas", zip:"75201", name:"Metrocare Services", link:"https://www.metrocareservices.org"},
-{city:"Houston", zip:"77002", name:"The Harris Center", link:"https://www.theharriscenter.org"},
-{city:"San Antonio", zip:"78205", name:"Center for Health Care Services", link:"https://www.chcsbc.org"},
-{city:"Fort Worth", zip:"76102", name:"MHMR Tarrant County", link:"https://www.mhmrtarrant.org"},
-{city:"Tyler", zip:"75701", name:"Andrews Center", link:"https://www.andrewscenter.com"}
-];
-
-function loadCenters(list){
-  const div = document.getElementById("centersList");
-  div.innerHTML = "";
-  list.forEach(c=>{
-    div.innerHTML += `<div class="resource-item">
-      <strong>${c.name}</strong><br>
-      ${c.city}, TX ${c.zip}<br>
-      <a href="${c.link}" target="_blank">Visit Website</a>
-    </div>`;
-  });
-}
-
-loadCenters(centers);
-
-window.filterCenters = function(){
-  const input = document.getElementById("searchInput").value.toLowerCase();
-  const filtered = centers.filter(c =>
-    c.city.toLowerCase().includes(input) ||
-    c.zip.includes(input)
-  );
-  loadCenters(filtered);
-};
 
 </script>
 
