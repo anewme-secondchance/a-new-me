@@ -34,7 +34,7 @@ body {
   padding: 20px;
   max-width: 900px;
   margin: auto;
-  padding-bottom: 80px;
+  padding-bottom: 100px;
 }
 
 .card {
@@ -72,7 +72,7 @@ button {
 }
 
 .resource-item {
-  padding: 10px;
+  padding: 12px 0;
   border-bottom: 1px solid #eee;
 }
 
@@ -93,6 +93,17 @@ a {
 
 <div class="container">
 
+<!-- Crisis Section -->
+<div class="card">
+<h3>🚨 Crisis Support</h3>
+<p style="color:#ff914d;font-weight:bold;">
+If you are in immediate crisis, call or text 988.
+</p>
+<a href="tel:988" style="background:#ff914d;color:white;padding:8px 14px;border-radius:6px;text-decoration:none;">
+📞 Call 988 Now
+</a>
+</div>
+
 <!-- Reminder Notifications -->
 <div id="notificationArea"></div>
 
@@ -103,16 +114,16 @@ a {
 <button onclick="newQuote()">New Quote</button>
 </div>
 
-<!-- SMS Style Motivation -->
+<!-- SMS Motivation -->
 <div class="card">
 <h3>📱 Daily Motivation Message</h3>
 <p id="smsMessage"></p>
 <button onclick="newSMS()">New Message</button>
 </div>
 
-<!-- Reflections -->
+<!-- Reflection -->
 <div class="card">
-<h3>Daily Reflection</h3>
+<h3>📝 Daily Reflection</h3>
 <textarea id="r1" placeholder="What went well today?"></textarea>
 <textarea id="r2" placeholder="What step forward did I take?"></textarea>
 <textarea id="r3" placeholder="What can I improve tomorrow?"></textarea>
@@ -141,22 +152,21 @@ a {
 <div id="apptList"></div>
 </div>
 
-<!-- Search Mental Health Centers -->
+<!-- Mental Health Centers -->
 <div class="card">
 <h3>🏥 Texas Mental Health Centers</h3>
-<input type="text" id="searchInput" placeholder="Search by city or ZIP..." onkeyup="filterCenters()">
+<input type="text" id="searchInput" placeholder="Search by city, county or ZIP..." onkeyup="filterCenters()">
 <div id="centersList"></div>
 </div>
 
 </div>
 
 <script>
-
 function goBack() {
   window.location.href = "index.html";
 }
 
-/* DAILY QUOTE */
+/* DAILY QUOTES */
 const quotes = [
 "You are not your past. You are your next decision.",
 "Small steps every day build a new life.",
@@ -166,12 +176,12 @@ const quotes = [
 ];
 
 function newQuote() {
-  const q = quotes[Math.floor(Math.random() * quotes.length)];
-  document.getElementById("dailyQuote").textContent = q;
+  document.getElementById("dailyQuote").textContent =
+    quotes[Math.floor(Math.random() * quotes.length)];
 }
 newQuote();
 
-/* SMS MESSAGES */
+/* SMS */
 const smsMessages = [
 "You got through yesterday. You can handle today.",
 "One good decision changes everything.",
@@ -207,7 +217,6 @@ function updateStreak(){
   localStorage.setItem("streak", s);
   document.getElementById("streakCount").textContent = s;
 }
-
 if(localStorage.getItem("streak")){
   document.getElementById("streakCount").textContent = localStorage.getItem("streak");
 }
@@ -217,7 +226,6 @@ let sober = localStorage.getItem("soberCount");
 if(sober){
   document.getElementById("soberCount").textContent = sober;
 }
-
 document.getElementById("soberCheck").addEventListener("change", function(){
   if(this.checked){
     sober = sober ? parseInt(sober)+1 : 1;
@@ -245,7 +253,8 @@ function showAppts(){
   const appts = JSON.parse(localStorage.getItem("appts") || "[]");
 
   appts.forEach(a=>{
-    list.innerHTML += `<div class="resource-item">
+    list.innerHTML += `
+    <div class="resource-item">
       <strong>${a.name}</strong><br>
       ${new Date(a.date).toLocaleString()}
     </div>`;
@@ -253,7 +262,7 @@ function showAppts(){
 }
 showAppts();
 
-/* REMINDERS */
+/* REMINDER POPUPS */
 function checkReminders(){
   const now = new Date();
   const appts = JSON.parse(localStorage.getItem("appts") || "[]");
@@ -261,10 +270,10 @@ function checkReminders(){
   area.innerHTML = "";
 
   appts.forEach(a=>{
-    const apptDate = new Date(a.date);
-    const diff = (apptDate - now)/(1000*60*60);
+    const diff = (new Date(a.date) - now)/(1000*60*60);
     if(diff > 0 && diff <= 24){
-      area.innerHTML += `<div class="notification">
+      area.innerHTML += `
+      <div class="notification">
         Reminder: ${a.name} is within 24 hours!
       </div>`;
     }
@@ -275,37 +284,48 @@ setInterval(checkReminders, 60000);
 
 /* TEXAS CENTERS */
 const centers = [
-{city:"Austin", zip:"78701", name:"Integral Care", link:"https://integralcare.org"},
-{city:"Dallas", zip:"75201", name:"Metrocare Services", link:"https://www.metrocareservices.org"},
-{city:"Houston", zip:"77002", name:"The Harris Center", link:"https://www.theharriscenter.org"},
-{city:"San Antonio", zip:"78205", name:"Center for Health Care Services", link:"https://www.chcsbc.org"},
-{city:"Fort Worth", zip:"76102", name:"MHMR Tarrant County", link:"https://www.mhmrtarrant.org"},
-{city:"Tyler", zip:"75701", name:"Andrews Center", link:"https://www.andrewscenter.com"}
+{city:"Austin", county:"Travis County", zip:"78701", name:"Integral Care", phone:"5124724357", link:"https://integralcare.org"},
+{city:"Dallas", county:"Dallas County", zip:"75201", name:"Metrocare Services", phone:"2147431200", link:"https://www.metrocareservices.org"},
+{city:"Houston", county:"Harris County", zip:"77002", name:"The Harris Center", phone:"7139707000", link:"https://www.theharriscenter.org"},
+{city:"San Antonio", county:"Bexar County", zip:"78205", name:"Center for Health Care Services", phone:"2102611000", link:"https://www.chcsbc.org"},
+{city:"Fort Worth", county:"Tarrant County", zip:"76102", name:"MHMR Tarrant County", phone:"8173353022", link:"https://www.mhmrtarrant.org"},
+{city:"Tyler", county:"Smith County", zip:"75701", name:"Andrews Center", phone:"9035971351", link:"https://www.andrewscenter.com"},
+{city:"El Paso", county:"El Paso County", zip:"79901", name:"Emergence Health Network", phone:"9158873410", link:"https://emergencehealthnetwork.org"},
+{city:"Lubbock", county:"Lubbock County", zip:"79401", name:"StarCare", phone:"8067401500", link:"https://www.starcarelubbock.org"},
+{city:"Waco", county:"McLennan County", zip:"76701", name:"Heart of Texas MHMR", phone:"2547523451", link:"https://www.hotrmhmr.org"},
+{city:"Corpus Christi", county:"Nueces County", zip:"78401", name:"Gulf Bend Center", phone:"3618866900", link:"https://www.gulfbend.org"}
 ];
 
 function loadCenters(list){
   const div = document.getElementById("centersList");
   div.innerHTML = "";
+
   list.forEach(c=>{
-    div.innerHTML += `<div class="resource-item">
+    div.innerHTML += `
+    <div class="resource-item">
       <strong>${c.name}</strong><br>
       ${c.city}, TX ${c.zip}<br>
-      <a href="${c.link}" target="_blank">Visit Website</a>
+      ${c.county}<br><br>
+
+      <a href="${c.link}" target="_blank">Visit Website</a><br><br>
+
+      <a href="tel:${c.phone}" style="background:#1f3c88;color:white;padding:8px 14px;border-radius:6px;text-decoration:none;display:inline-block;">
+      📞 Call Now
+      </a>
     </div>`;
   });
 }
-
 loadCenters(centers);
 
 function filterCenters(){
   const input = document.getElementById("searchInput").value.toLowerCase();
   const filtered = centers.filter(c =>
     c.city.toLowerCase().includes(input) ||
-    c.zip.includes(input)
+    c.zip.includes(input) ||
+    c.county.toLowerCase().includes(input)
   );
   loadCenters(filtered);
 }
-
 </script>
 
 </body>
