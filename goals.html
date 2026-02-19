@@ -1,38 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Goals</title>
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Goals Tracker | A New Me</title>
+
 <style>
-body { font-family: Arial; background:#f4f6f8; padding:20px; }
-.card { background:white; padding:20px; margin-bottom:20px; border-radius:10px; }
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #eef2f7;
+}
+
+/* App Header */
+.app-header {
+  display: flex;
+  align-items: center;
+  background: #1f3c88;
+  color: white;
+  padding: 15px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.back-btn {
+  background: white;
+  color: #1f3c88;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 15px;
+}
+
+.back-btn:hover {
+  background: #ff914d;
+  color: white;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+/* Content */
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+ul {
+  padding-left: 20px;
+}
+
+.goal-input {
+  width: 100%;
+  padding: 8px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
 </style>
 </head>
+
 <body>
 
-<h1>Weekly Goals</h1>
+<div class="app-header">
+  <button onclick="goBack()" class="back-btn">← Back</button>
+  <div class="page-title">Goals Tracker</div>
+</div>
+
+<div class="container">
 
 <div class="card">
-<h2>Housing Goals</h2>
-<p>Call 2 landlords. Submit 1 application.</p>
+<h3>Housing Goals</h3>
+<ul>
+<li>Secure stable housing</li>
+<li>Save first month’s rent</li>
+<li>Complete housing applications</li>
+</ul>
+<input class="goal-input" type="text" placeholder="Write your housing goal here...">
 </div>
 
 <div class="card">
-<h2>Job Goals</h2>
-<p>Apply to 5 jobs. Follow up on 1.</p>
+<h3>Job Goals</h3>
+<ul>
+<li>Apply to 5 jobs this week</li>
+<li>Attend a job fair</li>
+<li>Update resume</li>
+</ul>
+<input class="goal-input" type="text" placeholder="Write your job goal here...">
 </div>
 
 <div class="card">
-<h2>Financial Goals</h2>
-<p>Save $20 this week.</p>
+<h3>Mental Health Goals</h3>
+<ul>
+<li>Attend counseling session</li>
+<li>Practice daily reflection</li>
+<li>Stay consistent with medication</li>
+</ul>
+<input class="goal-input" type="text" placeholder="Write your mental health goal here...">
 </div>
 
 <div class="card">
-<h2>Mental Health Goals</h2>
-<p>Journal 3 times.</p>
+<h3>Financial Goals</h3>
+<ul>
+<li>Create weekly budget</li>
+<li>Save $10 this week</li>
+<li>Avoid payday loans</li>
+</ul>
+<input class="goal-input" type="text" placeholder="Write your financial goal here...">
 </div>
 
-<a href="index.html">⬅ Back Home</a>
+</div>
+
+<script>
+function goBack() {
+  if (document.referrer !== "") {
+    window.history.back();
+  } else {
+    window.location.href = "index.html";
+  }
+}
+</script>
 
 </body>
 </html>
