@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Goals | A New Me</title>
+<title>Employment | A New Me</title>
 
 <style>
 body {
@@ -56,19 +56,19 @@ textarea {
   margin-top: 8px;
 }
 
-.progress-bar {
-  height: 20px;
-  background: #ddd;
-  border-radius: 10px;
-  overflow: hidden;
+.notice {
+  background: #ffdddd;
+  padding: 10px;
+  border-radius: 8px;
+  color: #b30000;
+  font-weight: bold;
   margin-top: 10px;
 }
 
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: #1f3c88;
-  transition: width 0.3s;
+a {
+  color: #1f3c88;
+  font-weight: bold;
+  text-decoration: none;
 }
 </style>
 </head>
@@ -76,42 +76,82 @@ textarea {
 <body>
 
 <div class="app-header">
-  <div>Goals Tracker</div>
+  <div>Employment</div>
   <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
 
 <div class="card">
-<h3>🏠 Housing Goal</h3>
-<textarea id="housingGoal" placeholder="Example: Secure stable housing within 60 days"></textarea>
+<h3>🔴 Important</h3>
+<div class="notice">
+Not all employers hire individuals with felonies.  
+Hiring depends on the charge, how long ago it occurred, and company policy.
+</div>
 </div>
 
 <div class="card">
-<h3>💼 Employment Goal</h3>
-<textarea id="jobGoal" placeholder="Example: Apply to 5 jobs per week"></textarea>
+<h3>👔 What to Wear</h3>
+<ul>
+<li>Clean button-up or polo</li>
+<li>Dark jeans or slacks (no rips)</li>
+<li>Closed-toe shoes</li>
+<li>Neat grooming</li>
+</ul>
 </div>
 
 <div class="card">
-<h3>💰 Financial Goal</h3>
-<textarea id="moneyGoal" placeholder="Example: Save $500 in 3 months"></textarea>
+<h3>🎤 Interview Preparation</h3>
+<p><strong>Tell Me About Yourself:</strong></p>
+<p>“I’m dependable, hardworking, and focused on long-term stability.”</p>
+
+<p><strong>If Asked About Your Record:</strong></p>
+<p>“I made mistakes in the past, but I’ve taken responsibility and completed programs. I’m committed to growth.”</p>
 </div>
 
 <div class="card">
-<h3>🧠 Personal Growth Goal</h3>
-<textarea id="lifeGoal" placeholder="Example: Attend counseling weekly"></textarea>
+<h3>📄 Resume Building</h3>
+<ul>
+<li>List prison jobs professionally</li>
+<li>Include certifications</li>
+<li>Highlight teamwork & reliability</li>
+</ul>
 </div>
 
 <div class="card">
-<h3>📊 Progress</h3>
-<input type="range" id="progressSlider" min="0" max="100">
-<div class="progress-bar">
-  <div class="progress-fill" id="progressFill"></div>
-</div>
-<p><strong id="progressPercent">0%</strong> Complete</p>
+<h3>🏗️ Skilled Trades & Certifications</h3>
+<ul>
+<li><a href="https://www.apprenticeship.gov" target="_blank">National Apprenticeships</a></li>
+<li><a href="https://www.tdlr.texas.gov" target="_blank">Texas Licensing & Regulation</a></li>
+<li><a href="https://www.careeronestop.org" target="_blank">CareerOneStop Training Finder</a></li>
+</ul>
 </div>
 
-<button onclick="saveGoals()">Save Goals</button>
+<div class="card">
+<h3>📌 Felon-Friendly Job Search</h3>
+<ul>
+<li><a href="https://www.honestjobs.com" target="_blank">Honest Jobs</a></li>
+<li><a href="https://www.indeed.com" target="_blank">Indeed</a></li>
+<li><a href="https://www.glassdoor.com" target="_blank">Glassdoor</a></li>
+<li><a href="https://www.craigslist.org" target="_blank">Craigslist</a></li>
+</ul>
+</div>
+
+<div class="card">
+<h3>📝 Practice Answers (Saved to Your Account)</h3>
+
+<label>30-Second Introduction</label>
+<textarea id="intro"></textarea>
+
+<label>Why Should We Hire You?</label>
+<textarea id="hire"></textarea>
+
+<label>How Have You Grown?</label>
+<textarea id="growth"></textarea>
+
+<button onclick="savePractice()">Save Practice</button>
+
+</div>
 
 </div>
 
@@ -151,7 +191,7 @@ onAuthStateChanged(auth, async user => {
     window.location.href = "auth.html";
   } else {
     currentUser = user;
-    loadGoals();
+    loadPractice();
   }
 });
 
@@ -161,46 +201,30 @@ window.logout = function() {
   });
 };
 
-window.saveGoals = async function() {
-
+window.savePractice = async function() {
   const data = {
-    housingGoal: document.getElementById("housingGoal").value,
-    jobGoal: document.getElementById("jobGoal").value,
-    moneyGoal: document.getElementById("moneyGoal").value,
-    lifeGoal: document.getElementById("lifeGoal").value,
-    progress: document.getElementById("progressSlider").value
+    intro: document.getElementById("intro").value,
+    hire: document.getElementById("hire").value,
+    growth: document.getElementById("growth").value
   };
 
   await setDoc(doc(db, "users", currentUser.uid), {
-    goals: data
+    employmentPractice: data
   }, { merge: true });
 
-  alert("Goals Saved ✓");
+  alert("Saved ✓");
 };
 
-async function loadGoals() {
+async function loadPractice() {
   const docSnap = await getDoc(doc(db, "users", currentUser.uid));
   if (docSnap.exists()) {
     const data = docSnap.data();
-    if (data.goals) {
-      document.getElementById("housingGoal").value = data.goals.housingGoal || "";
-      document.getElementById("jobGoal").value = data.goals.jobGoal || "";
-      document.getElementById("moneyGoal").value = data.goals.moneyGoal || "";
-      document.getElementById("lifeGoal").value = data.goals.lifeGoal || "";
-      document.getElementById("progressSlider").value = data.goals.progress || 0;
-      updateProgress(data.goals.progress || 0);
+    if (data.employmentPractice) {
+      document.getElementById("intro").value = data.employmentPractice.intro || "";
+      document.getElementById("hire").value = data.employmentPractice.hire || "";
+      document.getElementById("growth").value = data.employmentPractice.growth || "";
     }
   }
-}
-
-const slider = document.getElementById("progressSlider");
-slider.addEventListener("input", function() {
-  updateProgress(this.value);
-});
-
-function updateProgress(value) {
-  document.getElementById("progressFill").style.width = value + "%";
-  document.getElementById("progressPercent").textContent = value + "%";
 }
 
 </script>
