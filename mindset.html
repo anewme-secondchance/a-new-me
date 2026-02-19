@@ -62,6 +62,14 @@ button {
   cursor: pointer;
   margin-top: 10px;
 }
+
+.emergency {
+  background: #fff3f3;
+  border-left: 5px solid #e63946;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
 </style>
 </head>
 
@@ -101,6 +109,47 @@ button {
 <p>Days sober: <strong id="soberCount">0</strong></p>
 </div>
 
+<!-- SUPPORT RESOURCES SECTION -->
+<div class="card">
+<h3>🤝 Support & Counseling Resources</h3>
+
+<div class="emergency">
+<strong>🚨 In Immediate Crisis?</strong><br>
+Call or Text <strong>988</strong><br>
+Available 24/7, Free & Confidential
+</div>
+
+<p><strong>SAMHSA National Helpline</strong><br>
+Call: 1-800-662-4357<br>
+Website: https://www.samhsa.gov/find-help/national-helpline<br>
+Free treatment referral & support (24/7)</p>
+
+<hr>
+
+<p><strong>Alcoholics Anonymous (AA)</strong><br>
+Find local meetings: https://www.aa.org/find-aa<br>
+Peer-led sobriety support</p>
+
+<hr>
+
+<p><strong>Narcotics Anonymous (NA)</strong><br>
+Find meetings: https://www.na.org/meetingsearch/<br>
+Recovery support groups nationwide</p>
+
+<hr>
+
+<p><strong>BetterHelp (Online Counseling)</strong><br>
+Website: https://www.betterhelp.com<br>
+Licensed online therapy (Paid service)</p>
+
+<hr>
+
+<p><strong>Psychology Today Therapist Finder</strong><br>
+Website: https://www.psychologytoday.com/us/therapists<br>
+Search by insurance, specialty, or location</p>
+
+</div>
+
 </div>
 
 <script type="module">
@@ -110,7 +159,7 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA4O2nEtjdy9fSh66gnHH6jsbKKSWdJt4c",
+  apiKey: "YOUR_API_KEY",
   authDomain: "a-new-me-1a17a.firebaseapp.com",
   projectId: "a-new-me-1a17a",
   storageBucket: "a-new-me-1a17a.firebasestorage.app",
@@ -140,6 +189,14 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById("r3").value = data.r3 || "";
     document.getElementById("streakCount").innerText = data.streak || 0;
     document.getElementById("soberCount").innerText = data.sober || 0;
+  } else {
+    await setDoc(userRef, {
+      r1: "",
+      r2: "",
+      r3: "",
+      streak: 0,
+      sober: 0
+    });
   }
 });
 
