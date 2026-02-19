@@ -12,7 +12,6 @@ body {
   background: #eef2f7;
 }
 
-/* Header */
 .app-header {
   display: flex;
   align-items: center;
@@ -45,12 +44,30 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-input, select {
+input, select, textarea {
   width: 100%;
   padding: 10px;
   margin-top: 8px;
   border-radius: 8px;
   border: 1px solid #ccc;
+}
+
+button {
+  background: #1f3c88;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.resume-preview {
+  background: #f9f9f9;
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 8px;
+  white-space: pre-line;
 }
 </style>
 </head>
@@ -67,31 +84,10 @@ input, select {
 <!-- EXPUNGEMENT INFO -->
 <div class="card">
 <h3>⚖ Expungement & Record Sealing</h3>
-
 <p><strong>Dismissed cases</strong> may qualify for expungement.</p>
 <p><strong>Deferred adjudication</strong> may qualify for nondisclosure.</p>
 <p>Waiting periods apply depending on charge level.</p>
 <p>No new convictions are required in most cases.</p>
-
-<h4>Why You MAY Qualify:</h4>
-<ul>
-<li>Case dismissed</li>
-<li>Found not guilty</li>
-<li>No-billed by grand jury</li>
-<li>Completed deferred adjudication</li>
-<li>No new charges during waiting period</li>
-</ul>
-
-<h4>Why You May NOT Qualify:</h4>
-<ul>
-<li>Family violence charges</li>
-<li>Sex offenses</li>
-<li>Human trafficking</li>
-<li>Aggravated kidnapping</li>
-<li>Protective order violations</li>
-<li>New convictions after case</li>
-</ul>
-
 </div>
 
 <!-- MINI CHECKER -->
@@ -115,11 +111,10 @@ input, select {
 </select>
 
 <button onclick="checkEligibility()">Check</button>
-
 <p id="result"></p>
 </div>
 
-<!-- INTERVIEW PREPARATION -->
+<!-- INTERVIEW PREP -->
 <div class="card">
 <h3>🎤 Interview Preparation</h3>
 
@@ -133,7 +128,39 @@ input, select {
 
 <h4>Example: If Asked About Your Record</h4>
 <p>“I made mistakes in the past, but I’ve taken responsibility and completed programs. I’m focused on growth and contributing positively.”</p>
+</div>
 
+<!-- RESUME BUILDER -->
+<div class="card">
+<h3>📄 Resume Builder</h3>
+
+<label>Full Name</label>
+<input type="text" id="resName">
+
+<label>Phone</label>
+<input type="text" id="resPhone">
+
+<label>Email</label>
+<input type="text" id="resEmail">
+
+<label>City & State</label>
+<input type="text" id="resLocation">
+
+<label>Professional Summary</label>
+<textarea id="resSummary"></textarea>
+
+<label>Skills (separate with commas)</label>
+<textarea id="resSkills"></textarea>
+
+<label>Work Experience</label>
+<textarea id="resExperience"></textarea>
+
+<label>Education / Certifications</label>
+<textarea id="resEducation"></textarea>
+
+<button onclick="generateResume()">Generate Resume</button>
+
+<div id="resumeOutput" class="resume-preview"></div>
 </div>
 
 </div>
@@ -158,6 +185,39 @@ function checkEligibility() {
   } else {
     result.innerText = "You may not qualify. Speak to a legal professional for review.";
   }
+}
+
+function generateResume() {
+  const name = document.getElementById("resName").value;
+  const phone = document.getElementById("resPhone").value;
+  const email = document.getElementById("resEmail").value;
+  const location = document.getElementById("resLocation").value;
+  const summary = document.getElementById("resSummary").value;
+  const skills = document.getElementById("resSkills").value.split(",");
+  const experience = document.getElementById("resExperience").value;
+  const education = document.getElementById("resEducation").value;
+
+  const formattedSkills = skills.map(skill => "• " + skill.trim()).join("\n");
+
+  const resumeText = `
+${name}
+${phone} | ${email}
+${location}
+
+PROFESSIONAL SUMMARY
+${summary}
+
+SKILLS
+${formattedSkills}
+
+WORK EXPERIENCE
+${experience}
+
+EDUCATION & CERTIFICATIONS
+${education}
+`;
+
+  document.getElementById("resumeOutput").innerText = resumeText;
 }
 </script>
 
