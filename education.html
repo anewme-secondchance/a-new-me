@@ -12,19 +12,12 @@ body {
   background: #eef2f7;
 }
 
-/* HEADER */
 .app-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   background: #1f3c88;
   color: white;
   padding: 15px;
-}
-
-.left-header {
-  display: flex;
-  align-items: center;
 }
 
 .back-btn {
@@ -36,15 +29,6 @@ body {
   cursor: pointer;
   margin-right: 15px;
   font-weight: bold;
-}
-
-.logout-btn {
-  background: #c0392b;
-  color: white;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 20px;
-  cursor: pointer;
 }
 
 .container {
@@ -95,21 +79,15 @@ a {
 
 <body>
 
-<!-- HEADER -->
 <div class="app-header">
-  <div class="left-header">
-    <button onclick="goBack()" class="back-btn">← Back</button>
-    <div>Education & Growth</div>
-  </div>
-  <button onclick="logout()" class="logout-btn">Log Out</button>
+  <button onclick="goBack()" class="back-btn">← Back</button>
+  <div>Education & Growth</div>
 </div>
 
 <div class="container">
 
-<!-- CURRENT EDUCATION -->
 <div class="card">
 <h3>🎓 Current Education Level</h3>
-
 <select id="educationLevel">
 <option value="">Select One</option>
 <option>Less than High School</option>
@@ -121,10 +99,8 @@ a {
 </select>
 </div>
 
-<!-- FUTURE GOALS -->
 <div class="card">
 <h3>📚 Education Goal</h3>
-
 <label>What certification, degree, or skill do I want?</label>
 <textarea id="educationGoal"></textarea>
 
@@ -135,10 +111,8 @@ a {
 <input type="date" id="educationDate">
 </div>
 
-<!-- ACTION STEPS -->
 <div class="card">
 <h3>🛠 Action Steps</h3>
-
 <label>Step 1:</label>
 <input type="text" id="step1">
 
@@ -149,20 +123,16 @@ a {
 <input type="text" id="step3">
 </div>
 
-<!-- SCHOLARSHIPS -->
 <div class="card">
 <h3>💰 Scholarship Resources</h3>
-
 <p><a href="https://studentaid.gov/" target="_blank">FAFSA – Federal Student Aid</a></p>
 <p><a href="https://www.fastweb.com/" target="_blank">Fastweb Scholarship Search</a></p>
 <p><a href="https://www.scholarships.com/" target="_blank">Scholarships.com</a></p>
 <p><a href="https://www.goingmerry.com/" target="_blank">Going Merry Scholarship Platform</a></p>
 </div>
 
-<!-- TRADE SCHOOLS -->
 <div class="card">
 <h3>🔧 Trade School Options</h3>
-
 <ul>
 <li>Welding</li>
 <li>HVAC Technician</li>
@@ -173,23 +143,21 @@ a {
 <li>Medical Assistant</li>
 <li>IT Support Specialist</li>
 </ul>
-
-<p>Search local trade programs at:  
-<a href="https://www.careeronestop.org/" target="_blank">CareerOneStop.org</a></p>
+<p>
+Search local trade programs at:
+<a href="https://www.careeronestop.org/" target="_blank">CareerOneStop.org</a>
+</p>
 </div>
 
-<!-- ONLINE CERTIFICATIONS -->
 <div class="card">
 <h3>💻 Online Certification Platforms</h3>
-
-<p><a href="https://www.coursera.org/" target="_blank">Coursera</a> – IT, Business, Data, Healthcare</p>
-<p><a href="https://www.udemy.com/" target="_blank">Udemy</a> – Skills & Technical Training</p>
-<p><a href="https://www.edx.org/" target="_blank">edX</a> – College-Level Courses</p>
+<p><a href="https://www.coursera.org/" target="_blank">Coursera</a></p>
+<p><a href="https://www.udemy.com/" target="_blank">Udemy</a></p>
+<p><a href="https://www.edx.org/" target="_blank">edX</a></p>
 <p><a href="https://grow.google/certificates/" target="_blank">Google Career Certificates</a></p>
 <p><a href="https://www.microsoft.com/en-us/learning" target="_blank">Microsoft Certifications</a></p>
 </div>
 
-<!-- SAVE -->
 <div class="card">
 <button onclick="saveEducation()">Save Education Plan</button>
 <div id="savedMessage" class="success"></div>
@@ -200,11 +168,6 @@ a {
 <script>
 
 function goBack() {
-  window.location.href = "index.html";
-}
-
-function logout() {
-  localStorage.clear();
   window.location.href = "index.html";
 }
 
