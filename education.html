@@ -47,8 +47,9 @@ button {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-textarea, input {
+textarea {
   width: 100%;
+  min-height: 70px;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -75,71 +76,62 @@ a {
 <div class="card">
 <h3>📘 GED Information</h3>
 <p>You can earn your GED online or at local testing centers.</p>
-<a href="https://ged.com" target="_blank">Official GED Website</a>
-<br><br>
+<a href="https://ged.com" target="_blank">Official GED Website</a><br><br>
 <a href="https://tea.texas.gov/academics/college-career-and-military-prep/adult-education-and-literacy" target="_blank">
-Texas Adult Education & Literacy
+Texas Adult Education Programs
 </a>
 </div>
 
 <div class="card">
-<h3>📝 GED Plan</h3>
-<label>Why do I want my GED?</label>
-<textarea id="gedWhy"></textarea>
-
-<label>My Study Schedule</label>
-<textarea id="gedSchedule"></textarea>
-
-<label>My Test Goal Date</label>
-<input type="date" id="gedDate">
-</div>
-
-<div class="card">
-<h3>🎓 College Planning</h3>
-
-<p><strong>Step 1:</strong> Choose a School</p>
+<h3>🎓 College Application Steps</h3>
 <ul>
-<li>Community College</li>
-<li>Trade School</li>
-<li>University</li>
+<li>Choose Community College, Trade School, or University</li>
+<li>Complete FAFSA</li>
+<li>Submit online application</li>
 </ul>
 
-<p><strong>Step 2:</strong> Complete FAFSA</p>
-<a href="https://studentaid.gov" target="_blank">studentaid.gov</a>
-
-<p><strong>Texas Common App:</strong></p>
-<a href="https://www.applytexas.org" target="_blank">applytexas.org</a>
-
-<label>School I Want To Apply To</label>
-<input type="text" id="collegeSchool">
-
-<label>Program / Major</label>
-<input type="text" id="collegeMajor">
-
-<label>Career Goal</label>
-<textarea id="collegeGoal"></textarea>
-
+<a href="https://studentaid.gov" target="_blank">FAFSA</a><br><br>
+<a href="https://www.applytexas.org" target="_blank">Texas Common Application</a>
 </div>
 
 <div class="card">
-<h3>🔧 Trade & Certification Programs</h3>
-
+<h3>🏗️ Trade Schools & Certifications</h3>
 <ul>
-<li><strong>HVAC Certification</strong></li>
-<li><strong>Welding Certification</strong></li>
-<li><strong>CDL (Truck Driving)</strong></li>
-<li><strong>Electrician Apprenticeship</strong></li>
-<li><strong>Construction / Skilled Trades</strong></li>
-<li><strong>IT Certifications (CompTIA, Google IT)</strong></li>
+<li><a href="https://www.apprenticeship.gov" target="_blank">National Apprenticeships</a></li>
+<li><a href="https://www.tdlr.texas.gov" target="_blank">Texas Licensing</a></li>
+<li><a href="https://www.careeronestop.org" target="_blank">CareerOneStop</a></li>
+<li><a href="https://www.osha.gov/training" target="_blank">OSHA Training</a></li>
+<li><a href="https://www.redcross.org/take-a-class" target="_blank">CPR Certification</a></li>
 </ul>
-
-<a href="https://www.apprenticeship.gov" target="_blank">
-Find Apprenticeships
-</a>
 </div>
 
 <div class="card">
-<button onclick="saveEducation()">Save Education Plan</button>
+<h3>📝 My Education Plan (Saved)</h3>
+
+<label>Why do I want my GED or degree?</label>
+<textarea id="why"></textarea>
+
+<label>Program or major I want:</label>
+<textarea id="program"></textarea>
+
+<label>Career goal:</label>
+<textarea id="career"></textarea>
+
+<label>Target start date:</label>
+<textarea id="date"></textarea>
+
+<button onclick="saveEducation()">Save Plan</button>
+
+</div>
+
+<div class="card">
+<h3>💡 Encouragement</h3>
+<p>
+Education is not about age.  
+It is about opportunity.  
+Your past does not block your education.  
+Financial aid is available.
+</p>
 </div>
 
 </div>
@@ -191,34 +183,29 @@ window.logout = function() {
 };
 
 window.saveEducation = async function() {
-
   const data = {
-    gedWhy: document.getElementById("gedWhy").value,
-    gedSchedule: document.getElementById("gedSchedule").value,
-    gedDate: document.getElementById("gedDate").value,
-    collegeSchool: document.getElementById("collegeSchool").value,
-    collegeMajor: document.getElementById("collegeMajor").value,
-    collegeGoal: document.getElementById("collegeGoal").value
+    why: document.getElementById("why").value,
+    program: document.getElementById("program").value,
+    career: document.getElementById("career").value,
+    date: document.getElementById("date").value
   };
 
   await setDoc(doc(db, "users", currentUser.uid), {
-    education: data
+    educationPlan: data
   }, { merge: true });
 
-  alert("Education Plan Saved ✓");
+  alert("Saved ✓");
 };
 
 async function loadEducation() {
   const docSnap = await getDoc(doc(db, "users", currentUser.uid));
   if (docSnap.exists()) {
     const data = docSnap.data();
-    if (data.education) {
-      document.getElementById("gedWhy").value = data.education.gedWhy || "";
-      document.getElementById("gedSchedule").value = data.education.gedSchedule || "";
-      document.getElementById("gedDate").value = data.education.gedDate || "";
-      document.getElementById("collegeSchool").value = data.education.collegeSchool || "";
-      document.getElementById("collegeMajor").value = data.education.collegeMajor || "";
-      document.getElementById("collegeGoal").value = data.education.collegeGoal || "";
+    if (data.educationPlan) {
+      document.getElementById("why").value = data.educationPlan.why || "";
+      document.getElementById("program").value = data.educationPlan.program || "";
+      document.getElementById("career").value = data.educationPlan.career || "";
+      document.getElementById("date").value = data.educationPlan.date || "";
     }
   }
 }
