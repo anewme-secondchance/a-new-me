@@ -14,29 +14,27 @@ body {
 
 .app-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   background: #1f3c88;
   color: white;
   padding: 15px;
 }
 
-button {
+.back-btn {
   background: white;
   color: #1f3c88;
   border: none;
   padding: 6px 14px;
   border-radius: 20px;
   cursor: pointer;
+  margin-right: 15px;
   font-weight: bold;
-  margin-top: 10px;
 }
 
 .container {
   padding: 20px;
   max-width: 900px;
   margin: auto;
-  padding-bottom: 80px;
 }
 
 .card {
@@ -55,6 +53,16 @@ textarea, input, select {
   margin-top: 8px;
 }
 
+button.save-btn {
+  background: #1f3c88;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
 a {
   color: #1f3c88;
   font-weight: bold;
@@ -66,8 +74,8 @@ a {
 <body>
 
 <div class="app-header">
+  <button onclick="goBack()" class="back-btn">← Back</button>
   <div>Legal Help</div>
-  <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
@@ -97,36 +105,22 @@ a {
 <li>Aggravated violent felony</li>
 <li>Repeated convictions</li>
 </ul>
-
-<p><em>Eligibility depends on charge type and case outcome.</em></p>
 </div>
 
 <div class="card">
 <h3>📋 Free Texas Legal Resources</h3>
 
 <p><strong>Texas Legal Services Center</strong><br>
-<a href="https://www.tlsc.org" target="_blank">www.tlsc.org</a>
-</p>
+<a href="https://www.tlsc.org" target="_blank">www.tlsc.org</a></p>
 
 <p><strong>Lone Star Legal Aid</strong><br>
-<a href="https://www.lonestarlegal.org" target="_blank">www.lonestarlegal.org</a>
-</p>
+<a href="https://www.lonestarlegal.org" target="_blank">www.lonestarlegal.org</a></p>
 
 <p><strong>Texas RioGrande Legal Aid</strong><br>
-<a href="https://www.trla.org" target="_blank">www.trla.org</a>
-</p>
+<a href="https://www.trla.org" target="_blank">www.trla.org</a></p>
 
 <p><strong>Texas Judicial Branch Self-Help</strong><br>
-<a href="https://www.txcourts.gov/forms" target="_blank">
-www.txcourts.gov/forms
-</a>
-</p>
-
-<p><strong>Texas Workforce Commission Reentry</strong><br>
-<a href="https://www.twc.texas.gov" target="_blank">
-www.twc.texas.gov
-</a>
-</p>
+<a href="https://www.txcourts.gov/forms" target="_blank">www.txcourts.gov/forms</a></p>
 </div>
 
 <div class="card">
@@ -151,60 +145,20 @@ www.twc.texas.gov
 <label>Notes / Questions for Attorney</label>
 <textarea id="legalNotes"></textarea>
 
-<button onclick="saveLegal()">Save Legal Info</button>
+<button class="save-btn" onclick="saveLegal()">Save Legal Info</button>
 
+<p id="savedMessage" style="color:green;"></p>
 </div>
 
 </div>
 
-<script type="module">
+<script>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { 
-  getAuth,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+function goBack() {
+  window.location.href = "index.html";
+}
 
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA4O2nEtjdy9fSh66gnHH6jsbKKSWdJt4c",
-  authDomain: "a-new-me-1a17a.firebaseapp.com",
-  projectId: "a-new-me-1a17a",
-  storageBucket: "a-new-me-1a17a.firebasestorage.app",
-  messagingSenderId: "362235516132",
-  appId: "1:362235516132:web:1465c3ec03ce1d3f4608f1"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-let currentUser;
-
-onAuthStateChanged(auth, async user => {
-  if (!user) {
-    window.location.href = "auth.html";
-  } else {
-    currentUser = user;
-    loadLegal();
-  }
-});
-
-window.logout = function() {
-  signOut(auth).then(() => {
-    window.location.href = "auth.html";
-  });
-};
-
-window.saveLegal = async function() {
-
+function saveLegal() {
   const data = {
     county: document.getElementById("county").value,
     charge: document.getElementById("charge").value,
@@ -212,25 +166,21 @@ window.saveLegal = async function() {
     notes: document.getElementById("legalNotes").value
   };
 
-  await setDoc(doc(db, "users", currentUser.uid), {
-    legal: data
-  }, { merge: true });
+  localStorage.setItem("legalPlan", JSON.stringify(data));
+  document.getElementById("savedMessage").innerText = "Legal info saved ✓";
+}
 
-  alert("Legal Info Saved ✓");
-};
-
-async function loadLegal() {
-  const docSnap = await getDoc(doc(db, "users", currentUser.uid));
-  if (docSnap.exists()) {
-    const data = docSnap.data();
-    if (data.legal) {
-      document.getElementById("county").value = data.legal.county || "";
-      document.getElementById("charge").value = data.legal.charge || "";
-      document.getElementById("outcome").value = data.legal.outcome || "";
-      document.getElementById("legalNotes").value = data.legal.notes || "";
-    }
+function loadLegal() {
+  const saved = JSON.parse(localStorage.getItem("legalPlan"));
+  if (saved) {
+    document.getElementById("county").value = saved.county || "";
+    document.getElementById("charge").value = saved.charge || "";
+    document.getElementById("outcome").value = saved.outcome || "";
+    document.getElementById("legalNotes").value = saved.notes || "";
   }
 }
+
+loadLegal();
 
 </script>
 
