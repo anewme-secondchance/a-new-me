@@ -12,36 +12,31 @@ body {
   background: #eef2f7;
 }
 
-/* Header */
 .app-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   background: #1f3c88;
   color: white;
   padding: 15px;
 }
 
-.back-btn {
+button {
   background: white;
   color: #1f3c88;
   border: none;
   padding: 6px 14px;
   border-radius: 20px;
   cursor: pointer;
-  margin-right: 15px;
   font-weight: bold;
+  margin-top: 10px;
 }
 
-.page-title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-/* Layout */
 .container {
   padding: 20px;
   max-width: 900px;
   margin: auto;
+  padding-bottom: 80px;
 }
 
 .card {
@@ -52,22 +47,18 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-h3 {
-  margin-top: 0;
-}
-
-ul {
-  padding-left: 20px;
+textarea, input, select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 8px;
 }
 
 a {
   color: #1f3c88;
-  text-decoration: none;
   font-weight: bold;
-}
-
-a:hover {
-  color: #ff914d;
+  text-decoration: none;
 }
 </style>
 </head>
@@ -75,123 +66,172 @@ a:hover {
 <body>
 
 <div class="app-header">
-  <button onclick="goBack()" class="back-btn">← Back</button>
-  <div class="page-title">Legal Help</div>
+  <div>Legal Help</div>
+  <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
 
-<!-- ELIGIBLE -->
 <div class="card">
-<h3>⚖️ Why You MAY Be Eligible for Expungement</h3>
+<h3>⚖ Expungement & Record Sealing</h3>
 
+<p><strong>You MAY qualify for Expungement if:</strong></p>
 <ul>
-<li>✔ Your case was dismissed</li>
-<li>✔ You were found not guilty</li>
-<li>✔ Grand jury no-billed the case</li>
-<li>✔ You were arrested but never formally charged</li>
-<li>✔ You completed a qualifying diversion program</li>
-<li>✔ You completed deferred adjudication (Class C misdemeanor)</li>
-<li>✔ You have no new convictions</li>
+<li>Case was dismissed</li>
+<li>Found Not Guilty</li>
+<li>No-billed by grand jury</li>
+<li>Arrested but never charged (after waiting period)</li>
 </ul>
 
-<p><strong>Why:</strong> Texas law allows certain cases without convictions to be permanently removed from public record. Once expunged, the arrest is legally erased in most situations.</p>
-</div>
-
-<!-- NOT ELIGIBLE -->
-<div class="card">
-<h3>🚫 Why You May NOT Be Eligible</h3>
-
+<p><strong>You MAY qualify for Nondisclosure if:</strong></p>
 <ul>
-<li>⛔ You were convicted (most convictions cannot be expunged)</li>
-<li>⛔ The case is still pending</li>
-<li>⛔ You have new convictions after the case</li>
-<li>⛔ Waiting period has not passed</li>
-<li>⛔ Offense is legally ineligible (some violent or sex offenses)</li>
+<li>Completed deferred adjudication</li>
+<li>Completed probation for certain offenses</li>
+<li>No new convictions during waiting period</li>
 </ul>
 
-<p><strong>Why Not:</strong> Texas only allows expunction for specific outcomes. If convicted, you may instead qualify for <strong>record sealing (nondisclosure)</strong>, which hides but does not erase the record.</p>
-</div>
-
-<!-- EXPUNCTION VS NONDISCLOSURE -->
-<div class="card">
-<h3>📌 Expunction vs Record Sealing</h3>
-
-<p><strong>Expunction:</strong> Deletes the arrest or case completely from public record.</p>
-<p><strong>Nondisclosure:</strong> Seals the record from most employers and the public, but some government agencies can still see it.</p>
-
-<p>Deferred adjudication often qualifies for nondisclosure after a waiting period.</p>
-</div>
-
-<!-- FREE LEGAL RESOURCES -->
-<div class="card">
-<h3>🆓 Free Legal Resources (Texas)</h3>
-
-<p><strong>Statewide:</strong></p>
+<p><strong>⚠ You likely CANNOT qualify if:</strong></p>
 <ul>
-<li>
-TexasLawHelp – Expunction & Nondisclosure Forms<br>
-Austin, TX<br>
-<a href="https://www.texaslawhelp.org" target="_blank">
-https://www.texaslawhelp.org
-</a>
-</li>
-
-<li>
-Texas Legal Services Center (TLSC)<br>
-Austin, TX<br>
-<a href="https://www.tlsc.org" target="_blank">
-https://www.tlsc.org
-</a>
-</li>
-
-<li>
-Texas RioGrande Legal Aid (TRLA)<br>
-South & West Texas<br>
-<a href="https://www.trla.org" target="_blank">
-https://www.trla.org
-</a>
-</li>
-
-<li>
-Legal Aid of NorthWest Texas<br>
-Fort Worth, Dallas, North TX<br>
-<a href="https://www.legalaidtx.org" target="_blank">
-https://www.legalaidtx.org
-</a>
-</li>
-
-<li>
-Lone Star Legal Aid<br>
-Houston & East Texas<br>
-<a href="https://www.lonestarlegal.org" target="_blank">
-https://www.lonestarlegal.org
-</a>
-</li>
+<li>Family violence conviction</li>
+<li>Sex offense conviction</li>
+<li>Aggravated violent felony</li>
+<li>Repeated convictions</li>
 </ul>
 
-<p><strong>Dallas Area:</strong></p>
-<ul>
-<li>
-Dallas Volunteer Attorney Program (DVAP)<br>
-Dallas, TX<br>
-<a href="https://www.dallasvolunteerattorneyprogram.org" target="_blank">
-https://www.dallasvolunteerattorneyprogram.org
+<p><em>Eligibility depends on charge type and case outcome.</em></p>
+</div>
+
+<div class="card">
+<h3>📋 Free Texas Legal Resources</h3>
+
+<p><strong>Texas Legal Services Center</strong><br>
+<a href="https://www.tlsc.org" target="_blank">www.tlsc.org</a>
+</p>
+
+<p><strong>Lone Star Legal Aid</strong><br>
+<a href="https://www.lonestarlegal.org" target="_blank">www.lonestarlegal.org</a>
+</p>
+
+<p><strong>Texas RioGrande Legal Aid</strong><br>
+<a href="https://www.trla.org" target="_blank">www.trla.org</a>
+</p>
+
+<p><strong>Texas Judicial Branch Self-Help</strong><br>
+<a href="https://www.txcourts.gov/forms" target="_blank">
+www.txcourts.gov/forms
 </a>
-</li>
-</ul>
+</p>
 
-<p><strong>Legal Hotline:</strong><br>
-Texas Legal Aid Helpline: 1-800-622-2520</p>
+<p><strong>Texas Workforce Commission Reentry</strong><br>
+<a href="https://www.twc.texas.gov" target="_blank">
+www.twc.texas.gov
+</a>
+</p>
+</div>
+
+<div class="card">
+<h3>📝 My Legal Plan</h3>
+
+<label>County Where Charged</label>
+<input type="text" id="county">
+
+<label>Charge Type</label>
+<input type="text" id="charge">
+
+<label>Case Outcome</label>
+<select id="outcome">
+<option value="">Select</option>
+<option>Dismissed</option>
+<option>Deferred Adjudication</option>
+<option>Convicted</option>
+<option>No-Billed</option>
+<option>Not Guilty</option>
+</select>
+
+<label>Notes / Questions for Attorney</label>
+<textarea id="legalNotes"></textarea>
+
+<button onclick="saveLegal()">Save Legal Info</button>
 
 </div>
 
 </div>
 
-<script>
-function goBack() {
-  window.location.href = "index.html";
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { 
+  getAuth,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA4O2nEtjdy9fSh66gnHH6jsbKKSWdJt4c",
+  authDomain: "a-new-me-1a17a.firebaseapp.com",
+  projectId: "a-new-me-1a17a",
+  storageBucket: "a-new-me-1a17a.firebasestorage.app",
+  messagingSenderId: "362235516132",
+  appId: "1:362235516132:web:1465c3ec03ce1d3f4608f1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser;
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    window.location.href = "auth.html";
+  } else {
+    currentUser = user;
+    loadLegal();
+  }
+});
+
+window.logout = function() {
+  signOut(auth).then(() => {
+    window.location.href = "auth.html";
+  });
+};
+
+window.saveLegal = async function() {
+
+  const data = {
+    county: document.getElementById("county").value,
+    charge: document.getElementById("charge").value,
+    outcome: document.getElementById("outcome").value,
+    notes: document.getElementById("legalNotes").value
+  };
+
+  await setDoc(doc(db, "users", currentUser.uid), {
+    legal: data
+  }, { merge: true });
+
+  alert("Legal Info Saved ✓");
+};
+
+async function loadLegal() {
+  const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    if (data.legal) {
+      document.getElementById("county").value = data.legal.county || "";
+      document.getElementById("charge").value = data.legal.charge || "";
+      document.getElementById("outcome").value = data.legal.outcome || "";
+      document.getElementById("legalNotes").value = data.legal.notes || "";
+    }
+  }
 }
+
 </script>
 
 </body>
