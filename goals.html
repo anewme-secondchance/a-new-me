@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Goals Tracker | A New Me</title>
+<title>Goals | A New Me</title>
 
 <style>
 body {
@@ -14,20 +14,21 @@ body {
 
 .app-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   background: #1f3c88;
   color: white;
   padding: 15px;
 }
 
-.back-btn {
+.back-btn, .logout-btn {
   background: white;
   color: #1f3c88;
   border: none;
   padding: 6px 14px;
   border-radius: 20px;
   cursor: pointer;
-  margin-right: 15px;
+  font-weight: bold;
 }
 
 .container {
@@ -44,22 +45,23 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-.goal-input {
+textarea {
   width: 100%;
-  padding: 8px;
+  min-height: 80px;
+  padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
   margin-top: 8px;
 }
 
-.goal-item {
+button.save-btn {
   margin-top: 10px;
-}
-
-.progress {
-  margin-top: 15px;
-  font-weight: bold;
-  color: #1f3c88;
+  background: #1f3c88;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
 }
 </style>
 </head>
@@ -69,99 +71,110 @@ body {
 <div class="app-header">
   <button onclick="goBack()" class="back-btn">← Back</button>
   <div>Goals Tracker</div>
+  <button onclick="logout()" class="logout-btn">Logout</button>
 </div>
 
 <div class="container">
 
 <div class="card">
-<h3>🏠 Housing Goal</h3>
-<input class="goal-input" placeholder="Example: Save $800 for deposit">
-<div class="goal-item">
-<label><input type="checkbox" class="goal-check"> Completed</label>
-</div>
+<h3>🏠 Housing Goals</h3>
+<textarea id="housingGoal"></textarea>
+<button class="save-btn" onclick="saveGoal('housingGoal')">Save</button>
 </div>
 
 <div class="card">
-<h3>💼 Job Goal</h3>
-<input class="goal-input" placeholder="Example: Apply to 5 jobs this week">
-<div class="goal-item">
-<label><input type="checkbox" class="goal-check"> Completed</label>
-</div>
+<h3>💼 Employment Goals</h3>
+<textarea id="jobGoal"></textarea>
+<button class="save-btn" onclick="saveGoal('jobGoal')">Save</button>
 </div>
 
 <div class="card">
-<h3>💰 Financial Goal</h3>
-<input class="goal-input" placeholder="Example: Save $50 this month">
-<div class="goal-item">
-<label><input type="checkbox" class="goal-check"> Completed</label>
-</div>
+<h3>💰 Financial Goals</h3>
+<textarea id="moneyGoal"></textarea>
+<button class="save-btn" onclick="saveGoal('moneyGoal')">Save</button>
 </div>
 
 <div class="card">
-<h3>🧠 Mental Health Goal</h3>
-<input class="goal-input" placeholder="Example: Attend 2 counseling sessions">
-<div class="goal-item">
-<label><input type="checkbox" class="goal-check"> Completed</label>
-</div>
-</div>
-
-<div class="card">
-<h3>🌟 Life Goal</h3>
-<input class="goal-input" placeholder="Example: Reconnect with family">
-<div class="goal-item">
-<label><input type="checkbox" class="goal-check"> Completed</label>
-</div>
-</div>
-
-<div class="card">
-<div class="progress">
-Goals Completed: <span id="progressCount">0</span> / 5
-</div>
+<h3>🧠 Mental Health Goals</h3>
+<textarea id="mentalGoal"></textarea>
+<button class="save-btn" onclick="saveGoal('mentalGoal')">Save</button>
 </div>
 
 </div>
 
-<script>
-function goBack() {
-  window.location.href = "index.html";
-}
+<script type="module">
 
-/* Save Goals Text */
-const goalInputs = document.querySelectorAll(".goal-input");
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { 
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-goalInputs.forEach((input, index) => {
-  const savedValue = localStorage.getItem("goal_text_" + index);
-  if (savedValue) input.value = savedValue;
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  input.addEventListener("input", () => {
-    localStorage.setItem("goal_text_" + index, input.value);
-  });
-});
+const firebaseConfig = {
+  apiKey: "AIzaSyA4O2nEtjdy9fSh66gnHH6jsbKKSWdJt4c",
+  authDomain: "a-new-me-1a17a.firebaseapp.com",
+  projectId: "a-new-me-1a17a",
+  storageBucket: "a-new-me-1a17a.firebasestorage.app",
+  messagingSenderId: "362235516132",
+  appId: "1:362235516132:web:1465c3ec03ce1d3f4608f1"
+};
 
-/* Save Checkboxes */
-const goalChecks = document.querySelectorAll(".goal-check");
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
-function updateProgress() {
-  let completed = 0;
-  goalChecks.forEach((check, index) => {
-    if (check.checked) completed++;
-  });
-  document.getElementById("progressCount").textContent = completed;
-}
+let currentUser;
 
-goalChecks.forEach((check, index) => {
-  const savedCheck = localStorage.getItem("goal_check_" + index);
-  if (savedCheck === "true") {
-    check.checked = true;
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "auth.html";
+  } else {
+    currentUser = user;
+    loadGoals();
   }
-
-  check.addEventListener("change", () => {
-    localStorage.setItem("goal_check_" + index, check.checked);
-    updateProgress();
-  });
 });
 
-updateProgress();
+window.logout = function() {
+  signOut(auth).then(() => {
+    window.location.href = "auth.html";
+  });
+};
+
+window.goBack = function() {
+  window.location.href = "index.html";
+};
+
+async function loadGoals() {
+  const docRef = doc(db, "users", currentUser.uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    if (data.housingGoal) document.getElementById("housingGoal").value = data.housingGoal;
+    if (data.jobGoal) document.getElementById("jobGoal").value = data.jobGoal;
+    if (data.moneyGoal) document.getElementById("moneyGoal").value = data.moneyGoal;
+    if (data.mentalGoal) document.getElementById("mentalGoal").value = data.mentalGoal;
+  }
+}
+
+window.saveGoal = async function(fieldId) {
+  const value = document.getElementById(fieldId).value;
+
+  await setDoc(doc(db, "users", currentUser.uid), {
+    [fieldId]: value
+  }, { merge: true });
+
+  alert("Goal saved!");
+};
+
 </script>
 
 </body>
