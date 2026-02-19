@@ -47,71 +47,51 @@ button {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-textarea {
+input {
   width: 100%;
-  min-height: 80px;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
   margin-top: 8px;
 }
 
-.progress-bar {
-  height: 20px;
-  background: #ddd;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-top: 10px;
+.goal-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f4f6fb;
+  padding: 10px;
+  border-radius: 8px;
+  margin-top: 8px;
 }
 
-.progress-fill {
-  height: 100%;
-  width: 0%;
-  background: #1f3c88;
-  transition: width 0.3s;
+.goal-item.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
 }
+
 </style>
 </head>
 
 <body>
 
 <div class="app-header">
-  <div>Goals Tracker</div>
+  <div>🎯 Goals Tracker</div>
   <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
 
 <div class="card">
-<h3>🏠 Housing Goal</h3>
-<textarea id="housingGoal" placeholder="Example: Secure stable housing within 60 days"></textarea>
+<h3>Add New Goal</h3>
+<input type="text" id="goalInput" placeholder="Enter your goal">
+<button onclick="addGoal()">Add Goal</button>
 </div>
 
 <div class="card">
-<h3>💼 Employment Goal</h3>
-<textarea id="jobGoal" placeholder="Example: Apply to 5 jobs per week"></textarea>
+<h3>Your Goals</h3>
+<div id="goalsList"></div>
 </div>
-
-<div class="card">
-<h3>💰 Financial Goal</h3>
-<textarea id="moneyGoal" placeholder="Example: Save $500 in 3 months"></textarea>
-</div>
-
-<div class="card">
-<h3>🧠 Personal Growth Goal</h3>
-<textarea id="lifeGoal" placeholder="Example: Attend counseling weekly"></textarea>
-</div>
-
-<div class="card">
-<h3>📊 Progress</h3>
-<input type="range" id="progressSlider" min="0" max="100">
-<div class="progress-bar">
-  <div class="progress-fill" id="progressFill"></div>
-</div>
-<p><strong id="progressPercent">0%</strong> Complete</p>
-</div>
-
-<button onclick="saveGoals()">Save Goals</button>
 
 </div>
 
@@ -126,9 +106,12 @@ import {
 
 import {
   getFirestore,
-  doc,
-  setDoc,
-  getDoc
+  collection,
+  addDoc,
+  getDocs,
+  updateDoc,
+  deleteDoc,
+  doc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -146,7 +129,7 @@ const db = getFirestore(app);
 
 let currentUser;
 
-onAuthStateChanged(auth, async user => {
+onAuthStateChanged(auth, user => {
   if (!user) {
     window.location.href = "auth.html";
   } else {
@@ -161,50 +144,59 @@ window.logout = function() {
   });
 };
 
-window.saveGoals = async function() {
+async function addGoal() {
+  const text = document.getElementById("goalInput").value;
+  if (!text) return;
 
-  const data = {
-    housingGoal: document.getElementById("housingGoal").value,
-    jobGoal: document.getElementById("jobGoal").value,
-    moneyGoal: document.getElementById("moneyGoal").value,
-    lifeGoal: document.getElementById("lifeGoal").value,
-    progress: document.getElementById("progressSlider").value
-  };
+  await addDoc(collection(db, "users", currentUser.uid, "goals"), {
+    text: text,
+    completed: false
+  });
 
-  await setDoc(doc(db, "users", currentUser.uid), {
-    goals: data
-  }, { merge: true });
-
-  alert("Goals Saved ✓");
-};
+  document.getElementById("goalInput").value = "";
+  loadGoals();
+}
 
 async function loadGoals() {
-  const docSnap = await getDoc(doc(db, "users", currentUser.uid));
-  if (docSnap.exists()) {
-    const data = docSnap.data();
-    if (data.goals) {
-      document.getElementById("housingGoal").value = data.goals.housingGoal || "";
-      document.getElementById("jobGoal").value = data.goals.jobGoal || "";
-      document.getElementById("moneyGoal").value = data.goals.moneyGoal || "";
-      document.getElementById("lifeGoal").value = data.goals.lifeGoal || "";
-      document.getElementById("progressSlider").value = data.goals.progress || 0;
-      updateProgress(data.goals.progress || 0);
-    }
-  }
+  const goalsList = document.getElementById("goalsList");
+  goalsList.innerHTML = "";
+
+  const snapshot = await getDocs(collection(db, "users", currentUser.uid, "goals"));
+
+  snapshot.forEach(docSnap => {
+    const goal = docSnap.data();
+    const goalId = docSnap.id;
+
+    const div = document.createElement("div");
+    div.className = "goal-item" + (goal.completed ? " completed" : "");
+
+    div.innerHTML = `
+      <span>${goal.text}</span>
+      <div>
+        <button onclick="toggleGoal('${goalId}', ${goal.completed})">
+          ${goal.completed ? "Undo" : "Done"}
+        </button>
+        <button onclick="deleteGoal('${goalId}')">X</button>
+      </div>
+    `;
+
+    goalsList.appendChild(div);
+  });
 }
 
-const slider = document.getElementById("progressSlider");
-slider.addEventListener("input", function() {
-  updateProgress(this.value);
-});
+window.toggleGoal = async function(id, currentStatus) {
+  await updateDoc(doc(db, "users", currentUser.uid, "goals", id), {
+    completed: !currentStatus
+  });
+  loadGoals();
+};
 
-function updateProgress(value) {
-  document.getElementById("progressFill").style.width = value + "%";
-  document.getElementById("progressPercent").textContent = value + "%";
-}
+window.deleteGoal = async function(id) {
+  await deleteDoc(doc(db, "users", currentUser.uid, "goals", id));
+  loadGoals();
+};
 
 </script>
 
 </body>
 </html>
-
