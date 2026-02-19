@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Employment Tracker | A New Me</title>
+<title>Employment | A New Me</title>
 
 <style>
 body {
@@ -21,7 +21,7 @@ body {
   padding: 15px;
 }
 
-.back-btn, .logout-btn {
+button {
   background: white;
   color: #1f3c88;
   border: none;
@@ -29,12 +29,14 @@ body {
   border-radius: 20px;
   cursor: pointer;
   font-weight: bold;
+  margin-top: 10px;
 }
 
 .container {
   padding: 20px;
   max-width: 900px;
   margin: auto;
+  padding-bottom: 80px;
 }
 
 .card {
@@ -45,7 +47,7 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-input, select, textarea {
+textarea {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
@@ -53,19 +55,12 @@ input, select, textarea {
   margin-top: 8px;
 }
 
-button {
-  background: #1f3c88;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.job-item {
-  padding: 12px;
-  border-bottom: 1px solid #eee;
+.notice {
+  background: #ffdddd;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
 }
 </style>
 </head>
@@ -73,34 +68,82 @@ button {
 <body>
 
 <div class="app-header">
-  <button onclick="goBack()" class="back-btn">← Back</button>
-  <div>Employment Tracker</div>
-  <button onclick="logout()" class="logout-btn">Logout</button>
+  <div>Employment</div>
+  <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
 
-<div class="card">
-<h3>💼 Add Job Application</h3>
-
-<input type="text" id="company" placeholder="Company Name">
-<input type="text" id="position" placeholder="Position">
-<input type="date" id="dateApplied">
-<select id="status">
-  <option value="Applied">Applied</option>
-  <option value="Interview">Interview</option>
-  <option value="Hired">Hired</option>
-  <option value="Rejected">Rejected</option>
-</select>
-<textarea id="notes" placeholder="Notes..."></textarea>
-
-<button onclick="addJob()">Save Application</button>
-
+<div class="notice">
+<strong>Important:</strong> Some employers may hire individuals with felony convictions,
+but acceptance depends on the specific charge, how long ago it occurred,
+and company policy. Always apply and let the employer decide.
 </div>
 
 <div class="card">
-<h3>📋 My Applications</h3>
-<div id="jobList"></div>
+<h3>👔 What Men Should Wear</h3>
+<ul>
+<li>Clean button-up or polo shirt</li>
+<li>Dark jeans or slacks (no rips)</li>
+<li>Closed-toe shoes or boots</li>
+<li>Trimmed facial hair</li>
+<li>Light deodorant</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>👗 What Women Should Wear</h3>
+<ul>
+<li>Blouse or modest top</li>
+<li>Dress pants or knee-length skirt</li>
+<li>Closed-toe flats or low heels</li>
+<li>Neat hairstyle</li>
+<li>Light makeup</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>🎤 Interview Practice</h3>
+
+<label>Tell Me About Yourself</label>
+<textarea id="q1"></textarea>
+
+<label>Why Should We Hire You?</label>
+<textarea id="q2"></textarea>
+
+<label>How Have You Grown?</label>
+<textarea id="q3"></textarea>
+
+<label>If Asked About Your Record</label>
+<textarea id="q4"></textarea>
+
+<button onclick="saveEmployment()">Save Answers</button>
+</div>
+
+<div class="card">
+<h3>📄 Resume Example</h3>
+<p><strong>Kitchen Worker – State Facility</strong></p>
+<ul>
+<li>Prepared meals for 2,000+ individuals daily</li>
+<li>Maintained sanitation standards</li>
+<li>Worked in fast-paced team environment</li>
+</ul>
+
+<p><strong>Maintenance Assistant</strong></p>
+<ul>
+<li>Performed plumbing and repair tasks</li>
+<li>Followed safety procedures</li>
+<li>Completed task logs daily</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>📌 Helpful Programs</h3>
+<ul>
+<li><a href="https://www.texasworkforce.org/project-rio" target="_blank">Project RIO – Texas Workforce</a></li>
+<li><a href="https://www.voatx.org/" target="_blank">VOA Texas Fresh Start</a></li>
+<li><a href="https://milesoffreedom.org/" target="_blank">Miles of Freedom</a></li>
+</ul>
 </div>
 
 </div>
@@ -108,20 +151,17 @@ button {
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
+import { 
   getAuth,
-  onAuthStateChanged,
-  signOut
+  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 import {
   getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
   doc,
-  updateDoc
+  setDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -139,12 +179,12 @@ const db = getFirestore(app);
 
 let currentUser;
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async user => {
   if (!user) {
     window.location.href = "auth.html";
   } else {
     currentUser = user;
-    loadJobs();
+    loadEmployment();
   }
 });
 
@@ -154,61 +194,33 @@ window.logout = function() {
   });
 };
 
-window.goBack = function() {
-  window.location.href = "index.html";
-};
-
-window.addJob = async function() {
-  const job = {
-    company: company.value,
-    position: position.value,
-    dateApplied: dateApplied.value,
-    status: status.value,
-    notes: notes.value,
-    createdAt: new Date()
+window.saveEmployment = async function() {
+  const data = {
+    about: document.getElementById("q1").value,
+    hire: document.getElementById("q2").value,
+    growth: document.getElementById("q3").value,
+    record: document.getElementById("q4").value
   };
 
-  if (!job.company || !job.position) return;
+  await setDoc(doc(db, "users", currentUser.uid), {
+    employment: data
+  }, { merge: true });
 
-  await addDoc(collection(db, "users", currentUser.uid, "applications"), job);
-
-  company.value = "";
-  position.value = "";
-  dateApplied.value = "";
-  notes.value = "";
-
-  loadJobs();
+  alert("Saved ✓");
 };
 
-async function loadJobs() {
-  const list = document.getElementById("jobList");
-  list.innerHTML = "";
-
-  const querySnapshot = await getDocs(
-    collection(db, "users", currentUser.uid, "applications")
-  );
-
-  querySnapshot.forEach((docSnap) => {
+async function loadEmployment() {
+  const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+  if (docSnap.exists()) {
     const data = docSnap.data();
-    const div = document.createElement("div");
-    div.className = "job-item";
-
-    div.innerHTML = `
-      <strong>${data.company}</strong> - ${data.position}<br>
-      Applied: ${data.dateApplied || "N/A"}<br>
-      Status: ${data.status}<br>
-      Notes: ${data.notes || "None"}<br>
-      <button onclick="deleteJob('${docSnap.id}')">Delete</button>
-    `;
-
-    list.appendChild(div);
-  });
+    if (data.employment) {
+      document.getElementById("q1").value = data.employment.about || "";
+      document.getElementById("q2").value = data.employment.hire || "";
+      document.getElementById("q3").value = data.employment.growth || "";
+      document.getElementById("q4").value = data.employment.record || "";
+    }
+  }
 }
-
-window.deleteJob = async function(id) {
-  await deleteDoc(doc(db, "users", currentUser.uid, "applications", id));
-  loadJobs();
-};
 
 </script>
 
