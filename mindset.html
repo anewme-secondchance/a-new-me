@@ -6,70 +6,13 @@
 <title>Mindset | A New Me</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #eef2f7;
-}
-
-.app-header {
-  display: flex;
-  align-items: center;
-  background: #1f3c88;
-  color: white;
-  padding: 15px;
-}
-
-.back-btn {
-  background: white;
-  color: #1f3c88;
-  border: none;
-  padding: 6px 14px;
-  border-radius: 20px;
-  cursor: pointer;
-  margin-right: 15px;
-}
-
-.container {
-  padding: 20px;
-  max-width: 900px;
-  margin: auto;
-  padding-bottom: 80px;
-}
-
-.card {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-}
-
-textarea, input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-top: 8px;
-}
-
-button {
-  background: #1f3c88;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.emergency {
-  background: #fff3f3;
-  border-left: 5px solid #e63946;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-}
+body { margin:0; font-family:Arial; background:#eef2f7; }
+.app-header { display:flex; align-items:center; background:#1f3c88; color:white; padding:15px; }
+.back-btn { background:white; color:#1f3c88; border:none; padding:6px 14px; border-radius:20px; cursor:pointer; margin-right:15px; }
+.container { padding:20px; max-width:900px; margin:auto; padding-bottom:80px; }
+.card { background:white; padding:20px; border-radius:12px; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.08); }
+textarea { width:100%; padding:10px; border-radius:8px; border:1px solid #ccc; margin-top:8px; }
+button { background:#1f3c88; color:white; border:none; padding:8px 14px; border-radius:6px; cursor:pointer; margin-top:10px; }
 </style>
 </head>
 
@@ -103,66 +46,6 @@ button {
 <button onclick="updateStreak()">Mark Today Complete</button>
 </div>
 
-<div class="card">
-<h3>💪 Sobriety Tracker</h3>
-<label><input type="checkbox" id="soberCheck"> I stayed sober today</label>
-<p>Days sober: <strong id="soberCount">0</strong></p>
-</div>
-
-<!-- SUPPORT RESOURCES SECTION -->
-<div class="card">
-<h3>🤝 Support & Counseling Resources</h3>
-
-<div class="emergency">
-<strong>🚨 In Immediate Crisis?</strong><br>
-Call or Text <a href="tel:988"><strong>988</strong></a><br>
-Available 24/7, Free & Confidential
-</div>
-
-<p><strong>ETBU Counseling Center</strong><br>
-📧 Email: <a href="mailto:counseling@etbu.edu">counseling@etbu.edu</a><br>
-📞 Phone: <a href="tel:9039232360">903-923-2360</a> (Marshall Office)<br>
-<em>When calling, press the number option and ask to be sent to the Tyler Center.</em>
-</p>
-
-<hr>
-
-<p><strong>SAMHSA National Helpline</strong><br>
-📞 Call: <a href="tel:18006624357">1-800-662-4357</a><br>
-🌐 Website: <a href="https://www.samhsa.gov/find-help/national-helpline" target="_blank">Visit Website</a><br>
-Free treatment referral & support (24/7)
-</p>
-
-<hr>
-
-<p><strong>Alcoholics Anonymous (AA)</strong><br>
-🌐 Find local meetings: <a href="https://www.aa.org/find-aa" target="_blank">aa.org/find-aa</a><br>
-Peer-led sobriety support
-</p>
-
-<hr>
-
-<p><strong>Narcotics Anonymous (NA)</strong><br>
-🌐 Find meetings: <a href="https://www.na.org/meetingsearch/" target="_blank">na.org/meetingsearch</a><br>
-Recovery support groups nationwide
-</p>
-
-<hr>
-
-<p><strong>BetterHelp (Online Counseling)</strong><br>
-🌐 Website: <a href="https://www.betterhelp.com" target="_blank">betterhelp.com</a><br>
-Licensed online therapy (Paid service)
-</p>
-
-<hr>
-
-<p><strong>Psychology Today Therapist Finder</strong><br>
-🌐 Website: <a href="https://www.psychologytoday.com/us/therapists" target="_blank">Find a Therapist</a><br>
-Search by insurance, specialty, or location
-</p>
-
-</div>
-
 </div>
 
 <script type="module">
@@ -188,7 +71,7 @@ let userRef;
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    window.location.href = "auth.html";
+    console.log("No user logged in.");
     return;
   }
 
@@ -201,15 +84,8 @@ onAuthStateChanged(auth, async (user) => {
     document.getElementById("r2").value = data.r2 || "";
     document.getElementById("r3").value = data.r3 || "";
     document.getElementById("streakCount").innerText = data.streak || 0;
-    document.getElementById("soberCount").innerText = data.sober || 0;
   } else {
-    await setDoc(userRef, {
-      r1: "",
-      r2: "",
-      r3: "",
-      streak: 0,
-      sober: 0
-    });
+    await setDoc(userRef, { r1:"", r2:"", r3:"", streak:0 });
   }
 });
 
@@ -227,14 +103,6 @@ window.updateStreak = async function() {
   document.getElementById("streakCount").innerText = current;
   await updateDoc(userRef, { streak: current });
 }
-
-document.getElementById("soberCheck").addEventListener("change", async function(){
-  if(this.checked){
-    const current = parseInt(document.getElementById("soberCount").innerText) + 1;
-    document.getElementById("soberCount").innerText = current;
-    await updateDoc(userRef, { sober: current });
-  }
-});
 
 window.goBack = function() {
   window.location.href = "index.html";
