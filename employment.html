@@ -31,14 +31,9 @@ body {
   font-weight: bold;
 }
 
-.page-title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
 .container {
   padding: 20px;
-  max-width: 1000px;
+  max-width: 900px;
   margin: auto;
 }
 
@@ -50,16 +45,21 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  margin-bottom: 15px;
+h3 {
+  margin-top: 0;
 }
 
 ul {
   padding-left: 20px;
+}
+
+textarea {
+  width: 100%;
+  min-height: 90px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  margin-top: 8px;
 }
 
 a {
@@ -67,14 +67,17 @@ a {
   font-weight: bold;
   text-decoration: none;
 }
-a:hover { text-decoration: underline; }
 
-textarea {
-  width: 100%;
-  min-height: 80px;
-  padding: 8px;
+a:hover {
+  text-decoration: underline;
+}
+
+.notice {
+  background: #ffe6e6;
+  padding: 12px;
+  border-left: 5px solid red;
   border-radius: 8px;
-  border: 1px solid #ccc;
+  margin-bottom: 20px;
 }
 </style>
 </head>
@@ -82,97 +85,116 @@ textarea {
 <body>
 
 <div class="app-header">
-<button onclick="goBack()" class="back-btn">← Back</button>
-<div class="page-title">Employment</div>
+  <button onclick="goBack()" class="back-btn">← Back</button>
+  <div><strong>Employment</strong></div>
 </div>
 
 <div class="container">
 
-<!-- SEARCH -->
-<div class="card">
-<h3>🔎 Search Employers or Trades</h3>
-<input type="text" id="searchInput" onkeyup="searchJobs()" placeholder="Search by company, trade, or keyword...">
+<div class="notice">
+⚠️ <strong>Important:</strong> Not all employers hire individuals with felony convictions.  
+Hiring depends on the type of charge, how long ago it occurred, and company policy.  
+Always apply honestly and focus on growth and stability.
 </div>
 
-<!-- NATIONAL EMPLOYERS -->
+<!-- NATIONAL COMPANIES -->
 <div class="card">
-<h3>🏢 Nationwide Second-Chance Employers</h3>
-<ul id="jobList">
-
-<li>Amazon – <a href="https://www.amazon.jobs" target="_blank">Apply</a></li>
-<li>Walmart – <a href="https://careers.walmart.com" target="_blank">Apply</a></li>
-<li>UPS – <a href="https://careers.ups.com" target="_blank">Apply</a></li>
-<li>FedEx – <a href="https://jobs.fedex.com" target="_blank">Apply</a></li>
-<li>Home Depot – <a href="https://careers.homedepot.com" target="_blank">Apply</a></li>
-<li>Lowe’s – <a href="https://www.lowes.com/careers" target="_blank">Apply</a></li>
-<li>Target – <a href="https://careers.target.com" target="_blank">Apply</a></li>
-<li>McDonald’s – <a href="https://careers.mcdonalds.com" target="_blank">Apply</a></li>
-<li>Dollar Tree – <a href="https://careers.dollartree.com" target="_blank">Apply</a></li>
-<li>Kroger – <a href="https://careers.kroger.com" target="_blank">Apply</a></li>
-
-</ul>
-</div>
-
-<!-- TRADES -->
-<div class="card">
-<h3>🔧 Skilled Trades That Hire Felonies</h3>
+<h3>🏢 Companies That MAY Hire (Varies by Location)</h3>
 <ul>
-<li>Construction Laborer</li>
-<li>Electrician Apprentice</li>
-<li>HVAC Technician</li>
-<li>Welding</li>
-<li>Plumbing</li>
-<li>Roofing</li>
-<li>Landscaping</li>
-<li>Oilfield Work</li>
-<li>Warehouse Forklift Operator</li>
+<li><a href="https://www.walmartcareers.com/" target="_blank">Walmart</a></li>
+<li><a href="https://careers.target.com/" target="_blank">Target</a></li>
+<li><a href="https://www.amazon.jobs/" target="_blank">Amazon</a></li>
+<li><a href="https://jobs.mcdonalds.com/" target="_blank">McDonald's</a></li>
+<li><a href="https://careers.homedepot.com/" target="_blank">Home Depot</a></li>
+<li><a href="https://www.lowes.com/careers" target="_blank">Lowe's</a></li>
+<li><a href="https://careers.dollartree.com/" target="_blank">Dollar Tree</a></li>
+<li><a href="https://careers.fedex.com/" target="_blank">FedEx</a></li>
+<li><a href="https://www.upsjobs.com/" target="_blank">UPS</a></li>
+<li><a href="https://careers.pepsico.com/" target="_blank">PepsiCo</a></li>
 </ul>
+<p><strong>Note:</strong> Approval depends on background review and charge type.</p>
 </div>
 
-<!-- TRUCKING -->
+<!-- SKILLED TRADES -->
 <div class="card">
-<h3>🚛 Trucking Companies (Case-by-Case)</h3>
+<h3>🔧 Skilled Trades (High Opportunity Field)</h3>
+
 <ul>
-<li>CR England – <a href="https://www.crengland.com" target="_blank">Apply</a></li>
-<li>Swift Transportation – <a href="https://www.swifttrans.com" target="_blank">Apply</a></li>
-<li>Schneider – <a href="https://schneiderjobs.com" target="_blank">Apply</a></li>
-<li>Roehl Transport – <a href="https://www.roehl.jobs" target="_blank">Apply</a></li>
-<li>Maverick Transportation – <a href="https://maverickusa.com" target="_blank">Apply</a></li>
+<li><strong>Electrical Apprenticeship</strong>  
+<a href="https://www.electricaltrainingalliance.org/" target="_blank">
+Electrical Training Alliance
+</a></li>
+
+<li><strong>Plumbing Apprenticeship</strong>  
+<a href="https://ua.org/" target="_blank">
+United Association (Plumbers & Pipefitters)
+</a></li>
+
+<li><strong>HVAC Certification</strong>  
+<a href="https://www.acca.org/" target="_blank">
+Air Conditioning Contractors of America
+</a></li>
+
+<li><strong>CDL Truck Driving</strong>  
+<a href="https://www.trucking.org/" target="_blank">
+American Trucking Association
+</a></li>
+
+<li><strong>Welding Programs</strong>  
+<a href="https://www.aws.org/education" target="_blank">
+American Welding Society
+</a></li>
+
+<li><strong>Construction Apprenticeships</strong>  
+<a href="https://www.apprenticeship.gov/" target="_blank">
+Apprenticeship.gov
+</a></li>
 </ul>
-<p>⚠ CDL eligibility depends on offense type and time passed.</p>
+
+<p>Trades often focus more on skill and reliability than past mistakes.</p>
 </div>
 
-<!-- APPRENTICESHIPS -->
+<!-- REENTRY EMPLOYMENT PROGRAMS -->
 <div class="card">
-<h3>🎓 Apprenticeships & Training</h3>
+<h3>📌 Reentry Employment Programs</h3>
 <ul>
-<li>U.S. Department of Labor Apprenticeships – 
-<a href="https://www.apprenticeship.gov" target="_blank">Search Programs</a></li>
+<li><a href="https://www.texasworkforce.org/project-rio" target="_blank">
+Project RIO – Texas Workforce Commission
+</a></li>
 
-<li>Texas Workforce Commission – 
-<a href="https://www.twc.texas.gov" target="_blank">Find Training</a></li>
+<li><a href="https://www.voatx.org/" target="_blank">
+VOA Texas Fresh Start
+</a></li>
 
-<li>Goodwill Job Training – 
-<a href="https://www.goodwill.org/jobs-training" target="_blank">Programs</a></li>
+<li><a href="https://milesoffreedom.org/" target="_blank">
+Miles of Freedom (Dallas)
+</a></li>
 
-<li>Job Corps (Ages 16–24) – 
-<a href="https://www.jobcorps.gov" target="_blank">Apply</a></li>
+<li><a href="https://www.doleta.gov/business/incentives/opptax/" target="_blank">
+Work Opportunity Tax Credit (WOTC)
+</a></li>
 
+<li><a href="https://bonds4jobs.com/" target="_blank">
+Federal Bonding Program
+</a></li>
 </ul>
 </div>
 
-<!-- INTERVIEW PRACTICE -->
+<!-- PRACTICE SECTION -->
 <div class="card">
 <h3>📝 Practice Interview Answers</h3>
 
 <label>30-Second Introduction</label>
-<textarea id="p1"></textarea>
+<textarea id="practice1"></textarea>
 
 <label>Why Should We Hire You?</label>
-<textarea id="p2"></textarea>
+<textarea id="practice2"></textarea>
 
 <label>How Have You Grown?</label>
-<textarea id="p3"></textarea>
+<textarea id="practice3"></textarea>
+
+<label>If Asked About Your Record</label>
+<textarea id="practice4"></textarea>
 
 </div>
 
@@ -183,31 +205,13 @@ function goBack() {
   window.location.href = "index.html";
 }
 
-/* Search Filter */
-function searchJobs() {
-  let input = document.getElementById('searchInput').value.toLowerCase();
-  let list = document.getElementById('jobList');
-  let items = list.getElementsByTagName('li');
-
-  for (let i = 0; i < items.length; i++) {
-    let text = items[i].textContent.toLowerCase();
-    items[i].style.display = text.includes(input) ? "" : "none";
-  }
-}
-
-/* Auto Save */
-function autoSave(id, key){
-  const field = document.getElementById(id);
-  const saved = localStorage.getItem(key);
-  if(saved) field.value = saved;
-  field.addEventListener("input", ()=> {
-    localStorage.setItem(key, field.value);
-  });
-}
-
-autoSave("p1","emp1");
-autoSave("p2","emp2");
-autoSave("p3","emp3");
+/* Save Practice Answers */
+["practice1","practice2","practice3","practice4"].forEach(id=>{
+  const el = document.getElementById(id);
+  const saved = localStorage.getItem(id);
+  if(saved) el.value = saved;
+  el.addEventListener("input", ()=>localStorage.setItem(id, el.value));
+});
 </script>
 
 </body>
