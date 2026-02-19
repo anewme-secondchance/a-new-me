@@ -28,6 +28,7 @@ body {
   border-radius: 20px;
   cursor: pointer;
   margin-right: 15px;
+  font-weight: bold;
 }
 
 .container {
@@ -44,7 +45,7 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-input, select, textarea {
+textarea, input {
   width: 100%;
   padding: 10px;
   margin-top: 8px;
@@ -62,12 +63,10 @@ button {
   margin-top: 10px;
 }
 
-.resume-preview {
-  background: #f9f9f9;
-  padding: 15px;
-  margin-top: 15px;
-  border-radius: 8px;
-  white-space: pre-line;
+.success {
+  margin-top: 10px;
+  color: green;
+  font-weight: bold;
 }
 </style>
 </head>
@@ -81,86 +80,74 @@ button {
 
 <div class="container">
 
-<!-- EXPUNGEMENT INFO -->
+<!-- 1. LEGAL STABILITY -->
 <div class="card">
-<h3>⚖ Expungement & Record Sealing</h3>
-<p><strong>Dismissed cases</strong> may qualify for expungement.</p>
-<p><strong>Deferred adjudication</strong> may qualify for nondisclosure.</p>
-<p>Waiting periods apply depending on charge level.</p>
-<p>No new convictions are required in most cases.</p>
+<h3>🔒 1. Legal Stability</h3>
+
+<label>What are my probation/parole requirements?</label>
+<textarea id="legalRequirements"></textarea>
+
+<label>My compliance plan:</label>
+<textarea id="legalPlan"></textarea>
+
+<label>My long-term legal goal (expungement, clean record, etc.):</label>
+<textarea id="legalGoal"></textarea>
 </div>
 
-<!-- MINI CHECKER -->
+<!-- 2. EMPLOYMENT STABILITY -->
 <div class="card">
-<h3>📝 Quick Eligibility Checker</h3>
+<h3>💼 2. Employment Stability</h3>
 
-<label>What was the outcome?</label>
-<select id="caseOutcome">
-<option value="">Select one</option>
-<option value="dismissed">Dismissed</option>
-<option value="notguilty">Not Guilty</option>
-<option value="deferred">Deferred Adjudication</option>
-<option value="convicted">Convicted</option>
-</select>
+<label>Current Job or Employment Plan:</label>
+<textarea id="jobPlan"></textarea>
 
-<label>Any new convictions since?</label>
-<select id="newConvictions">
-<option value="">Select one</option>
-<option value="no">No</option>
-<option value="yes">Yes</option>
-</select>
+<label>Backup Job Plan:</label>
+<textarea id="backupJob"></textarea>
 
-<button onclick="checkEligibility()">Check</button>
-<p id="result"></p>
+<label>Skill I will improve in the next 6 months:</label>
+<textarea id="skillGoal"></textarea>
+
+<label>6-Month Career Goal:</label>
+<textarea id="careerGoal"></textarea>
 </div>
 
-<!-- INTERVIEW PREP -->
+<!-- 3. HOUSING STABILITY -->
 <div class="card">
-<h3>🎤 Interview Preparation</h3>
+<h3>🏠 3. Housing Stability</h3>
 
-<p>Wear clean, simple clothing.</p>
-<p>Arrive 10–15 minutes early.</p>
-<p>Practice common interview questions.</p>
-<p>Be honest but focus on growth.</p>
+<label>Current Living Situation:</label>
+<textarea id="currentHousing"></textarea>
 
-<h4>Example: Tell Me About Yourself</h4>
-<p>“I’m dependable, hardworking, and focused on building long-term stability. I bring discipline, teamwork, and a strong work ethic.”</p>
+<label>Monthly Rent Budget:</label>
+<input type="text" id="rentBudget">
 
-<h4>Example: If Asked About Your Record</h4>
-<p>“I made mistakes in the past, but I’ve taken responsibility and completed programs. I’m focused on growth and contributing positively.”</p>
+<label>Emergency Backup Housing Plan:</label>
+<textarea id="housingBackup"></textarea>
+
+<label>Deposit Savings Goal:</label>
+<input type="text" id="depositGoal">
 </div>
 
-<!-- RESUME BUILDER -->
+<!-- 4. FINANCIAL STABILITY -->
 <div class="card">
-<h3>📄 Resume Builder</h3>
+<h3>💵 4. Financial Stability</h3>
 
-<label>Full Name</label>
-<input type="text" id="resName">
+<label>Monthly Income:</label>
+<input type="text" id="monthlyIncome">
 
-<label>Phone</label>
-<input type="text" id="resPhone">
+<label>Monthly Expenses:</label>
+<input type="text" id="monthlyExpenses">
 
-<label>Email</label>
-<input type="text" id="resEmail">
+<label>Amount I will save monthly:</label>
+<input type="text" id="monthlySavings">
 
-<label>City & State</label>
-<input type="text" id="resLocation">
+<label>My First Financial Goal:</label>
+<textarea id="financialGoal"></textarea>
+</div>
 
-<label>Professional Summary</label>
-<textarea id="resSummary"></textarea>
-
-<label>Skills (separate with commas)</label>
-<textarea id="resSkills"></textarea>
-
-<label>Work Experience</label>
-<textarea id="resExperience"></textarea>
-
-<label>Education / Certifications</label>
-<textarea id="resEducation"></textarea>
-
-<button onclick="generateResume()">Generate Resume</button>
-
-<div id="resumeOutput" class="resume-preview"></div>
+<div class="card">
+<button onclick="saveStabilityPlan()">Save Stability Plan</button>
+<div id="savedMessage" class="success"></div>
 </div>
 
 </div>
@@ -170,55 +157,41 @@ function goBack() {
   window.location.href = "index.html";
 }
 
-function checkEligibility() {
-  const outcome = document.getElementById("caseOutcome").value;
-  const newConvictions = document.getElementById("newConvictions").value;
-  const result = document.getElementById("result");
+function saveStabilityPlan() {
+  const plan = {
+    legalRequirements: document.getElementById("legalRequirements").value,
+    legalPlan: document.getElementById("legalPlan").value,
+    legalGoal: document.getElementById("legalGoal").value,
+    jobPlan: document.getElementById("jobPlan").value,
+    backupJob: document.getElementById("backupJob").value,
+    skillGoal: document.getElementById("skillGoal").value,
+    careerGoal: document.getElementById("careerGoal").value,
+    currentHousing: document.getElementById("currentHousing").value,
+    rentBudget: document.getElementById("rentBudget").value,
+    housingBackup: document.getElementById("housingBackup").value,
+    depositGoal: document.getElementById("depositGoal").value,
+    monthlyIncome: document.getElementById("monthlyIncome").value,
+    monthlyExpenses: document.getElementById("monthlyExpenses").value,
+    monthlySavings: document.getElementById("monthlySavings").value,
+    financialGoal: document.getElementById("financialGoal").value
+  };
 
-  if (!outcome || !newConvictions) {
-    result.innerText = "Please answer both questions.";
-    return;
-  }
+  localStorage.setItem("stabilityPlan", JSON.stringify(plan));
+  document.getElementById("savedMessage").innerText = "✅ Stability plan saved.";
+}
 
-  if ((outcome === "dismissed" || outcome === "notguilty" || outcome === "deferred") && newConvictions === "no") {
-    result.innerText = "You may qualify. Contact a legal clinic to confirm.";
-  } else {
-    result.innerText = "You may not qualify. Speak to a legal professional for review.";
+function loadStabilityPlan() {
+  const saved = JSON.parse(localStorage.getItem("stabilityPlan"));
+  if (saved) {
+    Object.keys(saved).forEach(key => {
+      if (document.getElementById(key)) {
+        document.getElementById(key).value = saved[key];
+      }
+    });
   }
 }
 
-function generateResume() {
-  const name = document.getElementById("resName").value;
-  const phone = document.getElementById("resPhone").value;
-  const email = document.getElementById("resEmail").value;
-  const location = document.getElementById("resLocation").value;
-  const summary = document.getElementById("resSummary").value;
-  const skills = document.getElementById("resSkills").value.split(",");
-  const experience = document.getElementById("resExperience").value;
-  const education = document.getElementById("resEducation").value;
-
-  const formattedSkills = skills.map(skill => "• " + skill.trim()).join("\n");
-
-  const resumeText = `
-${name}
-${phone} | ${email}
-${location}
-
-PROFESSIONAL SUMMARY
-${summary}
-
-SKILLS
-${formattedSkills}
-
-WORK EXPERIENCE
-${experience}
-
-EDUCATION & CERTIFICATIONS
-${education}
-`;
-
-  document.getElementById("resumeOutput").innerText = resumeText;
-}
+loadStabilityPlan();
 </script>
 
 </body>
