@@ -14,22 +14,20 @@ body {
 
 .app-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   background: #1f3c88;
   color: white;
   padding: 15px;
 }
 
-button {
+.back-btn {
   background: white;
   color: #1f3c88;
   border: none;
   padding: 6px 14px;
   border-radius: 20px;
   cursor: pointer;
-  font-weight: bold;
-  margin-top: 10px;
+  margin-right: 15px;
 }
 
 .container {
@@ -54,36 +52,41 @@ textarea, input {
   border: 1px solid #ccc;
   margin-top: 8px;
 }
+
+button {
+  background: #1f3c88;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
 </style>
 </head>
 
 <body>
 
 <div class="app-header">
+  <button onclick="goBack()" class="back-btn">← Back</button>
   <div>Mindset</div>
-  <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
 
 <div class="card">
-<h3>🌟 Daily Encouragement</h3>
-<p id="dailyQuote"></p>
-<button onclick="newQuote()">New Quote</button>
+<h3>What went well today?</h3>
+<textarea id="r1"></textarea>
 </div>
 
 <div class="card">
-<h3>📱 Daily Motivation</h3>
-<p id="smsMessage"></p>
-<button onclick="newSMS()">New Message</button>
+<h3>What is one step forward I took?</h3>
+<textarea id="r2"></textarea>
 </div>
 
 <div class="card">
-<h3>📝 Daily Reflection</h3>
-<textarea id="r1" placeholder="What went well today?"></textarea>
-<textarea id="r2" placeholder="What step forward did I take?"></textarea>
-<textarea id="r3" placeholder="What can I improve tomorrow?"></textarea>
-<button onclick="saveReflection()">Save Reflection</button>
+<h3>What can I improve tomorrow?</h3>
+<textarea id="r3"></textarea>
 </div>
 
 <div class="card">
@@ -94,16 +97,8 @@ textarea, input {
 
 <div class="card">
 <h3>💪 Sobriety Tracker</h3>
+<label><input type="checkbox" id="soberCheck"> I stayed sober today</label>
 <p>Days sober: <strong id="soberCount">0</strong></p>
-<button onclick="updateSober()">I Stayed Sober Today</button>
-</div>
-
-<div class="card">
-<h3>📅 Appointment Tracker</h3>
-<input type="text" id="apptName" placeholder="Appointment Name">
-<input type="datetime-local" id="apptDate">
-<button onclick="addAppt()">Add Appointment</button>
-<div id="apptList"></div>
 </div>
 
 </div>
@@ -111,22 +106,8 @@ textarea, input {
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
-  getAuth,
-  signOut,
-  onAuthStateChanged
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  updateDoc,
-  collection,
-  addDoc,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA4O2nEtjdy9fSh66gnHH6jsbKKSWdJt4c",
@@ -141,127 +122,53 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let currentUser;
+let userRef;
 
-/* Protect Page */
-onAuthStateChanged(auth, async user => {
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "auth.html";
-  } else {
-    currentUser = user;
-    loadUserData();
+    return;
   }
-});
 
-/* Logout */
-window.logout = function() {
-  signOut(auth).then(() => {
-    window.location.href = "auth.html";
-  });
-};
+  userRef = doc(db, "users", user.uid);
 
-/* Quotes */
-const quotes = [
-"You are not your past. You are your next decision.",
-"Small steps every day build a new life.",
-"Consistency creates stability.",
-"Progress, not perfection.",
-"You survived. Now rebuild."
-];
-
-window.newQuote = function() {
-  const q = quotes[Math.floor(Math.random() * quotes.length)];
-  document.getElementById("dailyQuote").innerText = q;
-};
-newQuote();
-
-/* SMS */
-const smsMessages = [
-"You got this.",
-"Keep rebuilding.",
-"Consistency wins.",
-"Stay disciplined.",
-"Your effort matters."
-];
-
-window.newSMS = function() {
-  const msg = smsMessages[Math.floor(Math.random() * smsMessages.length)];
-  document.getElementById("smsMessage").innerText = msg;
-};
-newSMS();
-
-/* Save Reflection */
-window.saveReflection = async function() {
-  const reflectionData = {
-    r1: document.getElementById("r1").value,
-    r2: document.getElementById("r2").value,
-    r3: document.getElementById("r3").value
-  };
-
-  await setDoc(doc(db, "users", currentUser.uid), {
-    reflection: reflectionData
-  }, { merge: true });
-
-  alert("Saved ✓");
-};
-
-/* Load Data */
-async function loadUserData() {
-  const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+  const docSnap = await getDoc(userRef);
   if (docSnap.exists()) {
     const data = docSnap.data();
-    if (data.reflection) {
-      document.getElementById("r1").value = data.reflection.r1 || "";
-      document.getElementById("r2").value = data.reflection.r2 || "";
-      document.getElementById("r3").value = data.reflection.r3 || "";
-    }
+    document.getElementById("r1").value = data.r1 || "";
+    document.getElementById("r2").value = data.r2 || "";
+    document.getElementById("r3").value = data.r3 || "";
     document.getElementById("streakCount").innerText = data.streak || 0;
     document.getElementById("soberCount").innerText = data.sober || 0;
   }
-  loadAppointments();
+});
+
+async function saveField(field) {
+  const value = document.getElementById(field).value;
+  await updateDoc(userRef, { [field]: value });
 }
 
-/* Streak */
+["r1","r2","r3"].forEach(id=>{
+  document.getElementById(id).addEventListener("input", ()=>saveField(id));
+});
+
 window.updateStreak = async function() {
-  const userRef = doc(db, "users", currentUser.uid);
-  const snap = await getDoc(userRef);
-  const current = snap.data()?.streak || 0;
-  await updateDoc(userRef, { streak: current + 1 });
-  document.getElementById("streakCount").innerText = current + 1;
-};
-
-/* Sobriety */
-window.updateSober = async function() {
-  const userRef = doc(db, "users", currentUser.uid);
-  const snap = await getDoc(userRef);
-  const current = snap.data()?.sober || 0;
-  await updateDoc(userRef, { sober: current + 1 });
-  document.getElementById("soberCount").innerText = current + 1;
-};
-
-/* Appointments */
-window.addAppt = async function() {
-  const name = document.getElementById("apptName").value;
-  const date = document.getElementById("apptDate").value;
-  if (!name || !date) return;
-
-  await addDoc(collection(db, "users", currentUser.uid, "appointments"), {
-    name,
-    date
-  });
-
-  loadAppointments();
-};
-
-async function loadAppointments() {
-  const querySnapshot = await getDocs(collection(db, "users", currentUser.uid, "appointments"));
-  const list = document.getElementById("apptList");
-  list.innerHTML = "";
-  querySnapshot.forEach(doc => {
-    const data = doc.data();
-    list.innerHTML += `<p><strong>${data.name}</strong><br>${new Date(data.date).toLocaleString()}</p>`;
-  });
+  const current = parseInt(document.getElementById("streakCount").innerText) + 1;
+  document.getElementById("streakCount").innerText = current;
+  await updateDoc(userRef, { streak: current });
 }
+
+document.getElementById("soberCheck").addEventListener("change", async function(){
+  if(this.checked){
+    const current = parseInt(document.getElementById("soberCount").innerText) + 1;
+    document.getElementById("soberCount").innerText = current;
+    await updateDoc(userRef, { sober: current });
+  }
+});
+
+window.goBack = function() {
+  window.location.href = "index.html";
+};
 
 </script>
 
