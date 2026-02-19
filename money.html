@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Budget & Money | A New Me</title>
+<title>Money Planner | A New Me</title>
 
 <style>
 body {
@@ -47,7 +47,7 @@ button {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-input {
+input, textarea {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
@@ -55,29 +55,30 @@ input {
   margin-top: 8px;
 }
 
-.result {
-  font-weight: bold;
+.notice {
+  background: #fff4cc;
+  padding: 10px;
+  border-radius: 8px;
   margin-top: 10px;
 }
+
 </style>
 </head>
 
 <body>
 
 <div class="app-header">
-  <div>Budget & Money</div>
+  <div>Money Planner</div>
   <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
 
 <div class="card">
-<h3>💵 Weekly Take-Home Pay</h3>
-<input type="number" id="income" placeholder="Enter weekly income">
-</div>
+<h3>💵 Weekly Budget</h3>
 
-<div class="card">
-<h3>🏠 Expenses</h3>
+<label>Weekly Income</label>
+<input type="number" id="income">
 
 <label>Rent</label>
 <input type="number" id="rent">
@@ -91,29 +92,39 @@ input {
 <label>Transportation</label>
 <input type="number" id="transport">
 
-<label>Phone</label>
-<input type="number" id="phone">
-
-<label>Savings</label>
+<label>Savings Goal</label>
 <input type="number" id="savings">
 
+<button onclick="calculate()">Calculate Remaining</button>
+
+<p><strong>Remaining:</strong> $<span id="remaining">0</span></p>
+
 </div>
 
 <div class="card">
-<button onclick="calculateBudget()">Calculate</button>
-<button onclick="saveBudget()">Save Budget</button>
-
-<div class="result" id="remainingResult"></div>
-</div>
-
-<div class="card">
-<h3>💡 Money Tips</h3>
+<h3>🏦 Banking Tips</h3>
 <ul>
-<li>Avoid payday loans — high interest traps.</li>
-<li>Open a basic checking account at a local credit union.</li>
-<li>Start small savings ($5–$10 weekly builds momentum).</li>
-<li>Track spending weekly.</li>
-<li>Rebuild credit with secured credit card if eligible.</li>
+<li>Credit unions are often more flexible</li>
+<li>Bring ID and Social Security card</li>
+<li>Ask about second-chance banking accounts</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>🚫 Avoid Payday Loans</h3>
+<div class="notice">
+Payday loans charge extremely high interest rates.  
+Use credit unions or payment plans instead.
+</div>
+</div>
+
+<div class="card">
+<h3>📈 Rebuild Credit</h3>
+<ul>
+<li>Get a secured credit card</li>
+<li>Pay bills on time</li>
+<li>Keep balances low</li>
+<li>Check credit report yearly</li>
 </ul>
 </div>
 
@@ -165,39 +176,23 @@ window.logout = function() {
   });
 };
 
-window.calculateBudget = function() {
-  const income = parseFloat(document.getElementById("income").value) || 0;
-  const rent = parseFloat(document.getElementById("rent").value) || 0;
-  const utilities = parseFloat(document.getElementById("utilities").value) || 0;
-  const food = parseFloat(document.getElementById("food").value) || 0;
-  const transport = parseFloat(document.getElementById("transport").value) || 0;
-  const phone = parseFloat(document.getElementById("phone").value) || 0;
-  const savings = parseFloat(document.getElementById("savings").value) || 0;
+window.calculate = async function() {
 
-  const totalExpenses = rent + utilities + food + transport + phone + savings;
-  const remaining = income - totalExpenses;
+  const income = Number(document.getElementById("income").value) || 0;
+  const rent = Number(document.getElementById("rent").value) || 0;
+  const utilities = Number(document.getElementById("utilities").value) || 0;
+  const food = Number(document.getElementById("food").value) || 0;
+  const transport = Number(document.getElementById("transport").value) || 0;
+  const savings = Number(document.getElementById("savings").value) || 0;
 
-  document.getElementById("remainingResult").innerText =
-    "Remaining: $" + remaining.toFixed(2);
-};
-
-window.saveBudget = async function() {
-
-  const data = {
-    income: document.getElementById("income").value,
-    rent: document.getElementById("rent").value,
-    utilities: document.getElementById("utilities").value,
-    food: document.getElementById("food").value,
-    transport: document.getElementById("transport").value,
-    phone: document.getElementById("phone").value,
-    savings: document.getElementById("savings").value
-  };
+  const remaining = income - (rent + utilities + food + transport + savings);
+  document.getElementById("remaining").innerText = remaining;
 
   await setDoc(doc(db, "users", currentUser.uid), {
-    budget: data
+    budget: {
+      income, rent, utilities, food, transport, savings
+    }
   }, { merge: true });
-
-  alert("Budget Saved ✓");
 };
 
 async function loadBudget() {
@@ -210,7 +205,6 @@ async function loadBudget() {
       document.getElementById("utilities").value = data.budget.utilities || "";
       document.getElementById("food").value = data.budget.food || "";
       document.getElementById("transport").value = data.budget.transport || "";
-      document.getElementById("phone").value = data.budget.phone || "";
       document.getElementById("savings").value = data.budget.savings || "";
     }
   }
