@@ -1,119 +1,131 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A New Me</title>
 
 <style>
-* { box-sizing: border-box; }
-
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+  font-family: Arial;
   background: #eef2f7;
 }
 
-.header {
-  background: #1f3c88;
+/* Header */
+.hero {
+  background: linear-gradient(135deg, #1f3c88, #2c5cc5);
   color: white;
-  padding: 50px 20px;
+  padding: 40px 20px;
   text-align: center;
 }
 
-.header h1 {
+.hero h1 {
   margin: 0;
-  font-size: 34px;
+  font-size: 28px;
 }
 
-.header p {
+.hero p {
   margin-top: 10px;
   font-size: 16px;
-  opacity: 0.9;
 }
 
+/* Grid Layout */
 .container {
-  padding: 25px;
-  max-width: 900px;
+  padding: 20px;
+  max-width: 1000px;
   margin: auto;
-}
-
-.card {
-  background: white;
-  padding: 25px;
-  border-radius: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 15px;
-  margin-top: 20px;
 }
 
-.button {
-  display: block;
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 15px;
   text-align: center;
-  padding: 15px;
-  background: #1f3c88;
-  color: white;
-  border-radius: 12px;
   text-decoration: none;
-  font-weight: 500;
-  transition: 0.2s;
+  color: #1f3c88;
+  font-weight: bold;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
 }
 
-.button:hover {
+.card:hover {
+  transform: translateY(-4px);
   background: #ff914d;
+  color: white;
 }
 
-.footer {
-  text-align: center;
-  padding: 30px;
-  color: #777;
-  font-size: 14px;
+.icon {
+  font-size: 28px;
+  margin-bottom: 10px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-<h1>A New Me</h1>
-<p>Structured Reentry. Real Progress.</p>
+<div class="hero">
+  <h1>A New Me</h1>
+  <p>Your Second Chance Starts Here</p>
 </div>
 
 <div class="container">
 
-<div class="card">
-<h2>Welcome</h2>
-<p>
-A New Me is a structured reentry support platform designed for individuals returning after long-term incarceration. 
-This site provides tools for employment, housing, finances, legal guidance, family rebuilding, and personal growth.
-</p>
-</div>
-
-<div class="card">
-<h2>Start Here</h2>
 <div class="grid">
-<a href="resources.html" class="button">📚 Resources</a>
-<a href="stability.html" class="button">📋 Stability Plan</a>
-<a href="employment.html" class="button">💼 Employment</a>
-<a href="housing.html" class="button">🏠 Housing</a>
-<a href="money.html" class="button">💰 Budget & Money</a>
-<a href="legal.html" class="button">⚖ Legal Help</a>
-<a href="family.html" class="button">👨‍👩‍👧 Family</a>
-<a href="mindset.html" class="button">🧠 Mindset</a>
-<a href="goals.html" class="button">🎯 Goals Tracker</a>
-</div>
-</div>
+
+<a href="resources.html" class="card">
+<div class="icon">📚</div>
+Resources
+</a>
+
+<a href="stability.html" class="card">
+<div class="icon">📋</div>
+Stability Plan
+</a>
+
+<a href="employment.html" class="card">
+<div class="icon">💼</div>
+Employment
+</a>
+
+<a href="housing.html" class="card">
+<div class="icon">🏠</div>
+Housing
+</a>
+
+<a href="money.html" class="card">
+<div class="icon">💰</div>
+Budget & Money
+</a>
+
+<a href="legal.html" class="card">
+<div class="icon">⚖</div>
+Legal Help
+</a>
+
+<a href="family.html" class="card">
+<div class="icon">👨‍👩‍👧</div>
+Family
+</a>
+
+<a href="mindset.html" class="card">
+<div class="icon">🧠</div>
+Mindset
+</a>
+
+<a href="goals.html" class="card">
+<div class="icon">🎯</div>
+Goals Tracker
+</a>
 
 </div>
 
-<div class="footer">
-© 2026 A New Me | Reentry Support Platform
 </div>
 
 </body>
