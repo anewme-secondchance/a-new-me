@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Goals | A New Me</title>
+<title>Goals Tracker | A New Me</title>
 
 <style>
 body {
@@ -45,23 +45,32 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-textarea {
+input {
   width: 100%;
-  min-height: 80px;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
   margin-top: 8px;
 }
 
-button.save-btn {
-  margin-top: 10px;
+button {
   background: #1f3c88;
   color: white;
   border: none;
   padding: 8px 14px;
   border-radius: 6px;
   cursor: pointer;
+  margin-top: 10px;
+}
+
+.goal-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.completed {
+  text-decoration: line-through;
+  color: gray;
 }
 </style>
 </head>
@@ -77,27 +86,14 @@ button.save-btn {
 <div class="container">
 
 <div class="card">
-<h3>🏠 Housing Goals</h3>
-<textarea id="housingGoal"></textarea>
-<button class="save-btn" onclick="saveGoal('housingGoal')">Save</button>
+<h3>🎯 Add New Goal</h3>
+<input type="text" id="goalInput" placeholder="Enter your goal...">
+<button onclick="addGoal()">Add Goal</button>
 </div>
 
 <div class="card">
-<h3>💼 Employment Goals</h3>
-<textarea id="jobGoal"></textarea>
-<button class="save-btn" onclick="saveGoal('jobGoal')">Save</button>
-</div>
-
-<div class="card">
-<h3>💰 Financial Goals</h3>
-<textarea id="moneyGoal"></textarea>
-<button class="save-btn" onclick="saveGoal('moneyGoal')">Save</button>
-</div>
-
-<div class="card">
-<h3>🧠 Mental Health Goals</h3>
-<textarea id="mentalGoal"></textarea>
-<button class="save-btn" onclick="saveGoal('mentalGoal')">Save</button>
+<h3>📌 My Goals</h3>
+<div id="goalList"></div>
 </div>
 
 </div>
@@ -105,7 +101,7 @@ button.save-btn {
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { 
+import {
   getAuth,
   onAuthStateChanged,
   signOut
@@ -113,9 +109,12 @@ import {
 
 import {
   getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
   doc,
-  setDoc,
-  getDoc
+  updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -133,7 +132,7 @@ const db = getFirestore(app);
 
 let currentUser;
 
-onAuthStateChanged(auth, async (user) => {
+onAuthStateChanged(auth, (user) => {
   if (!user) {
     window.location.href = "auth.html";
   } else {
@@ -152,27 +151,59 @@ window.goBack = function() {
   window.location.href = "index.html";
 };
 
-async function loadGoals() {
-  const docRef = doc(db, "users", currentUser.uid);
-  const docSnap = await getDoc(docRef);
+window.addGoal = async function() {
+  const text = goalInput.value.trim();
+  if (!text) return;
 
-  if (docSnap.exists()) {
+  await addDoc(collection(db, "users", currentUser.uid, "goals"), {
+    text: text,
+    completed: false,
+    createdAt: new Date()
+  });
+
+  goalInput.value = "";
+  loadGoals();
+};
+
+async function loadGoals() {
+  const list = document.getElementById("goalList");
+  list.innerHTML = "";
+
+  const querySnapshot = await getDocs(
+    collection(db, "users", currentUser.uid, "goals")
+  );
+
+  querySnapshot.forEach((docSnap) => {
     const data = docSnap.data();
-    if (data.housingGoal) document.getElementById("housingGoal").value = data.housingGoal;
-    if (data.jobGoal) document.getElementById("jobGoal").value = data.jobGoal;
-    if (data.moneyGoal) document.getElementById("moneyGoal").value = data.moneyGoal;
-    if (data.mentalGoal) document.getElementById("mentalGoal").value = data.mentalGoal;
-  }
+    const div = document.createElement("div");
+    div.className = "goal-item";
+    if (data.completed) div.classList.add("completed");
+
+    div.innerHTML = `
+      ${data.text}
+      <br>
+      <button onclick="toggleGoal('${docSnap.id}', ${data.completed})">
+        ${data.completed ? "Undo" : "Complete"}
+      </button>
+      <button onclick="deleteGoal('${docSnap.id}')">
+        Delete
+      </button>
+    `;
+
+    list.appendChild(div);
+  });
 }
 
-window.saveGoal = async function(fieldId) {
-  const value = document.getElementById(fieldId).value;
+window.toggleGoal = async function(id, currentStatus) {
+  await updateDoc(doc(db, "users", currentUser.uid, "goals", id), {
+    completed: !currentStatus
+  });
+  loadGoals();
+};
 
-  await setDoc(doc(db, "users", currentUser.uid), {
-    [fieldId]: value
-  }, { merge: true });
-
-  alert("Goal saved!");
+window.deleteGoal = async function(id) {
+  await deleteDoc(doc(db, "users", currentUser.uid, "goals", id));
+  loadGoals();
 };
 
 </script>
