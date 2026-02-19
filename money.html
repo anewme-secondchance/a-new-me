@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Housing Tracker | A New Me</title>
+<title>Budget & Money | A New Me</title>
 
 <style>
 body {
@@ -21,7 +21,7 @@ body {
   padding: 15px;
 }
 
-.back-btn, .logout-btn {
+button {
   background: white;
   color: #1f3c88;
   border: none;
@@ -29,12 +29,14 @@ body {
   border-radius: 20px;
   cursor: pointer;
   font-weight: bold;
+  margin-top: 10px;
 }
 
 .container {
   padding: 20px;
   max-width: 900px;
   margin: auto;
+  padding-bottom: 80px;
 }
 
 .card {
@@ -45,7 +47,7 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-input, select, textarea {
+input {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
@@ -53,19 +55,9 @@ input, select, textarea {
   margin-top: 8px;
 }
 
-button {
-  background: #1f3c88;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
+.result {
+  font-weight: bold;
   margin-top: 10px;
-}
-
-.house-item {
-  padding: 12px;
-  border-bottom: 1px solid #eee;
 }
 </style>
 </head>
@@ -73,38 +65,56 @@ button {
 <body>
 
 <div class="app-header">
-  <button onclick="goBack()" class="back-btn">← Back</button>
-  <div>Housing Tracker</div>
-  <button onclick="logout()" class="logout-btn">Logout</button>
+  <div>Budget & Money</div>
+  <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
 
 <div class="card">
-<h3>🏠 Add Housing Application</h3>
+<h3>💵 Weekly Take-Home Pay</h3>
+<input type="number" id="income" placeholder="Enter weekly income">
+</div>
 
-<input type="text" id="property" placeholder="Property / Apartment Name">
-<input type="text" id="landlord" placeholder="Landlord / Contact Name">
-<input type="text" id="phone" placeholder="Contact Phone">
-<input type="date" id="dateApplied">
+<div class="card">
+<h3>🏠 Expenses</h3>
 
-<select id="status">
-  <option value="Applied">Applied</option>
-  <option value="Viewing Scheduled">Viewing Scheduled</option>
-  <option value="Approved">Approved</option>
-  <option value="Denied">Denied</option>
-</select>
+<label>Rent</label>
+<input type="number" id="rent">
 
-<input type="number" id="deposit" placeholder="Deposit Amount ($)">
-<textarea id="notes" placeholder="Notes..."></textarea>
+<label>Utilities</label>
+<input type="number" id="utilities">
 
-<button onclick="addHousing()">Save Application</button>
+<label>Food</label>
+<input type="number" id="food">
+
+<label>Transportation</label>
+<input type="number" id="transport">
+
+<label>Phone</label>
+<input type="number" id="phone">
+
+<label>Savings</label>
+<input type="number" id="savings">
 
 </div>
 
 <div class="card">
-<h3>📋 My Housing Applications</h3>
-<div id="housingList"></div>
+<button onclick="calculateBudget()">Calculate</button>
+<button onclick="saveBudget()">Save Budget</button>
+
+<div class="result" id="remainingResult"></div>
+</div>
+
+<div class="card">
+<h3>💡 Money Tips</h3>
+<ul>
+<li>Avoid payday loans — high interest traps.</li>
+<li>Open a basic checking account at a local credit union.</li>
+<li>Start small savings ($5–$10 weekly builds momentum).</li>
+<li>Track spending weekly.</li>
+<li>Rebuild credit with secured credit card if eligible.</li>
+</ul>
 </div>
 
 </div>
@@ -112,19 +122,17 @@ button {
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
+import { 
   getAuth,
-  onAuthStateChanged,
-  signOut
+  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 import {
   getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc
+  doc,
+  setDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -142,12 +150,12 @@ const db = getFirestore(app);
 
 let currentUser;
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async user => {
   if (!user) {
     window.location.href = "auth.html";
   } else {
     currentUser = user;
-    loadHousing();
+    loadBudget();
   }
 });
 
@@ -157,67 +165,56 @@ window.logout = function() {
   });
 };
 
-window.goBack = function() {
-  window.location.href = "index.html";
+window.calculateBudget = function() {
+  const income = parseFloat(document.getElementById("income").value) || 0;
+  const rent = parseFloat(document.getElementById("rent").value) || 0;
+  const utilities = parseFloat(document.getElementById("utilities").value) || 0;
+  const food = parseFloat(document.getElementById("food").value) || 0;
+  const transport = parseFloat(document.getElementById("transport").value) || 0;
+  const phone = parseFloat(document.getElementById("phone").value) || 0;
+  const savings = parseFloat(document.getElementById("savings").value) || 0;
+
+  const totalExpenses = rent + utilities + food + transport + phone + savings;
+  const remaining = income - totalExpenses;
+
+  document.getElementById("remainingResult").innerText =
+    "Remaining: $" + remaining.toFixed(2);
 };
 
-window.addHousing = async function() {
-  const housing = {
-    property: property.value,
-    landlord: landlord.value,
-    phone: phone.value,
-    dateApplied: dateApplied.value,
-    status: status.value,
-    deposit: deposit.value,
-    notes: notes.value,
-    createdAt: new Date()
+window.saveBudget = async function() {
+
+  const data = {
+    income: document.getElementById("income").value,
+    rent: document.getElementById("rent").value,
+    utilities: document.getElementById("utilities").value,
+    food: document.getElementById("food").value,
+    transport: document.getElementById("transport").value,
+    phone: document.getElementById("phone").value,
+    savings: document.getElementById("savings").value
   };
 
-  if (!housing.property) return;
+  await setDoc(doc(db, "users", currentUser.uid), {
+    budget: data
+  }, { merge: true });
 
-  await addDoc(collection(db, "users", currentUser.uid, "housing"), housing);
-
-  property.value = "";
-  landlord.value = "";
-  phone.value = "";
-  dateApplied.value = "";
-  deposit.value = "";
-  notes.value = "";
-
-  loadHousing();
+  alert("Budget Saved ✓");
 };
 
-async function loadHousing() {
-  const list = document.getElementById("housingList");
-  list.innerHTML = "";
-
-  const querySnapshot = await getDocs(
-    collection(db, "users", currentUser.uid, "housing")
-  );
-
-  querySnapshot.forEach((docSnap) => {
+async function loadBudget() {
+  const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+  if (docSnap.exists()) {
     const data = docSnap.data();
-    const div = document.createElement("div");
-    div.className = "house-item";
-
-    div.innerHTML = `
-      <strong>${data.property}</strong><br>
-      Contact: ${data.landlord || "N/A"} (${data.phone || "N/A"})<br>
-      Applied: ${data.dateApplied || "N/A"}<br>
-      Status: ${data.status}<br>
-      Deposit: $${data.deposit || "0"}<br>
-      Notes: ${data.notes || "None"}<br>
-      <button onclick="deleteHousing('${docSnap.id}')">Delete</button>
-    `;
-
-    list.appendChild(div);
-  });
+    if (data.budget) {
+      document.getElementById("income").value = data.budget.income || "";
+      document.getElementById("rent").value = data.budget.rent || "";
+      document.getElementById("utilities").value = data.budget.utilities || "";
+      document.getElementById("food").value = data.budget.food || "";
+      document.getElementById("transport").value = data.budget.transport || "";
+      document.getElementById("phone").value = data.budget.phone || "";
+      document.getElementById("savings").value = data.budget.savings || "";
+    }
+  }
 }
-
-window.deleteHousing = async function(id) {
-  await deleteDoc(doc(db, "users", currentUser.uid, "housing", id));
-  loadHousing();
-};
 
 </script>
 
