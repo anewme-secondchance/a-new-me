@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Housing Tracker | A New Me</title>
+<title>Housing | A New Me</title>
 
 <style>
 body {
@@ -21,7 +21,7 @@ body {
   padding: 15px;
 }
 
-.back-btn, .logout-btn {
+button {
   background: white;
   color: #1f3c88;
   border: none;
@@ -29,12 +29,14 @@ body {
   border-radius: 20px;
   cursor: pointer;
   font-weight: bold;
+  margin-top: 10px;
 }
 
 .container {
   padding: 20px;
   max-width: 900px;
   margin: auto;
+  padding-bottom: 80px;
 }
 
 .card {
@@ -45,7 +47,7 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-input, select, textarea {
+textarea {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
@@ -53,19 +55,10 @@ input, select, textarea {
   margin-top: 8px;
 }
 
-button {
-  background: #1f3c88;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  margin-top: 10px;
-}
-
-.house-item {
-  padding: 12px;
-  border-bottom: 1px solid #eee;
+a {
+  color: #1f3c88;
+  font-weight: bold;
+  text-decoration: none;
 }
 </style>
 </head>
@@ -73,38 +66,82 @@ button {
 <body>
 
 <div class="app-header">
-  <button onclick="goBack()" class="back-btn">← Back</button>
-  <div>Housing Tracker</div>
-  <button onclick="logout()" class="logout-btn">Logout</button>
+  <div>Housing</div>
+  <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
 
 <div class="card">
-<h3>🏠 Add Housing Application</h3>
-
-<input type="text" id="property" placeholder="Property / Apartment Name">
-<input type="text" id="landlord" placeholder="Landlord / Contact Name">
-<input type="text" id="phone" placeholder="Contact Phone">
-<input type="date" id="dateApplied">
-
-<select id="status">
-  <option value="Applied">Applied</option>
-  <option value="Viewing Scheduled">Viewing Scheduled</option>
-  <option value="Approved">Approved</option>
-  <option value="Denied">Denied</option>
-</select>
-
-<input type="number" id="deposit" placeholder="Deposit Amount ($)">
-<textarea id="notes" placeholder="Notes..."></textarea>
-
-<button onclick="addHousing()">Save Application</button>
-
+<h3>🏠 Housing Assistance Types</h3>
+<ul>
+<li>Transitional Housing Programs</li>
+<li>Emergency Shelters</li>
+<li>Halfway Houses</li>
+<li>Permanent Supportive Housing</li>
+<li>Reentry Housing Referrals</li>
+</ul>
 </div>
 
 <div class="card">
-<h3>📋 My Housing Applications</h3>
-<div id="housingList"></div>
+<h3>📋 Important Documents Needed</h3>
+<ul>
+<li>State ID or Driver’s License</li>
+<li>Social Security Card</li>
+<li>Birth Certificate</li>
+<li>Proof of Income</li>
+<li>Proof of Address</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>💡 Tips for Renting with a Record</h3>
+<ul>
+<li>Be honest but brief about your past.</li>
+<li>Provide references (mentor, employer, case manager).</li>
+<li>Show proof of stable income.</li>
+<li>Offer larger deposit if possible.</li>
+<li>Stay professional and confident.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>📝 My Housing Plan</h3>
+
+<label>My Target Move-In Date</label>
+<textarea id="moveDate"></textarea>
+
+<label>My Monthly Budget for Rent</label>
+<textarea id="rentBudget"></textarea>
+
+<label>My Housing Action Steps</label>
+<textarea id="housingSteps"></textarea>
+
+<button onclick="saveHousing()">Save Plan</button>
+</div>
+
+<div class="card">
+<h3>🔗 Helpful Texas Resources</h3>
+
+<p><strong>Texas Housing Assistance</strong></p>
+<a href="https://www.tdhca.state.tx.us/" target="_blank">
+Texas Department of Housing & Community Affairs
+</a>
+
+<br><br>
+
+<p><strong>HUD Affordable Housing Search</strong></p>
+<a href="https://www.hud.gov/states/texas/renting" target="_blank">
+HUD Texas Rental Help
+</a>
+
+<br><br>
+
+<p><strong>Find Transitional Housing</strong></p>
+<a href="https://www.findhelp.org/housing" target="_blank">
+FindHelp Housing Search
+</a>
+
 </div>
 
 </div>
@@ -112,19 +149,17 @@ button {
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import {
+import { 
   getAuth,
-  onAuthStateChanged,
-  signOut
+  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 import {
   getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc
+  doc,
+  setDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -142,7 +177,7 @@ const db = getFirestore(app);
 
 let currentUser;
 
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async user => {
   if (!user) {
     window.location.href = "auth.html";
   } else {
@@ -157,67 +192,31 @@ window.logout = function() {
   });
 };
 
-window.goBack = function() {
-  window.location.href = "index.html";
-};
-
-window.addHousing = async function() {
-  const housing = {
-    property: property.value,
-    landlord: landlord.value,
-    phone: phone.value,
-    dateApplied: dateApplied.value,
-    status: status.value,
-    deposit: deposit.value,
-    notes: notes.value,
-    createdAt: new Date()
+window.saveHousing = async function() {
+  const data = {
+    moveDate: document.getElementById("moveDate").value,
+    rentBudget: document.getElementById("rentBudget").value,
+    housingSteps: document.getElementById("housingSteps").value
   };
 
-  if (!housing.property) return;
+  await setDoc(doc(db, "users", currentUser.uid), {
+    housing: data
+  }, { merge: true });
 
-  await addDoc(collection(db, "users", currentUser.uid, "housing"), housing);
-
-  property.value = "";
-  landlord.value = "";
-  phone.value = "";
-  dateApplied.value = "";
-  deposit.value = "";
-  notes.value = "";
-
-  loadHousing();
+  alert("Housing Plan Saved ✓");
 };
 
 async function loadHousing() {
-  const list = document.getElementById("housingList");
-  list.innerHTML = "";
-
-  const querySnapshot = await getDocs(
-    collection(db, "users", currentUser.uid, "housing")
-  );
-
-  querySnapshot.forEach((docSnap) => {
+  const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+  if (docSnap.exists()) {
     const data = docSnap.data();
-    const div = document.createElement("div");
-    div.className = "house-item";
-
-    div.innerHTML = `
-      <strong>${data.property}</strong><br>
-      Contact: ${data.landlord || "N/A"} (${data.phone || "N/A"})<br>
-      Applied: ${data.dateApplied || "N/A"}<br>
-      Status: ${data.status}<br>
-      Deposit: $${data.deposit || "0"}<br>
-      Notes: ${data.notes || "None"}<br>
-      <button onclick="deleteHousing('${docSnap.id}')">Delete</button>
-    `;
-
-    list.appendChild(div);
-  });
+    if (data.housing) {
+      document.getElementById("moveDate").value = data.housing.moveDate || "";
+      document.getElementById("rentBudget").value = data.housing.rentBudget || "";
+      document.getElementById("housingSteps").value = data.housing.housingSteps || "";
+    }
+  }
 }
-
-window.deleteHousing = async function(id) {
-  await deleteDoc(doc(db, "users", currentUser.uid, "housing", id));
-  loadHousing();
-};
 
 </script>
 
