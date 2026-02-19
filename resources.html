@@ -105,6 +105,7 @@ function createCard(resource) {
       ${resource.city} – ${resource.category}<br>
       ${resource.phone ? `📞 <a href="tel:${resource.phone}">${resource.phone}</a><br>` : ""}
       ${resource.website ? `🌐 <a href="${resource.website}" target="_blank">Website</a><br>` : ""}
+      ${resource.notes ? `<em>${resource.notes}</em><br>` : ""}
       <button class="save-btn" onclick='saveResource(${JSON.stringify(resource)})'>Save</button>
     </div>
   `;
