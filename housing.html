@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Budget & Money | A New Me</title>
+<title>Housing | A New Me</title>
 
 <style>
 body {
@@ -47,7 +47,7 @@ button {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-input {
+textarea {
   width: 100%;
   padding: 10px;
   border-radius: 8px;
@@ -55,9 +55,10 @@ input {
   margin-top: 8px;
 }
 
-.result {
+a {
+  color: #1f3c88;
   font-weight: bold;
-  margin-top: 10px;
+  text-decoration: none;
 }
 </style>
 </head>
@@ -65,56 +66,82 @@ input {
 <body>
 
 <div class="app-header">
-  <div>Budget & Money</div>
+  <div>Housing</div>
   <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
 
 <div class="card">
-<h3>💵 Weekly Take-Home Pay</h3>
-<input type="number" id="income" placeholder="Enter weekly income">
-</div>
-
-<div class="card">
-<h3>🏠 Expenses</h3>
-
-<label>Rent</label>
-<input type="number" id="rent">
-
-<label>Utilities</label>
-<input type="number" id="utilities">
-
-<label>Food</label>
-<input type="number" id="food">
-
-<label>Transportation</label>
-<input type="number" id="transport">
-
-<label>Phone</label>
-<input type="number" id="phone">
-
-<label>Savings</label>
-<input type="number" id="savings">
-
-</div>
-
-<div class="card">
-<button onclick="calculateBudget()">Calculate</button>
-<button onclick="saveBudget()">Save Budget</button>
-
-<div class="result" id="remainingResult"></div>
-</div>
-
-<div class="card">
-<h3>💡 Money Tips</h3>
+<h3>🏠 Housing Assistance Types</h3>
 <ul>
-<li>Avoid payday loans — high interest traps.</li>
-<li>Open a basic checking account at a local credit union.</li>
-<li>Start small savings ($5–$10 weekly builds momentum).</li>
-<li>Track spending weekly.</li>
-<li>Rebuild credit with secured credit card if eligible.</li>
+<li>Transitional Housing Programs</li>
+<li>Emergency Shelters</li>
+<li>Halfway Houses</li>
+<li>Permanent Supportive Housing</li>
+<li>Reentry Housing Referrals</li>
 </ul>
+</div>
+
+<div class="card">
+<h3>📋 Important Documents Needed</h3>
+<ul>
+<li>State ID or Driver’s License</li>
+<li>Social Security Card</li>
+<li>Birth Certificate</li>
+<li>Proof of Income</li>
+<li>Proof of Address</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>💡 Tips for Renting with a Record</h3>
+<ul>
+<li>Be honest but brief about your past.</li>
+<li>Provide references (mentor, employer, case manager).</li>
+<li>Show proof of stable income.</li>
+<li>Offer larger deposit if possible.</li>
+<li>Stay professional and confident.</li>
+</ul>
+</div>
+
+<div class="card">
+<h3>📝 My Housing Plan</h3>
+
+<label>My Target Move-In Date</label>
+<textarea id="moveDate"></textarea>
+
+<label>My Monthly Budget for Rent</label>
+<textarea id="rentBudget"></textarea>
+
+<label>My Housing Action Steps</label>
+<textarea id="housingSteps"></textarea>
+
+<button onclick="saveHousing()">Save Plan</button>
+</div>
+
+<div class="card">
+<h3>🔗 Helpful Texas Resources</h3>
+
+<p><strong>Texas Housing Assistance</strong></p>
+<a href="https://www.tdhca.state.tx.us/" target="_blank">
+Texas Department of Housing & Community Affairs
+</a>
+
+<br><br>
+
+<p><strong>HUD Affordable Housing Search</strong></p>
+<a href="https://www.hud.gov/states/texas/renting" target="_blank">
+HUD Texas Rental Help
+</a>
+
+<br><br>
+
+<p><strong>Find Transitional Housing</strong></p>
+<a href="https://www.findhelp.org/housing" target="_blank">
+FindHelp Housing Search
+</a>
+
 </div>
 
 </div>
@@ -155,7 +182,7 @@ onAuthStateChanged(auth, async user => {
     window.location.href = "auth.html";
   } else {
     currentUser = user;
-    loadBudget();
+    loadHousing();
   }
 });
 
@@ -165,53 +192,28 @@ window.logout = function() {
   });
 };
 
-window.calculateBudget = function() {
-  const income = parseFloat(document.getElementById("income").value) || 0;
-  const rent = parseFloat(document.getElementById("rent").value) || 0;
-  const utilities = parseFloat(document.getElementById("utilities").value) || 0;
-  const food = parseFloat(document.getElementById("food").value) || 0;
-  const transport = parseFloat(document.getElementById("transport").value) || 0;
-  const phone = parseFloat(document.getElementById("phone").value) || 0;
-  const savings = parseFloat(document.getElementById("savings").value) || 0;
-
-  const totalExpenses = rent + utilities + food + transport + phone + savings;
-  const remaining = income - totalExpenses;
-
-  document.getElementById("remainingResult").innerText =
-    "Remaining: $" + remaining.toFixed(2);
-};
-
-window.saveBudget = async function() {
-
+window.saveHousing = async function() {
   const data = {
-    income: document.getElementById("income").value,
-    rent: document.getElementById("rent").value,
-    utilities: document.getElementById("utilities").value,
-    food: document.getElementById("food").value,
-    transport: document.getElementById("transport").value,
-    phone: document.getElementById("phone").value,
-    savings: document.getElementById("savings").value
+    moveDate: document.getElementById("moveDate").value,
+    rentBudget: document.getElementById("rentBudget").value,
+    housingSteps: document.getElementById("housingSteps").value
   };
 
   await setDoc(doc(db, "users", currentUser.uid), {
-    budget: data
+    housing: data
   }, { merge: true });
 
-  alert("Budget Saved ✓");
+  alert("Housing Plan Saved ✓");
 };
 
-async function loadBudget() {
+async function loadHousing() {
   const docSnap = await getDoc(doc(db, "users", currentUser.uid));
   if (docSnap.exists()) {
     const data = docSnap.data();
-    if (data.budget) {
-      document.getElementById("income").value = data.budget.income || "";
-      document.getElementById("rent").value = data.budget.rent || "";
-      document.getElementById("utilities").value = data.budget.utilities || "";
-      document.getElementById("food").value = data.budget.food || "";
-      document.getElementById("transport").value = data.budget.transport || "";
-      document.getElementById("phone").value = data.budget.phone || "";
-      document.getElementById("savings").value = data.budget.savings || "";
+    if (data.housing) {
+      document.getElementById("moveDate").value = data.housing.moveDate || "";
+      document.getElementById("rentBudget").value = data.housing.rentBudget || "";
+      document.getElementById("housingSteps").value = data.housing.housingSteps || "";
     }
   }
 }
