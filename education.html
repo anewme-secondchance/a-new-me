@@ -14,32 +14,29 @@ body {
 
 .app-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   background: #1f3c88;
   color: white;
   padding: 15px;
 }
 
-.back-btn {
+button {
   background: white;
   color: #1f3c88;
   border: none;
   padding: 6px 14px;
   border-radius: 20px;
   cursor: pointer;
-  margin-right: 15px;
   font-weight: bold;
-}
-
-.page-title {
-  font-size: 18px;
-  font-weight: bold;
+  margin-top: 10px;
 }
 
 .container {
   padding: 20px;
-  max-width: 950px;
+  max-width: 900px;
   margin: auto;
+  padding-bottom: 80px;
 }
 
 .card {
@@ -50,26 +47,12 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-textarea {
+textarea, input {
   width: 100%;
-  min-height: 70px;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
   margin-top: 8px;
-}
-
-select, button {
-  padding: 8px;
-  border-radius: 8px;
-  margin-top: 10px;
-}
-
-button {
-  background: #1f3c88;
-  color: white;
-  border: none;
-  cursor: pointer;
 }
 
 a {
@@ -77,233 +60,169 @@ a {
   font-weight: bold;
   text-decoration: none;
 }
-a:hover { text-decoration: underline; }
-
-ul { padding-left: 20px; }
 </style>
 </head>
 
 <body>
 
 <div class="app-header">
-<button onclick="goBack()" class="back-btn">← Back</button>
-<div class="page-title">Education & GED</div>
+  <div>Education</div>
+  <button onclick="logout()">Logout</button>
 </div>
 
 <div class="container">
 
-<!-- GED SECTION -->
 <div class="card">
 <h3>📘 GED Information</h3>
 <p>You can earn your GED online or at local testing centers.</p>
-
-<p><strong>Official GED Website:</strong></p>
-<a href="https://ged.com/" target="_blank">https://ged.com</a>
-
-<p><strong>Texas Adult Education Programs:</strong></p>
+<a href="https://ged.com" target="_blank">Official GED Website</a>
+<br><br>
 <a href="https://tea.texas.gov/academics/college-career-and-military-prep/adult-education-and-literacy" target="_blank">
 Texas Adult Education & Literacy
 </a>
 </div>
 
 <div class="card">
-<h3>📝 GED Enrollment Plan</h3>
-
+<h3>📝 GED Plan</h3>
 <label>Why do I want my GED?</label>
-<textarea id="ged1"></textarea>
+<textarea id="gedWhy"></textarea>
 
-<label>My study schedule:</label>
-<textarea id="ged2"></textarea>
+<label>My Study Schedule</label>
+<textarea id="gedSchedule"></textarea>
 
-<label>My test goal date:</label>
-<textarea id="ged3"></textarea>
-
+<label>My Test Goal Date</label>
+<input type="date" id="gedDate">
 </div>
 
-<!-- COLLEGE SECTION -->
 <div class="card">
-<h3>🎓 How To Apply For College</h3>
+<h3>🎓 College Planning</h3>
 
-<p><strong>Step 1: Choose a School</strong></p>
+<p><strong>Step 1:</strong> Choose a School</p>
 <ul>
 <li>Community College</li>
 <li>Trade School</li>
 <li>University</li>
 </ul>
 
-<p><strong>Step 2: Complete FAFSA</strong></p>
-<a href="https://studentaid.gov/" target="_blank">https://studentaid.gov</a>
+<p><strong>Step 2:</strong> Complete FAFSA</p>
+<a href="https://studentaid.gov" target="_blank">studentaid.gov</a>
 
-<p><strong>Texas Common Application:</strong></p>
-<a href="https://www.applytexas.org/" target="_blank">https://www.applytexas.org</a>
-</div>
+<p><strong>Texas Common App:</strong></p>
+<a href="https://www.applytexas.org" target="_blank">applytexas.org</a>
 
-<div class="card">
-<h3>📋 College Application Practice</h3>
+<label>School I Want To Apply To</label>
+<input type="text" id="collegeSchool">
 
-<label>School I Want To Apply To:</label>
-<textarea id="college1"></textarea>
+<label>Program / Major</label>
+<input type="text" id="collegeMajor">
 
-<label>Program or Major:</label>
-<textarea id="college2"></textarea>
-
-<label>Career Goal:</label>
-<textarea id="college3"></textarea>
-
-<label>How will education improve my life?</label>
-<textarea id="college4"></textarea>
+<label>Career Goal</label>
+<textarea id="collegeGoal"></textarea>
 
 </div>
 
-<!-- TRADE SECTION -->
 <div class="card">
-<h3>🔧 Trade Schools & Skilled Careers</h3>
+<h3>🔧 Trade & Certification Programs</h3>
+
 <ul>
-<li>Electrician</li>
-<li>HVAC Technician</li>
-<li>Welding</li>
-<li>Plumbing</li>
-<li>Heavy Equipment Operator</li>
-<li>CDL Truck Driver</li>
-<li>Automotive Technician</li>
-<li>CNA</li>
+<li><strong>HVAC Certification</strong></li>
+<li><strong>Welding Certification</strong></li>
+<li><strong>CDL (Truck Driving)</strong></li>
+<li><strong>Electrician Apprenticeship</strong></li>
+<li><strong>Construction / Skilled Trades</strong></li>
+<li><strong>IT Certifications (CompTIA, Google IT)</strong></li>
 </ul>
 
-<p><strong>Find Training:</strong></p>
-<ul>
-<li><a href="https://www.careeronestop.org" target="_blank">CareerOneStop</a></li>
-<li><a href="https://www.apprenticeship.gov" target="_blank">Apprenticeship.gov</a></li>
-<li><a href="https://www.twc.texas.gov/jobseekers/training-education" target="_blank">Texas Workforce Training</a></li>
-</ul>
-</div>
-
-<!-- CERTIFICATIONS -->
-<div class="card">
-<h3>📜 Fast Certification Programs</h3>
-<ul>
-<li>OSHA 10 / OSHA 30</li>
-<li>Forklift Certification</li>
-<li>ServSafe</li>
-<li>CPR / First Aid</li>
-<li>Google IT Support Certificate</li>
-<li>Microsoft Office Certification</li>
-</ul>
-</div>
-
-<!-- HIGH PAYING -->
-<div class="card">
-<h3>💵 Careers Often Paying $20+/hr</h3>
-<ul>
-<li>CDL Driver</li>
-<li>Welder</li>
-<li>HVAC Tech</li>
-<li>Electrician Apprentice</li>
-<li>Industrial Maintenance</li>
-<li>Oilfield Worker</li>
-</ul>
-</div>
-
-<!-- LICENSING -->
-<div class="card">
-<h3>⚖ Licensing Reminder</h3>
-<p>Some licenses restrict certain offenses. Always verify before enrolling.</p>
-<a href="https://www.careeronestop.org/Toolkit/Training/find-licenses.aspx" target="_blank">
-Check State License Requirements
+<a href="https://www.apprenticeship.gov" target="_blank">
+Find Apprenticeships
 </a>
 </div>
 
-<!-- FINANCIAL AID -->
 <div class="card">
-<h3>💰 Financial Aid & Scholarships</h3>
-<ul>
-<li>Pell Grant (via FAFSA)</li>
-<li>Workforce Grants</li>
-<li>Local Reentry Scholarships</li>
-</ul>
-<p>Many returning citizens now qualify for federal aid.</p>
-</div>
-
-<!-- CAREER QUIZ -->
-<div class="card">
-<h3>🎯 Career Path Finder</h3>
-
-<select id="careerSelect">
-<option value="">-- Select One --</option>
-<option value="hands">I like working with my hands</option>
-<option value="tech">I like computers</option>
-<option value="health">I want to help people</option>
-<option value="fast">I want fast income</option>
-<option value="college">I want long-term degree growth</option>
-</select>
-
-<button onclick="suggestCareer()">Get Suggestion</button>
-
-<p id="careerResult" style="margin-top:15px;font-weight:bold;"></p>
-</div>
-
-<!-- PRINT -->
-<div class="card">
-<h3>📄 Print Planner</h3>
-<button onclick="window.print()">Print This Page</button>
-</div>
-
-<!-- ENCOURAGEMENT -->
-<div class="card">
-<h3>💡 Encouragement</h3>
-<p>
-Education is not about age. It’s about access and opportunity.
-Your past does not block your future.
-Trade schools, certifications, and colleges accept returning citizens.
-</p>
+<button onclick="saveEducation()">Save Education Plan</button>
 </div>
 
 </div>
 
-<script>
-function goBack() {
-  window.location.href = "index.html";
-}
+<script type="module">
 
-function setupSave(id, key) {
-  const field = document.getElementById(id);
-  const saved = localStorage.getItem(key);
-  if (saved) field.value = saved;
-  field.addEventListener("input", () => {
-    localStorage.setItem(key, field.value);
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { 
+  getAuth,
+  signOut,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA4O2nEtjdy9fSh66gnHH6jsbKKSWdJt4c",
+  authDomain: "a-new-me-1a17a.firebaseapp.com",
+  projectId: "a-new-me-1a17a",
+  storageBucket: "a-new-me-1a17a.firebasestorage.app",
+  messagingSenderId: "362235516132",
+  appId: "1:362235516132:web:1465c3ec03ce1d3f4608f1"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let currentUser;
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    window.location.href = "auth.html";
+  } else {
+    currentUser = user;
+    loadEducation();
+  }
+});
+
+window.logout = function() {
+  signOut(auth).then(() => {
+    window.location.href = "auth.html";
   });
+};
+
+window.saveEducation = async function() {
+
+  const data = {
+    gedWhy: document.getElementById("gedWhy").value,
+    gedSchedule: document.getElementById("gedSchedule").value,
+    gedDate: document.getElementById("gedDate").value,
+    collegeSchool: document.getElementById("collegeSchool").value,
+    collegeMajor: document.getElementById("collegeMajor").value,
+    collegeGoal: document.getElementById("collegeGoal").value
+  };
+
+  await setDoc(doc(db, "users", currentUser.uid), {
+    education: data
+  }, { merge: true });
+
+  alert("Education Plan Saved ✓");
+};
+
+async function loadEducation() {
+  const docSnap = await getDoc(doc(db, "users", currentUser.uid));
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    if (data.education) {
+      document.getElementById("gedWhy").value = data.education.gedWhy || "";
+      document.getElementById("gedSchedule").value = data.education.gedSchedule || "";
+      document.getElementById("gedDate").value = data.education.gedDate || "";
+      document.getElementById("collegeSchool").value = data.education.collegeSchool || "";
+      document.getElementById("collegeMajor").value = data.education.collegeMajor || "";
+      document.getElementById("collegeGoal").value = data.education.collegeGoal || "";
+    }
+  }
 }
 
-setupSave("ged1","ged1");
-setupSave("ged2","ged2");
-setupSave("ged3","ged3");
-setupSave("college1","college1");
-setupSave("college2","college2");
-setupSave("college3","college3");
-setupSave("college4","college4");
-
-function suggestCareer() {
-  const value = document.getElementById("careerSelect").value;
-  const result = document.getElementById("careerResult");
-
-  if(value === "hands") {
-    result.textContent = "Suggested Path: Electrician, Welding, HVAC, Construction.";
-  }
-  else if(value === "tech") {
-    result.textContent = "Suggested Path: IT Support, Cybersecurity, Data Entry.";
-  }
-  else if(value === "health") {
-    result.textContent = "Suggested Path: CNA, Medical Assistant, Community Health Worker.";
-  }
-  else if(value === "fast") {
-    result.textContent = "Suggested Path: CDL Trucking, Oilfield, Skilled Trades.";
-  }
-  else if(value === "college") {
-    result.textContent = "Suggested Path: Community College → Transfer → Degree Program.";
-  }
-  else {
-    result.textContent = "Please select an option.";
-  }
-}
 </script>
 
 </body>
