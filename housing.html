@@ -12,11 +12,23 @@ body {
   background: #eef2f7;
 }
 
-.header {
+/* Header */
+.app-header {
+  display: flex;
+  align-items: center;
   background: #1f3c88;
   color: white;
-  padding: 20px;
-  text-align: center;
+  padding: 15px;
+}
+
+.back-btn {
+  background: white;
+  color: #1f3c88;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  margin-right: 15px;
 }
 
 .container {
@@ -61,13 +73,13 @@ button {
 
 <body>
 
-<div class="header">
-<h2>🏠 Housing Stability Section</h2>
+<!-- HEADER WITH BACK BUTTON -->
+<div class="app-header">
+  <button onclick="goBack()" class="back-btn">← Back</button>
+  <div>Housing Stability</div>
 </div>
 
 <div class="container">
-
-<a href="index.html">← Back to Home</a>
 
 <!-- IMPORTANT DOCUMENTS -->
 <div class="card">
@@ -116,6 +128,10 @@ button {
 </div>
 
 <script>
+function goBack() {
+  window.location.href = "index.html";
+}
+
 function saveHousingPlan() {
   const plan = {
     location: document.getElementById("planLocation").value,
