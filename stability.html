@@ -8,7 +8,7 @@
 <style>
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: Arial;
   background: #eef2f7;
 }
 
@@ -29,15 +29,8 @@ body {
   border-radius: 20px;
   cursor: pointer;
   margin-right: 15px;
-  font-weight: bold;
 }
 
-.page-title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-/* Layout */
 .container {
   padding: 20px;
   max-width: 900px;
@@ -52,13 +45,12 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-textarea {
+input, select {
   width: 100%;
-  min-height: 80px;
   padding: 10px;
+  margin-top: 8px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  margin-top: 8px;
 }
 </style>
 </head>
@@ -67,79 +59,83 @@ textarea {
 
 <div class="app-header">
   <button onclick="goBack()" class="back-btn">← Back</button>
-  <div class="page-title">Stability Plan</div>
+  <div>Stability Plan</div>
 </div>
 
 <div class="container">
 
+<!-- EXPUNGEMENT INFO -->
 <div class="card">
-<h3>🏠 Housing Stability</h3>
-<p>Where am I staying for the next 30 days?</p>
-<textarea></textarea>
+<h3>⚖ Expungement & Record Sealing</h3>
 
-<p>Backup plan if housing falls through:</p>
-<textarea></textarea>
-</div>
+<p><strong>Dismissed cases</strong> may qualify for expungement.</p>
+<p><strong>Deferred adjudication</strong> may qualify for nondisclosure.</p>
+<p>Waiting periods apply depending on charge level.</p>
+<p>No new convictions are required in most cases.</p>
 
-<div class="card">
-<h3>💼 Income Plan</h3>
-<p>Current income source:</p>
-<textarea></textarea>
-
-<p>Next income goal (job, training, side work):</p>
-<textarea></textarea>
-</div>
-
-<div class="card">
-<h3>⚖ Legal Compliance</h3>
+<h4>Why You MAY Qualify:</h4>
 <ul>
-<li>Know your probation/parole conditions</li>
-<li>Keep check-in dates written down</li>
-<li>Stay current on court obligations</li>
-<li>Avoid people and places that risk violation</li>
+<li>Case dismissed</li>
+<li>Found not guilty</li>
+<li>No-billed by grand jury</li>
+<li>Completed deferred adjudication</li>
+<li>No new charges during waiting period</li>
 </ul>
 
-<p>My next check-in date:</p>
-<textarea></textarea>
+<h4>Why You May NOT Qualify:</h4>
+<ul>
+<li>Family violence charges</li>
+<li>Sex offenses</li>
+<li>Human trafficking</li>
+<li>Aggravated kidnapping</li>
+<li>Protective order violations</li>
+<li>New convictions after case</li>
+</ul>
+
 </div>
 
+<!-- MINI CHECKER -->
 <div class="card">
-<h3>🧠 Mental & Physical Health</h3>
-<p>Medication plan (if any):</p>
-<textarea></textarea>
+<h3>📝 Quick Eligibility Checker</h3>
 
-<p>Stress management plan:</p>
-<textarea></textarea>
+<label>What was the outcome?</label>
+<select id="caseOutcome">
+<option value="">Select one</option>
+<option value="dismissed">Dismissed</option>
+<option value="notguilty">Not Guilty</option>
+<option value="deferred">Deferred Adjudication</option>
+<option value="convicted">Convicted</option>
+</select>
 
-<p>Healthy daily habits I am building:</p>
-<textarea></textarea>
+<label>Any new convictions since?</label>
+<select id="newConvictions">
+<option value="">Select one</option>
+<option value="no">No</option>
+<option value="yes">Yes</option>
+</select>
+
+<button onclick="checkEligibility()">Check</button>
+
+<p id="result"></p>
 </div>
 
+<!-- INTERVIEW PREP ADDED HERE -->
 <div class="card">
-<h3>🤝 Support System</h3>
-<p>3 people I can call if I feel overwhelmed:</p>
-<textarea></textarea>
+<h3>🎤 Interview Preparation</h3>
 
-<p>Positive activities I will focus on:</p>
-<textarea></textarea>
-</div>
+<ul>
+<li>Wear clean, simple clothing.</li>
+<li>Arrive 10–15 minutes early.</li>
+<li>Practice common interview questions.</li>
+<li>Be honest but focus on growth.</li>
+</ul>
 
-<div class="card">
-<h3>🚨 Emergency Plan</h3>
-<p>If I feel triggered or tempted to go backwards, I will:</p>
-<textarea></textarea>
+<h4>Example: Tell Me About Yourself</h4>
+<p>“I’m dependable, hardworking, and focused on building long-term stability. I bring discipline, teamwork, and a strong work ethic.”</p>
 
-<p>Safe place I can go:</p>
-<textarea></textarea>
-</div>
+<h4>Example: If Asked About Your Record</h4>
+<p>“I made mistakes in the past, but I’ve taken responsibility and completed programs. I’m focused on growth and contributing positively.”</p>
 
-<div class="card">
-<h3>🔥 Commitment Statement</h3>
-<p>
-I am committed to rebuilding my life step by step.
-Stability is built through daily discipline.
-I will protect my progress.
-</p>
 </div>
 
 </div>
@@ -147,6 +143,23 @@ I will protect my progress.
 <script>
 function goBack() {
   window.location.href = "index.html";
+}
+
+function checkEligibility() {
+  const outcome = document.getElementById("caseOutcome").value;
+  const newConvictions = document.getElementById("newConvictions").value;
+  const result = document.getElementById("result");
+
+  if (!outcome || !newConvictions) {
+    result.innerText = "Please answer both questions.";
+    return;
+  }
+
+  if ((outcome === "dismissed" || outcome === "notguilty" || outcome === "deferred") && newConvictions === "no") {
+    result.innerText = "You may qualify. Contact a legal clinic to confirm.";
+  } else {
+    result.innerText = "You may not qualify. Speak to a legal professional for review.";
+  }
 }
 </script>
 
