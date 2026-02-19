@@ -12,6 +12,43 @@ body {
   background: #eef2f7;
 }
 
+/* LOCK SCREEN */
+.lock-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #1f3c88;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  z-index: 9999;
+}
+
+.lock-screen input {
+  padding: 10px;
+  font-size: 18px;
+  width: 120px;
+  text-align: center;
+  margin-top: 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+.lock-screen button {
+  margin-top: 10px;
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  background: white;
+  color: #1f3c88;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 /* Header */
 .app-header {
   display: flex;
@@ -19,7 +56,6 @@ body {
   background: #1f3c88;
   color: white;
   padding: 15px;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
 }
 
 .back-btn {
@@ -28,22 +64,10 @@ body {
   border: none;
   padding: 6px 14px;
   border-radius: 20px;
-  font-size: 14px;
   cursor: pointer;
   margin-right: 15px;
 }
 
-.back-btn:hover {
-  background: #ff914d;
-  color: white;
-}
-
-.page-title {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-/* Content */
 .container {
   padding: 20px;
   max-width: 900px;
@@ -62,80 +86,108 @@ textarea {
   width: 100%;
   min-height: 80px;
   padding: 10px;
-  margin-top: 8px;
   border-radius: 8px;
   border: 1px solid #ccc;
-  resize: vertical;
-}
-
-.save-msg {
-  color: green;
-  font-size: 14px;
-  margin-top: 5px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- LOCK SCREEN -->
+<div class="lock-screen" id="lockScreen">
+  <h2 id="lockTitle">Enter PIN</h2>
+  <input type="password" maxlength="4" id="pinInput">
+  <button onclick="handlePin()">Submit</button>
+  <button onclick="resetPin()">Reset PIN</button>
+  <p id="pinMessage"></p>
+</div>
+
+<div id="appContent" style="display:none;">
+
 <div class="app-header">
   <button onclick="goBack()" class="back-btn">← Back</button>
-  <div class="page-title">Mindset</div>
+  <div>Mindset</div>
 </div>
 
 <div class="container">
 
 <div class="card">
 <h3>What went well today?</h3>
-<textarea id="reflection1" placeholder="Write your answer..."></textarea>
-<div class="save-msg" id="msg1"></div>
+<textarea id="reflection1"></textarea>
 </div>
 
 <div class="card">
 <h3>What is one step forward I took?</h3>
-<textarea id="reflection2" placeholder="Write your answer..."></textarea>
-<div class="save-msg" id="msg2"></div>
+<textarea id="reflection2"></textarea>
 </div>
 
 <div class="card">
 <h3>What can I improve tomorrow?</h3>
-<textarea id="reflection3" placeholder="Write your answer..."></textarea>
-<div class="save-msg" id="msg3"></div>
+<textarea id="reflection3"></textarea>
 </div>
 
+</div>
 </div>
 
 <script>
 function goBack() {
-  if (document.referrer !== "") {
-    window.history.back();
+  window.location.href = "index.html";
+}
+
+/* PIN SYSTEM */
+function handlePin() {
+  const input = document.getElementById("pinInput").value;
+  const storedPin = localStorage.getItem("mindset_pin");
+  const message = document.getElementById("pinMessage");
+
+  if (!storedPin) {
+    if (input.length === 4) {
+      localStorage.setItem("mindset_pin", input);
+      unlockApp();
+    } else {
+      message.textContent = "Create a 4-digit PIN";
+    }
   } else {
-    window.location.href = "index.html";
+    if (input === storedPin) {
+      unlockApp();
+    } else {
+      message.textContent = "Incorrect PIN";
+    }
   }
 }
 
-/* Reflection Saving */
-function setupReflection(id, msgId, storageKey) {
-  const textarea = document.getElementById(id);
-  const message = document.getElementById(msgId);
+function unlockApp() {
+  document.getElementById("lockScreen").style.display = "none";
+  document.getElementById("appContent").style.display = "block";
+}
 
-  const saved = localStorage.getItem(storageKey);
-  if (saved) {
-    textarea.value = saved;
+function resetPin() {
+  localStorage.removeItem("mindset_pin");
+  document.getElementById("pinMessage").textContent = "PIN Reset. Create new PIN.";
+}
+
+window.onload = function() {
+  const storedPin = localStorage.getItem("mindset_pin");
+  if (!storedPin) {
+    document.getElementById("lockTitle").textContent = "Create a 4-Digit PIN";
   }
+};
 
-  textarea.addEventListener("input", () => {
-    localStorage.setItem(storageKey, textarea.value);
-    message.textContent = "Saved ✓";
-    setTimeout(() => {
-      message.textContent = "";
-    }, 1500);
+/* SAVE REFLECTIONS */
+function setupSave(id, key) {
+  const field = document.getElementById(id);
+  const saved = localStorage.getItem(key);
+  if (saved) field.value = saved;
+  field.addEventListener("input", () => {
+    localStorage.setItem(key, field.value);
   });
 }
 
-setupReflection("reflection1", "msg1", "daily_reflection_1");
-setupReflection("reflection2", "msg2", "daily_reflection_2");
-setupReflection("reflection3", "msg3", "daily_reflection_3");
+setupSave("reflection1","daily1");
+setupSave("reflection2","daily2");
+setupSave("reflection3","daily3");
+
 </script>
 
 </body>
