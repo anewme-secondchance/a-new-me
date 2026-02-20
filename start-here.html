@@ -59,9 +59,24 @@ button {
   margin-top: 10px;
 }
 
-.progress {
+.progress-text {
   font-weight: bold;
-  color: green;
+  margin-top: 10px;
+}
+
+.progress-bar-container {
+  width: 100%;
+  background: #ddd;
+  border-radius: 20px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 15px;
+  width: 0%;
+  background: #4CAF50;
+  transition: width 0.4s ease;
 }
 </style>
 </head>
@@ -104,7 +119,11 @@ button {
 
 <button onclick="saveProgress()">Save Progress</button>
 
-<p id="progressText" class="progress"></p>
+<div class="progress-text" id="progressText"></div>
+
+<div class="progress-bar-container">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
 
 </div>
 
@@ -122,32 +141,43 @@ function goBack(){
   window.location.href="index.html";
 }
 
-function saveProgress(){
+function updateProgress(){
   const tasks = ["task1","task2","task3","task4","task5","task6"];
   let completed = 0;
 
   tasks.forEach(task=>{
-    const checked = document.getElementById(task).checked;
-    localStorage.setItem(task, checked);
-    if(checked) completed++;
+    if(document.getElementById(task).checked){
+      completed++;
+    }
   });
 
+  const percent = (completed / tasks.length) * 100;
+
   document.getElementById("progressText").innerText =
-    "Progress: " + completed + " of 6 completed.";
+    "Progress: " + completed + " of 6 completed";
+
+  document.getElementById("progressBar").style.width = percent + "%";
+}
+
+function saveProgress(){
+  const tasks = ["task1","task2","task3","task4","task5","task6"];
+
+  tasks.forEach(task=>{
+    localStorage.setItem(task, document.getElementById(task).checked);
+  });
+
+  updateProgress();
 }
 
 window.onload = function(){
   const tasks = ["task1","task2","task3","task4","task5","task6"];
-  let completed = 0;
 
   tasks.forEach(task=>{
     const saved = localStorage.getItem(task) === "true";
     document.getElementById(task).checked = saved;
-    if(saved) completed++;
   });
 
-  document.getElementById("progressText").innerText =
-    "Progress: " + completed + " of 6 completed.";
+  updateProgress();
 };
 
 </script>
