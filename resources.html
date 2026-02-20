@@ -80,6 +80,10 @@ input, select {
 <option>Housing</option>
 <option>Employment</option>
 <option>Health</option>
+<option>Legal</option>
+<option>Transportation</option>
+<option>ID Recovery</option>
+<option>Multi-Service</option>
 </select>
 
 <h3>Saved Resources</h3>
@@ -114,7 +118,7 @@ const resources = [
     category: "Health",
     phone: "903-923-2360",
     website: "",
-    notes: "Call the Marshall office at 903-923-2360. Press the number option and request to be directed to the Tyler Counseling Center. Email: counseling@etbu.edu"
+    notes: "Call the Marshall office and request transfer to Tyler Counseling Center. Email: counseling@etbu.edu"
   },
 
   {
@@ -135,24 +139,40 @@ const resources = [
     notes: "Job search support and reentry employment assistance."
   },
 
-  /* NEW ADDITIONS BELOW — NOTHING ELSE CHANGED */
-
-  {
-    name: "TDCJ Reentry & Integration Division",
-    city: "Statewide",
-    category: "Employment",
-    phone: "",
-    website: "https://www.tdcj.texas.gov/divisions/rrd/index.html",
-    notes: "Provides reentry planning, housing referrals, employment resources, and identification assistance for returning citizens."
-  },
-
   {
     name: "211 Texas",
     city: "Statewide",
-    category: "Health",
+    category: "Multi-Service",
     phone: "211",
-    website: "https://www.211texas.org/",
-    notes: "Call 2-1-1 for free help finding housing, transportation, food, healthcare, and crisis support anywhere in Texas."
+    website: "https://www.211texas.org",
+    notes: "Call 211 for housing, food, transportation, utility assistance, mental health services, and emergency help."
+  },
+
+  {
+    name: "TDCJ Reentry & Integration Division (RRD)",
+    city: "Statewide",
+    category: "ID Recovery",
+    phone: "",
+    website: "https://www.tdcj.texas.gov/divisions/rrd/index.html",
+    notes: "Official Texas Department of Criminal Justice reentry support including ID recovery, housing referrals, and transition planning."
+  },
+
+  {
+    name: "Texas DPS - Driver License Offices",
+    city: "Statewide",
+    category: "ID Recovery",
+    phone: "",
+    website: "https://www.dps.texas.gov/section/driver-license/driver-license-office-locations",
+    notes: "Apply for state ID or driver license in person. Request temporary paper ID while waiting."
+  },
+
+  {
+    name: "Local Public Transportation",
+    city: "Tyler",
+    category: "Transportation",
+    phone: "",
+    website: "",
+    notes: "Check your city’s public transit system for reduced fare programs and work transportation assistance."
   }
 
 ];
