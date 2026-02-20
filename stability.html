@@ -145,6 +145,31 @@ button {
 <textarea id="financialGoal"></textarea>
 </div>
 
+<!-- 5. TRANSPORTATION STABILITY (ADDED ONLY) -->
+<div class="card">
+<h3>🚍 5. Transportation Stability</h3>
+
+<label>How will I get to work daily?</label>
+<textarea id="transportWork"></textarea>
+
+<label>How will I get to probation/parole appointments?</label>
+<textarea id="transportProbation"></textarea>
+
+<label>Public transportation available in my area:</label>
+<textarea id="publicTransport"></textarea>
+
+<label>Backup transportation plan (rideshare, family, church, etc.):</label>
+<textarea id="transportBackup"></textarea>
+
+<p><strong>Helpful Resources:</strong></p>
+<ul>
+<li>Call 211 for transportation assistance</li>
+<li>Texas Workforce Commission may offer transportation support</li>
+<li>Local churches & nonprofits sometimes provide ride vouchers</li>
+<li>Ask probation office about transportation hardship assistance</li>
+</ul>
+</div>
+
 <div class="card">
 <button onclick="saveStabilityPlan()">Save Stability Plan</button>
 <div id="savedMessage" class="success"></div>
@@ -173,7 +198,11 @@ function saveStabilityPlan() {
     monthlyIncome: document.getElementById("monthlyIncome").value,
     monthlyExpenses: document.getElementById("monthlyExpenses").value,
     monthlySavings: document.getElementById("monthlySavings").value,
-    financialGoal: document.getElementById("financialGoal").value
+    financialGoal: document.getElementById("financialGoal").value,
+    transportWork: document.getElementById("transportWork").value,
+    transportProbation: document.getElementById("transportProbation").value,
+    publicTransport: document.getElementById("publicTransport").value,
+    transportBackup: document.getElementById("transportBackup").value
   };
 
   localStorage.setItem("stabilityPlan", JSON.stringify(plan));
