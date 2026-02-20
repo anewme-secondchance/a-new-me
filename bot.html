@@ -27,11 +27,17 @@ button {
   background: #1f3c88;
   color: white;
   border: none;
-  padding: 15px 25px;
+  padding: 14px 22px;
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 15px;
+}
+
+select {
+  padding: 8px;
+  margin-top: 10px;
+  border-radius: 6px;
 }
 
 .status {
@@ -49,12 +55,20 @@ button {
 <body>
 
 <div class="header">
-<h2>🗣 Reentry Voice Assistant</h2>
+<h2>🗣 Reentry Assistant</h2>
 </div>
 
 <div class="container">
 
-<p>Tap the button and tell me what you need help with.</p>
+<p>Talk to me. What do you need right now?</p>
+
+<label>Select Voice:</label><br>
+<select id="voiceSelect">
+  <option value="female">Female Voice</option>
+  <option value="male">Male Voice</option>
+</select>
+
+<br>
 
 <button onclick="startListening()">🎤 Tap to Speak</button>
 
@@ -67,17 +81,31 @@ button {
 
 const statusDiv = document.getElementById("status");
 const transcriptDiv = document.getElementById("transcript");
+const voiceSelect = document.getElementById("voiceSelect");
 
 function speak(text, redirectPage) {
+
   const speech = new SpeechSynthesisUtterance(text);
-  speech.rate = 1;
-  speech.pitch = 1;
+  const voices = window.speechSynthesis.getVoices();
+
+  if (voiceSelect.value === "male") {
+    const maleVoice = voices.find(v => v.name.toLowerCase().includes("david"));
+    if (maleVoice) speech.voice = maleVoice;
+  } else {
+    const femaleVoice = voices.find(v =>
+      v.name.toLowerCase().includes("zira") ||
+      v.name.toLowerCase().includes("samantha")
+    );
+    if (femaleVoice) speech.voice = femaleVoice;
+  }
+
+  speech.rate = 0.95;
 
   speech.onend = function() {
     if (redirectPage) {
       setTimeout(() => {
         window.location.href = redirectPage;
-      }, 800);
+      }, 900);
     }
   };
 
@@ -87,7 +115,7 @@ function speak(text, redirectPage) {
 function startListening() {
 
   if (!('webkitSpeechRecognition' in window)) {
-    alert("Speech recognition not supported in this browser. Use Chrome.");
+    alert("Please use Chrome for voice support.");
     return;
   }
 
@@ -101,65 +129,84 @@ function startListening() {
     const message = event.results[0][0].transcript.toLowerCase();
     transcriptDiv.innerText = "You said: " + message;
     statusDiv.innerText = "";
-
     routeUser(message);
-  };
-
-  recognition.onerror = function() {
-    statusDiv.innerText = "Could not hear clearly. Try again.";
   };
 }
 
 function routeUser(message) {
 
-  if (message.includes("id")) {
-    speak("I’ll take you to the ID Help section.", "id-help.html");
+  if (
+    message.includes("scared") ||
+    message.includes("overwhelmed") ||
+    message.includes("lost") ||
+    message.includes("stressed")
+  ) {
+    speak("Hey. Look at me. Breathe. You survived worse than this. We are handling this one step at a time. What’s first?");
+    return;
   }
 
-  else if (message.includes("job") || message.includes("work") || message.includes("employment")) {
-    speak("Let’s go to the Employment section.", "employment.html");
+  if (message.includes("job") || message.includes("work")) {
+    saveTopic("employment");
+    speak("Good. We’re not sitting still. Let’s get you working.", "employment.html");
   }
 
-  else if (message.includes("house") || message.includes("apartment") || message.includes("rent")) {
-    speak("I’m taking you to the Housing section.", "housing.html");
+  else if (message.includes("id")) {
+    saveTopic("id");
+    speak("We need that ID handled. No excuses. I’m taking you there now.", "id-help.html");
   }
 
-  else if (message.includes("money") || message.includes("budget") || message.includes("bills")) {
-    speak("Opening the Budget and Money section.", "money.html");
+  else if (message.includes("house") || message.includes("rent")) {
+    saveTopic("housing");
+    speak("Housing is priority. Stability first. Opening it now.", "housing.html");
   }
 
-  else if (message.includes("probation") || message.includes("law") || message.includes("court") || message.includes("legal")) {
-    speak("Let’s go to the Legal Help section.", "legal.html");
-  }
-
-  else if (message.includes("school") || message.includes("ged") || message.includes("education")) {
-    speak("Opening the Education section.", "education.html");
-  }
-
-  else if (message.includes("family") || message.includes("kids") || message.includes("child")) {
-    speak("Taking you to the Family section.", "family.html");
-  }
-
-  else if (message.includes("mind") || message.includes("stress") || message.includes("mental")) {
-    speak("Let’s go to the Mindset section.", "mindset.html");
-  }
-
-  else if (message.includes("goal")) {
-    speak("Opening your Goals Tracker.", "goals.html");
-  }
-
-  else if (message.includes("computer") || message.includes("email") || message.includes("digital")) {
-    speak("Taking you to Digital Literacy.", "digital.html");
-  }
-
-  else if (message.includes("resource") || message.includes("help")) {
-    speak("Opening the Resource Directory.", "resources.html");
+  else if (message.includes("money") || message.includes("budget")) {
+    saveTopic("money");
+    speak("We’re getting your money right. Let’s move.", "money.html");
   }
 
   else {
-    speak("I’m not sure which section you need. Try saying job, housing, ID, legal, or money.");
+    speak("Say job, housing, ID, or money. We’re moving forward.");
   }
 }
+
+function saveTopic(topic) {
+
+  localStorage.setItem("lastTopic", topic);
+
+  let visits = parseInt(localStorage.getItem("visits")) || 0;
+  visits += 1;
+  localStorage.setItem("visits", visits);
+}
+
+window.onload = function() {
+
+  const visits = parseInt(localStorage.getItem("visits")) || 0;
+  const lastTopic = localStorage.getItem("lastTopic");
+
+  setTimeout(() => {
+
+    if (visits === 0) {
+      speak("Alright. Fresh start. I’m with you.");
+    } 
+    else if (visits <= 3) {
+      speak("I see you showing up. That’s how change happens.");
+    } 
+    else if (visits <= 6) {
+      speak("You’re building momentum. Don’t stop now.");
+    } 
+    else {
+      speak("You’re not the same person you were. I see the work.");
+    }
+
+    if (lastTopic) {
+      setTimeout(() => {
+        speak("Last time we were working on " + lastTopic + ". We finishing that?");
+      }, 2500);
+    }
+
+  }, 800);
+};
 
 </script>
 
