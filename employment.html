@@ -75,7 +75,12 @@ button {
   padding: 15px;
   border-radius: 10px;
   margin-top: 10px;
-  font-family: Arial;
+}
+
+.checklist {
+  background:#e8f5e9;
+  padding:15px;
+  border-radius:10px;
 }
 </style>
 </head>
@@ -103,7 +108,7 @@ Hiring depends on charge type, time passed, and company policy.
 <li>Closed-toe shoes or clean boots</li>
 <li>Trimmed facial hair</li>
 <li>Fresh haircut</li>
-<li>Light deodorant (no heavy cologne)</li>
+<li>Light deodorant</li>
 </ul>
 </div>
 
@@ -120,48 +125,75 @@ Hiring depends on charge type, time passed, and company policy.
 </ul>
 </div>
 
-<!-- FULL RESUME EXAMPLE -->
+<!-- STEP BY STEP RESUME GUIDE -->
 <div class="card">
-<h3>📄 Full Resume Example</h3>
+<h3>📘 Step-By-Step Resume Builder Guide</h3>
+<ol>
+<li><strong>Start with Contact Info</strong> – Name, phone, email, city/state.</li>
+<li><strong>Write a 2-3 sentence Professional Summary</strong> focused on reliability and work ethic.</li>
+<li><strong>List 5–8 Skills</strong> related to the job you want.</li>
+<li><strong>Include Work Experience</strong> (use job titles, not facility names).</li>
+<li><strong>Add Education</strong> (GED, diploma, training).</li>
+<li><strong>List Certifications</strong> (OSHA, Food Handler, CDL, etc.).</li>
+<li><strong>Keep it 1 page.</strong></li>
+</ol>
+</div>
+
+<!-- MALE RESUME EXAMPLE -->
+<div class="card">
+<h3>📄 Full Resume Example (Male)</h3>
 
 <div class="resume-example">
-
 <strong>John Davis</strong><br>
 Tyler, TX<br>
 (903) 555-1234<br>
 johndavis@email.com<br><br>
 
 <strong>Professional Summary</strong><br>
-Dependable and hardworking individual with 4+ years of food service and maintenance experience. Strong work ethic, team-oriented, and committed to long-term stability and growth.<br><br>
+Dependable and hardworking team member with 4+ years of food service and maintenance experience. Strong attention to safety and punctuality.<br><br>
 
 <strong>Skills</strong><br>
 • Team Leadership<br>
-• Food Preparation & Safety<br>
-• Maintenance & Repairs<br>
+• Equipment Maintenance<br>
 • Time Management<br>
-• OSHA Safety Standards<br><br>
+• OSHA Safety<br><br>
 
 <strong>Work Experience</strong><br>
-
-<strong>Kitchen Worker</strong><br>
-Food Service Department | 2019 – 2023<br>
-• Prepared meals for over 1,500 individuals daily<br>
-• Maintained sanitation and food safety standards<br>
-• Worked efficiently in a fast-paced environment<br>
-• Completed Food Handler Certification<br><br>
-
-<strong>Maintenance Assistant</strong><br>
-Facility Operations | 2020 – 2023<br>
-• Performed plumbing and electrical repairs<br>
-• Followed OSHA safety guidelines<br>
-• Assisted in preventative maintenance<br><br>
+<strong>Kitchen Worker</strong> | 2019 – 2023<br>
+• Prepared meals daily<br>
+• Maintained food safety standards<br><br>
 
 <strong>Education</strong><br>
 GED | 2018<br>
+</div>
+</div>
 
-<strong>Certifications</strong><br>
-• Food Handler Certification<br>
-• OSHA 10
+<!-- FEMALE RESUME EXAMPLE -->
+<div class="card">
+<h3>📄 Full Resume Example (Female)</h3>
+
+<div class="resume-example">
+<strong>Maria Thompson</strong><br>
+Dallas, TX<br>
+(214) 555-6789<br>
+mariathompson@email.com<br><br>
+
+<strong>Professional Summary</strong><br>
+Organized and detail-oriented professional with experience in administration and customer service. Strong communication skills and dependable work ethic.<br><br>
+
+<strong>Skills</strong><br>
+• Customer Service<br>
+• Scheduling & Organization<br>
+• Data Entry<br>
+• Communication<br><br>
+
+<strong>Work Experience</strong><br>
+<strong>Administrative Assistant</strong> | 2020 – 2023<br>
+• Managed appointment scheduling<br>
+• Maintained office documentation<br><br>
+
+<strong>Education</strong><br>
+High School Diploma | 2017<br>
 </div>
 </div>
 
@@ -200,7 +232,20 @@ GED | 2018<br>
 <p id="resumeMessage"></p>
 </div>
 
-<!-- PRACTICE SECTION -->
+<!-- RESUME CHECKLIST -->
+<div class="card checklist">
+<h3>✅ Is My Resume Ready?</h3>
+<ul>
+<li>My resume is 1 page</li>
+<li>No spelling errors</li>
+<li>Professional email address</li>
+<li>Strong action words (Led, Managed, Operated, Assisted)</li>
+<li>No mention of prison facility name</li>
+<li>Focuses on skills and reliability</li>
+</ul>
+</div>
+
+<!-- INTERVIEW PRACTICE -->
 <div class="card">
 <h3>🎤 Interview Practice</h3>
 
@@ -220,14 +265,13 @@ GED | 2018<br>
 <!-- ID HELP REMINDER -->
 <div class="card">
 <h3>🆔 Need Help Getting Your ID?</h3>
-<p>If your prison ID hasn’t arrived yet, visit the ID Help page for step-by-step instructions.</p>
+<p>If your prison ID hasn’t arrived yet, visit the ID Help page.</p>
 <button onclick="window.location.href='id-help.html'">Go to ID Help</button>
 </div>
 
 </div>
 
 <script>
-
 function goBack(){
   window.location.href="index.html";
 }
@@ -257,7 +301,6 @@ window.onload=function(){
   document.getElementById("practice2").value=localStorage.getItem("practice2")||"";
   document.getElementById("practice3").value=localStorage.getItem("practice3")||"";
 }
-
 </script>
 
 </body>
