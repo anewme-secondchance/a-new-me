@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>A New Me | Reentry Support</title>
 
+<!-- PWA Manifest -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1f3c88">
+
 <style>
 body {
   margin: 0;
@@ -95,16 +99,9 @@ body {
   Resources
 </a>
 
-<!-- NEW START HERE CARD -->
 <a href="start-here.html" class="card">
   <span>🚀</span>
   First 7 Days
-</a>
-
-<!-- NEW VOICE ASSISTANT CARD -->
-<a href="bot.html" class="card">
-  <span>🗣</span>
-  Talk to Assistant
 </a>
 
 <a href="stability.html" class="card">
@@ -167,6 +164,11 @@ body {
   Goals Tracker
 </a>
 
+<a href="bot.html" class="card">
+  <span>🗣</span>
+  Voice Assistant
+</a>
+
 </div>
 
 </div>
@@ -174,6 +176,16 @@ body {
 <div class="footer">
   Every day is a chance to rebuild. Progress over perfection.
 </div>
+
+<!-- Service Worker Registration -->
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('service-worker.js')
+    .then(function() {
+      console.log("Service Worker Registered");
+    });
+}
+</script>
 
 </body>
 </html>
