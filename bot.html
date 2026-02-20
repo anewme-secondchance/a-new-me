@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice Assistant | A New Me</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #eef2f7;
+  text-align: center;
+}
+
+.header {
+  background: #1f3c88;
+  color: white;
+  padding: 20px;
+}
+
+.container {
+  padding: 30px;
+}
+
+button {
+  background: #1f3c88;
+  color: white;
+  border: none;
+  padding: 15px 25px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.status {
+  margin-top: 20px;
+  font-weight: bold;
+}
+
+.transcript {
+  margin-top: 15px;
+  color: #333;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h2>🗣 Reentry Voice Assistant</h2>
+</div>
+
+<div class="container">
+
+<p>Tap the button and tell me what you need help with.</p>
+
+<button onclick="startListening()">🎤 Tap to Speak</button>
+
+<div class="status" id="status"></div>
+<div class="transcript" id="transcript"></div>
+
+</div>
+
+<script>
+
+const statusDiv = document.getElementById("status");
+const transcriptDiv = document.getElementById("transcript");
+
+function speak(text, redirectPage) {
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.rate = 1;
+  speech.pitch = 1;
+
+  speech.onend = function() {
+    if (redirectPage) {
+      setTimeout(() => {
+        window.location.href = redirectPage;
+      }, 800);
+    }
+  };
+
+  window.speechSynthesis.speak(speech);
+}
+
+function startListening() {
+
+  if (!('webkitSpeechRecognition' in window)) {
+    alert("Speech recognition not supported in this browser. Use Chrome.");
+    return;
+  }
+
+  const recognition = new webkitSpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.start();
+
+  statusDiv.innerText = "Listening...";
+
+  recognition.onresult = function(event) {
+    const message = event.results[0][0].transcript.toLowerCase();
+    transcriptDiv.innerText = "You said: " + message;
+    statusDiv.innerText = "";
+
+    routeUser(message);
+  };
+
+  recognition.onerror = function() {
+    statusDiv.innerText = "Could not hear clearly. Try again.";
+  };
+}
+
+function routeUser(message) {
+
+  if (message.includes("id")) {
+    speak("I’ll take you to the ID Help section.", "id-help.html");
+  }
+
+  else if (message.includes("job") || message.includes("work") || message.includes("employment")) {
+    speak("Let’s go to the Employment section.", "employment.html");
+  }
+
+  else if (message.includes("house") || message.includes("apartment") || message.includes("rent")) {
+    speak("I’m taking you to the Housing section.", "housing.html");
+  }
+
+  else if (message.includes("money") || message.includes("budget") || message.includes("bills")) {
+    speak("Opening the Budget and Money section.", "money.html");
+  }
+
+  else if (message.includes("probation") || message.includes("law") || message.includes("court") || message.includes("legal")) {
+    speak("Let’s go to the Legal Help section.", "legal.html");
+  }
+
+  else if (message.includes("school") || message.includes("ged") || message.includes("education")) {
+    speak("Opening the Education section.", "education.html");
+  }
+
+  else if (message.includes("family") || message.includes("kids") || message.includes("child")) {
+    speak("Taking you to the Family section.", "family.html");
+  }
+
+  else if (message.includes("mind") || message.includes("stress") || message.includes("mental")) {
+    speak("Let’s go to the Mindset section.", "mindset.html");
+  }
+
+  else if (message.includes("goal")) {
+    speak("Opening your Goals Tracker.", "goals.html");
+  }
+
+  else if (message.includes("computer") || message.includes("email") || message.includes("digital")) {
+    speak("Taking you to Digital Literacy.", "digital.html");
+  }
+
+  else if (message.includes("resource") || message.includes("help")) {
+    speak("Opening the Resource Directory.", "resources.html");
+  }
+
+  else {
+    speak("I’m not sure which section you need. Try saying job, housing, ID, legal, or money.");
+  }
+}
+
+</script>
+
+</body>
+</html>
