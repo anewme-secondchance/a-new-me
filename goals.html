@@ -77,12 +77,42 @@ button.action-btn {
   text-decoration: line-through;
   opacity: 0.6;
 }
+
+/* Progress Bar */
+.progress-container {
+  background: #ddd;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 10px;
+}
+
+.progress-bar {
+  height: 12px;
+  background: #1f3c88;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+/* Confetti */
+.confetti {
+  position: fixed;
+  width: 8px;
+  height: 8px;
+  background: red;
+  top: 0;
+  animation: fall 2s linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
 </style>
 </head>
 
 <body>
-
-<h1 style="color:red;">THIS IS THE NEW FILE</h1>
 
 <div class="app-header">
   <button onclick="goBack()" class="back-btn">← Back</button>
@@ -91,7 +121,22 @@ button.action-btn {
 
 <div class="container">
 
-<!-- CUSTOM GOALS -->
+<div style="text-align:center; padding: 20px 10px;">
+  <h2 style="margin:0; color:#1f3c88;">Stay on Top of Your Goals</h2>
+  <p style="margin-top:8px; color:#555;">
+    Small steps every day build long-term success.
+  </p>
+</div>
+
+<div class="card">
+<h3>Your Progress</h3>
+<div id="progressText"></div>
+<div class="progress-container">
+  <div class="progress-bar" id="progressBar"></div>
+</div>
+<p id="streakText"></p>
+</div>
+
 <div class="card">
 <h3>Add Personal Goal</h3>
 <input type="text" id="goalInput" placeholder="Example: Apply for 5 jobs this week">
@@ -103,11 +148,9 @@ button.action-btn {
 <div id="goalsList"></div>
 </div>
 
-<!-- REENTRY STRUCTURE GOALS -->
 <div class="card">
 <h3>🔒 Reentry Stability Goals</h3>
 <p>Track important first steps after release:</p>
-
 <div id="reentryGoals"></div>
 </div>
 
@@ -115,12 +158,10 @@ button.action-btn {
 
 <script>
 
-/* Back Button */
 function goBack() {
   window.location.href = "index.html";
 }
 
-/* Load Stored Data */
 let goals = JSON.parse(localStorage.getItem("goals")) || [];
 let reentry = JSON.parse(localStorage.getItem("reentryGoals")) || {
   id: false,
@@ -130,7 +171,20 @@ let reentry = JSON.parse(localStorage.getItem("reentryGoals")) || {
   savings: false
 };
 
-/* Render Personal Goals */
+let streak = parseInt(localStorage.getItem("streak")) || 0;
+
+function updateProgress() {
+  const total = goals.length;
+  const completed = goals.filter(g => g.completed).length;
+  const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+
+  document.getElementById("progressBar").style.width = percent + "%";
+  document.getElementById("progressText").innerText =
+    percent + "% of personal goals completed";
+  document.getElementById("streakText").innerText =
+    "🔥 Completion Streak: " + streak;
+}
+
 function renderGoals() {
   const list = document.getElementById("goalsList");
   list.innerHTML = "";
@@ -153,9 +207,9 @@ function renderGoals() {
   });
 
   localStorage.setItem("goals", JSON.stringify(goals));
+  updateProgress();
 }
 
-/* Add Goal */
 function addGoal() {
   const text = document.getElementById("goalInput").value;
   if (!text) return;
@@ -165,19 +219,46 @@ function addGoal() {
   renderGoals();
 }
 
-/* Toggle Goal */
 function toggleGoal(index) {
   goals[index].completed = !goals[index].completed;
+
+  if (goals[index].completed) {
+    streak++;
+    localStorage.setItem("streak", streak);
+    showMotivation();
+    launchConfetti();
+  }
+
   renderGoals();
 }
 
-/* Delete Goal */
 function deleteGoal(index) {
   goals.splice(index, 1);
   renderGoals();
 }
 
-/* Render Reentry Checklist */
+function showMotivation() {
+  const messages = [
+    "Great job! Keep going!",
+    "Momentum builds success!",
+    "You’re doing this!",
+    "Progress over perfection!",
+    "Every win counts!"
+  ];
+  alert(messages[Math.floor(Math.random() * messages.length)]);
+}
+
+function launchConfetti() {
+  for (let i = 0; i < 30; i++) {
+    const div = document.createElement("div");
+    div.className = "confetti";
+    div.style.left = Math.random() * 100 + "vw";
+    div.style.background = `hsl(${Math.random() * 360}, 70%, 50%)`;
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 2000);
+  }
+}
+
 function renderReentry() {
   const container = document.getElementById("reentryGoals");
   container.innerHTML = "";
@@ -207,13 +288,11 @@ function renderReentry() {
   localStorage.setItem("reentryGoals", JSON.stringify(reentry));
 }
 
-/* Toggle Reentry Goal */
 function toggleReentry(key) {
   reentry[key] = !reentry[key];
   renderReentry();
 }
 
-/* Initial Load */
 renderGoals();
 renderReentry();
 
