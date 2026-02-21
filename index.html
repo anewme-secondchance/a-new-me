@@ -84,9 +84,26 @@ const statusDiv = document.getElementById("status");
 const transcriptDiv = document.getElementById("transcript");
 const voiceSelect = document.getElementById("voiceSelect");
 
+// Detect iPhone / iPad
+const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
 /* ---------------- SPEAK FUNCTION ---------------- */
 
 function speak(text, redirectPage) {
+
+  // iPhone: NO TALKING — text only
+  if (isIOS) {
+    transcriptDiv.innerText = text;
+
+    if (redirectPage) {
+      setTimeout(() => {
+        window.location.href = redirectPage;
+      }, 900);
+    }
+    return;
+  }
+
+  // Android: normal talking
   window.speechSynthesis.cancel();
 
   const speech = new SpeechSynthesisUtterance(text);
@@ -105,11 +122,8 @@ function speak(text, redirectPage) {
 
   speech.rate = 0.95;
 
-  // Ensures speech is triggered properly for iPhone Safari
   if ('speechSynthesis' in window) {
     window.speechSynthesis.speak(speech);
-  } else {
-    alert("Speech synthesis not supported in this browser.");
   }
 
   speech.onend = function() {
@@ -127,7 +141,7 @@ function startListening() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
-    alert("Speech recognition not supported in this browser. Use Safari on iPhone or Chrome on Android.");
+    alert("Speech recognition not supported in this browser.");
     return;
   }
 
@@ -137,7 +151,6 @@ function startListening() {
   recognition.continuous = false;
 
   statusDiv.innerText = "Listening...";
-
   recognition.start();
 
   recognition.onresult = function(event) {
@@ -145,9 +158,8 @@ function startListening() {
     transcriptDiv.innerText = "You said: " + message;
     statusDiv.innerText = "";
 
-    // Add small delay to allow Safari to process speech synthesis
     setTimeout(() => {
-      routeUser(message); // Make sure routeUser is triggered with message
+      routeUser(message);
     }, 100);
   };
 
@@ -160,8 +172,6 @@ function startListening() {
 /* ---------------- ROUTING ---------------- */
 
 function routeUser(message) {
-  // Debugging for checking exact message:
-  console.log("User said: ", message); // Add this line to debug
 
   if (
     message.includes("scared") ||
