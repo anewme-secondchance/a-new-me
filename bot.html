@@ -6,237 +6,239 @@
 <title>Voice Assistant | A New Me</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #eef2f7;
-  text-align: center;
-}
-
-.header {
-  background: #1f3c88;
-  color: white;
-  padding: 20px;
-}
-
-.container {
-  padding: 30px;
-}
-
-button {
-  background: #1f3c88;
-  color: white;
-  border: none;
-  padding: 14px 22px;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  margin-top: 15px;
-}
-
-select {
-  padding: 8px;
-  margin-top: 10px;
-  border-radius: 6px;
-}
-
-.status {
-  margin-top: 20px;
-  font-weight: bold;
-}
-
-.transcript {
-  margin-top: 15px;
-  color: #333;
-  white-space: pre-line;
-}
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #eef2f7;
+        text-align: center;
+    }
+    .header {
+        background: #1f3c88;
+        color: white;
+        padding: 20px;
+    }
+    .container {
+        padding: 30px;
+    }
+    button {
+        background: #1f3c88;
+        color: white;
+        border: none;
+        padding: 14px 22px;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 15px;
+    }
+    select {
+        padding: 8px;
+        margin-top: 10px;
+        border-radius: 6px;
+    }
+    .status {
+        margin-top: 20px;
+        font-weight: bold;
+    }
+    .transcript {
+        margin-top: 15px;
+        color: #333;
+        white-space: pre-line;
+    }
 </style>
 </head>
 
 <body>
 
 <div class="header">
-<h2>🗣 Reentry Assistant</h2>
+    <h2>🗣 Reentry Assistant</h2>
 </div>
 
 <div class="container">
+    <p>Talk to me. What do you need right now?</p>
 
-<p>Talk to me. What do you need right now?</p>
+    <label>Select Voice:</label><br>
+    <select id="voiceSelect">
+        <option value="female">Female Voice</option>
+        <option value="male">Male Voice</option>
+    </select>
 
-<label>Select Voice:</label><br>
-<select id="voiceSelect">
-  <option value="female">Female Voice</option>
-  <option value="male">Male Voice</option>
-</select>
+    <br>
+    <button onclick="startListening()">🎤 Tap to Speak</button>
 
-<br>
-
-<button onclick="startListening()">🎤 Tap to Speak</button>
-
-<div class="status" id="status"></div>
-<div class="transcript" id="transcript"></div>
-
+    <div class="status" id="status"></div>
+    <div class="transcript" id="transcript"></div>
 </div>
 
 <script>
-
+/* ---------------- ELEMENTS ---------------- */
 const statusDiv = document.getElementById("status");
 const transcriptDiv = document.getElementById("transcript");
 const voiceSelect = document.getElementById("voiceSelect");
 
 /* ---------------- SPEAK FUNCTION ---------------- */
-
 function speak(text, redirectPage) {
-  window.speechSynthesis.cancel();
+    window.speechSynthesis.cancel();
+    const speech = new SpeechSynthesisUtterance(text);
+    const voices = window.speechSynthesis.getVoices();
 
-  const speech = new SpeechSynthesisUtterance(text);
-  const voices = window.speechSynthesis.getVoices();
-
-  if (voiceSelect.value === "male") {
-    const maleVoice = voices.find(v => v.name.toLowerCase().includes("david"));
-    if (maleVoice) speech.voice = maleVoice;
-  } else {
-    const femaleVoice = voices.find(v =>
-      v.name.toLowerCase().includes("zira") ||
-      v.name.toLowerCase().includes("samantha")
-    );
-    if (femaleVoice) speech.voice = femaleVoice;
-  }
-
-  speech.rate = 0.95;
-
-  // Ensure this is directly triggered after the user click
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.speak(speech);
-  } else {
-    alert("Speech synthesis not supported in this browser.");
-  }
-
-  speech.onend = function() {
-    if (redirectPage) {
-      setTimeout(() => {
-        window.location.href = redirectPage;
-      }, 900);
+    if (voiceSelect.value === "male") {
+        const maleVoice = voices.find(v => v.name.toLowerCase().includes("david") || v.name.toLowerCase().includes("google"));
+        if (maleVoice) speech.voice = maleVoice;
+    } else {
+        const femaleVoice = voices.find(v => v.name.toLowerCase().includes("zira") || v.name.toLowerCase().includes("samantha") || v.name.toLowerCase().includes("google"));
+        if (femaleVoice) speech.voice = femaleVoice;
     }
-  };
+
+    speech.rate = 0.95;
+
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.speak(speech);
+    }
+
+    speech.onend = function() {
+        if (redirectPage) {
+            setTimeout(() => {
+                window.location.href = redirectPage;
+            }, 900);
+        }
+    };
 }
 
-/* ---------------- FREE SPEECH RECOGNITION ---------------- */
-
+/* ---------------- LISTENING ---------------- */
 function startListening() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-  if (!SpeechRecognition) {
-    alert("Speech recognition not supported in this browser. Use Safari on iPhone or Chrome on Android.");
-    return;
-  }
+    if (!SpeechRecognition) {
+        alert("Speech recognition not supported. Use Safari on iPhone or Chrome on Android.");
+        return;
+    }
 
-  const recognition = new SpeechRecognition();
-  recognition.lang = "en-US";
-  recognition.interimResults = false;
-  recognition.continuous = false;
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.continuous = false;
 
-  statusDiv.innerText = "Listening...";
+    statusDiv.innerText = "Listening...";
+    recognition.start();
 
-  recognition.start();
+    recognition.onresult = function(event) {
+        const message = event.results[0][0].transcript.toLowerCase();
+        transcriptDiv.innerText = "You said: " + message;
+        statusDiv.innerText = "";
 
-  recognition.onresult = function(event) {
-    const message = event.results[0][0].transcript.toLowerCase();
-    transcriptDiv.innerText = "You said: " + message;
-    statusDiv.innerText = "";
+        setTimeout(() => {
+            routeUser(message);
+        }, 100);
+    };
 
-    // Fix: Ensure speech triggers after a small delay
-    setTimeout(() => {
-      routeUser(message);
-    }, 100);
-  };
-
-  recognition.onerror = function() {
-    statusDiv.innerText = "Speech failed.";
-    alert("Speech failed. Please try again.");
-  };
+    recognition.onerror = function() {
+        statusDiv.innerText = "Speech failed.";
+        alert("Speech failed. Try again.");
+    };
 }
 
 /* ---------------- ROUTING ---------------- */
-
 function routeUser(message) {
 
-  if (
-    message.includes("scared") ||
-    message.includes("overwhelmed") ||
-    message.includes("lost") ||
-    message.includes("stressed")
-  ) {
-    speak("Hey. Look at me. Breathe. You survived worse than this. We are handling this one step at a time. What’s first?");
-    return;
-  }
+    /* EMOTIONAL SUPPORT */
+    if (
+        message.includes("scared") ||
+        message.includes("overwhelmed") ||
+        message.includes("lost") ||
+        message.includes("stressed") ||
+        message.includes("anxious") ||
+        message.includes("panic") ||
+        message.includes("worried")
+    ) {
+        speak("Hey. Slow down. You’re not alone. You’ve survived every hard day so far. We’ll take this one step at a time. What do you want to handle first?");
+        return;
+    }
 
-  if (message.includes("job") || message.includes("work")) {
-    saveTopic("employment");
-    speak("Good. We’re not sitting still. Let’s get you working.", "employment.html");
-  }
+    /* EMPLOYMENT */
+    if (message.includes("job") || message.includes("work") || message.includes("employment")) {
+        saveTopic("employment");
+        speak("Good move. Let’s get you working again.", "employment.html");
+        return;
+    }
 
-  else if (message.includes("id")) {
-    saveTopic("id");
-    speak("We need that ID handled. No excuses. I’m taking you there now.", "id-help.html");
-  }
+    /* ID HELP */
+    if (message.includes("id") || message.includes("identification") || message.includes("license")) {
+        saveTopic("id");
+        speak("ID is important. Let’s get that handled.", "id-help.html");
+        return;
+    }
 
-  else if (message.includes("house") || message.includes("rent")) {
-    saveTopic("housing");
-    speak("Housing is priority. Stability first. Opening it now.", "housing.html");
-  }
+    /* HOUSING */
+    if (message.includes("house") || message.includes("rent") || message.includes("shelter") || message.includes("place to stay")) {
+        saveTopic("housing");
+        speak("Housing comes first. Opening your options now.", "housing.html");
+        return;
+    }
 
-  else if (message.includes("money") || message.includes("budget")) {
-    saveTopic("money");
-    speak("We’re getting your money right. Let’s move.", "money.html");
-  }
+    /* MONEY */
+    if (message.includes("money") || message.includes("budget") || message.includes("bills") || message.includes("bank")) {
+        saveTopic("money");
+        speak("Let’s get your money under control.", "money.html");
+        return;
+    }
 
-  else {
-    speak("Say job, housing, ID, or money. We’re moving forward.");
-  }
+    /* EDUCATION */
+    if (message.includes("school") || message.includes("ged") || message.includes("education") || message.includes("classes")) {
+        saveTopic("education");
+        speak("Education opens doors. Let’s get you started.", "education.html");
+        return;
+    }
+
+    /* FAMILY */
+    if (message.includes("family") || message.includes("kids") || message.includes("child") || message.includes("parenting")) {
+        saveTopic("family");
+        speak("Family matters. Let’s work on that together.", "family.html");
+        return;
+    }
+
+    /* MINDSET */
+    if (message.includes("mindset") || message.includes("motivation") || message.includes("mental")) {
+        saveTopic("mindset");
+        speak("Your mind is your foundation. Let’s strengthen it.", "mindset.html");
+        return;
+    }
+
+    /* DEFAULT */
+    speak("I didn’t catch that. Try saying job, housing, ID, money, education, or family.");
 }
 
 /* ---------------- SAVE DATA ---------------- */
-
 function saveTopic(topic) {
-  localStorage.setItem("lastTopic", topic);
+    localStorage.setItem("lastTopic", topic);
 
-  let visits = parseInt(localStorage.getItem("visits")) || 0;
-  visits += 1;
-  localStorage.setItem("visits", visits);
+    let visits = parseInt(localStorage.getItem("visits")) || 0;
+    visits += 1;
+    localStorage.setItem("visits", visits);
 }
 
 /* ---------------- ON LOAD ---------------- */
-
 window.onload = function() {
+    const visits = parseInt(localStorage.getItem("visits")) || 0;
+    const lastTopic = localStorage.getItem("lastTopic");
 
-  const visits = parseInt(localStorage.getItem("visits")) || 0;
-  const lastTopic = localStorage.getItem("lastTopic");
+    setTimeout(() => {
+        if (visits === 0) {
+            speak("Alright. Fresh start. I’m with you.");
+        } else if (visits <= 3) {
+            speak("I see you showing up. That’s how change starts.");
+        } else if (visits <= 6) {
+            speak("You’re building momentum. Keep going.");
+        } else {
+            speak("You’re not who you used to be. I see your progress.");
+        }
 
-  setTimeout(() => {
-
-    if (visits === 0) {
-      speak("Alright. Fresh start. I’m with you.");
-    } 
-    else if (visits <= 3) {
-      speak("I see you showing up. That’s how change happens.");
-    } 
-    else if (visits <= 6) {
-      speak("You’re building momentum. Don’t stop now.");
-    } 
-    else {
-      speak("You’re not the same person you were. I see the work.");
-    }
-
-    if (lastTopic) {
-      setTimeout(() => {
-        speak("Last time we were working on " + lastTopic + ". We finishing that?");
-      }, 2500);
-    }
-
-  }, 800);
+        if (lastTopic) {
+            setTimeout(() => {
+                speak("Last time we were working on " + lastTopic + ". Want to continue?");
+            }, 2500);
+        }
+    }, 800);
 };
-
 </script>
 
 </body>
