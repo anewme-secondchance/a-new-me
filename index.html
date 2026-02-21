@@ -9,6 +9,15 @@
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1f3c88">
 
+<!-- Google Analytics (REPLACE G-XXXXXXX with your real ID later) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXX"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-XXXXXXX');
+</script>
+
 <style>
 body {
   margin: 0;
@@ -16,7 +25,6 @@ body {
   background: #eef2f7;
 }
 
-/* Header */
 .header {
   background: linear-gradient(135deg, #1f3c88, #2a5298);
   color: white;
@@ -35,14 +43,12 @@ body {
   opacity: 0.9;
 }
 
-/* Container */
 .container {
   padding: 20px;
   max-width: 1000px;
   margin: auto;
 }
 
-/* Install Button */
 #installBtn {
   display: none;
   padding: 12px 20px;
@@ -54,14 +60,12 @@ body {
   margin-bottom: 20px;
 }
 
-/* Grid Layout */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 15px;
 }
 
-/* Cards */
 .card {
   background: white;
   padding: 25px 15px;
@@ -85,7 +89,6 @@ body {
   margin-bottom: 10px;
 }
 
-/* Footer */
 .footer {
   text-align: center;
   padding: 20px;
@@ -110,85 +113,23 @@ body {
 
 <div class="grid">
 
-<a href="resources.html" class="card">
-  <span>📚</span>
-  Resources
-</a>
-
-<a href="start-here.html" class="card">
-  <span>🚀</span>
-  First 7 Days
-</a>
-
-<a href="stability.html" class="card">
-  <span>📋</span>
-  Stability Plan
-</a>
-
-<a href="employment.html" class="card">
-  <span>💼</span>
-  Employment
-</a>
-
-<a href="resume.html" class="card">
-  <span>📄</span>
-  Resume Builder
-</a>
-
-<a href="id-help.html" class="card">
-  <span>🆔</span>
-  ID Help
-</a>
-
-<a href="housing.html" class="card">
-  <span>🏠</span>
-  Housing
-</a>
-
-<a href="money.html" class="card">
-  <span>💰</span>
-  Budget & Money
-</a>
-
-<a href="legal.html" class="card">
-  <span>⚖</span>
-  Legal Help
-</a>
-
-<a href="education.html" class="card">
-  <span>🎓</span>
-  Education & GED
-</a>
-
-<a href="digital.html" class="card">
-  <span>💻</span>
-  Digital Literacy
-</a>
-
-<a href="family.html" class="card">
-  <span>👨‍👩‍👧</span>
-  Family
-</a>
-
-<a href="mindset.html" class="card">
-  <span>🧠</span>
-  Mindset
-</a>
-
-<a href="goals.html" class="card">
-  <span>🎯</span>
-  Goals Tracker
-</a>
-
-<a href="bot.html" class="card">
-  <span>🗣</span>
-  Voice Assistant
-</a>
-
-<a href="share.html" class="card">
-  <span>📲</span>
-  Share App
-</a>
+<a href="resources.html" class="card"><span>📚</span>Resources</a>
+<a href="start-here.html" class="card"><span>🚀</span>First 7 Days</a>
+<a href="stability.html" class="card"><span>📋</span>Stability Plan</a>
+<a href="employment.html" class="card"><span>💼</span>Employment</a>
+<a href="resume.html" class="card"><span>📄</span>Resume Builder</a>
+<a href="id-help.html" class="card"><span>🆔</span>ID Help</a>
+<a href="housing.html" class="card"><span>🏠</span>Housing</a>
+<a href="money.html" class="card"><span>💰</span>Budget & Money</a>
+<a href="legal.html" class="card"><span>⚖</span>Legal Help</a>
+<a href="education.html" class="card"><span>🎓</span>Education & GED</a>
+<a href="digital.html" class="card"><span>💻</span>Digital Literacy</a>
+<a href="family.html" class="card"><span>👨‍👩‍👧</span>Family</a>
+<a href="mindset.html" class="card"><span>🧠</span>Mindset</a>
+<a href="goals.html" class="card"><span>🎯</span>Goals Tracker</a>
+<a href="bot.html" class="card"><span>🗣</span>Voice Assistant</a>
+<a href="survey.html" class="card"><span>📝</span>Feedback Survey</a>
+<a href="share.html" class="card"><span>📲</span>Share App</a>
 
 </div>
 </div>
@@ -197,7 +138,6 @@ body {
   Every day is a chance to rebuild. Progress over perfection.
 </div>
 
-<!-- Service Worker Registration -->
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js')
@@ -206,7 +146,6 @@ if ('serviceWorker' in navigator) {
     });
 }
 
-/* Install App Script */
 let deferredPrompt;
 const installBtn = document.getElementById('installBtn');
 
