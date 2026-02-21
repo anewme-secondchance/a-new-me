@@ -75,8 +75,25 @@ const statusDiv = document.getElementById("status");
 const transcriptDiv = document.getElementById("transcript");
 const voiceSelect = document.getElementById("voiceSelect");
 
+/* Detect iPhone */
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
 /* ---------------- SPEAK FUNCTION ---------------- */
 function speak(text, redirectPage) {
+
+    /* iPhone MODE — TEXT ONLY */
+    if (isIOS) {
+        transcriptDiv.innerText = text;
+
+        if (redirectPage) {
+            setTimeout(() => {
+                window.location.href = redirectPage;
+            }, 900);
+        }
+        return;
+    }
+
+    /* ANDROID MODE — SPEAK OUT LOUD */
     window.speechSynthesis.cancel();
     const speech = new SpeechSynthesisUtterance(text);
     const voices = window.speechSynthesis.getVoices();
@@ -85,15 +102,16 @@ function speak(text, redirectPage) {
         const maleVoice = voices.find(v => v.name.toLowerCase().includes("david") || v.name.toLowerCase().includes("google"));
         if (maleVoice) speech.voice = maleVoice;
     } else {
-        const femaleVoice = voices.find(v => v.name.toLowerCase().includes("zira") || v.name.toLowerCase().includes("samantha") || v.name.toLowerCase().includes("google"));
+        const femaleVoice = voices.find(v => 
+            v.name.toLowerCase().includes("zira") || 
+            v.name.toLowerCase().includes("samantha") || 
+            v.name.toLowerCase().includes("google")
+        );
         if (femaleVoice) speech.voice = femaleVoice;
     }
 
     speech.rate = 0.95;
-
-    if ('speechSynthesis' in window) {
-        window.speechSynthesis.speak(speech);
-    }
+    window.speechSynthesis.speak(speech);
 
     speech.onend = function() {
         if (redirectPage) {
@@ -128,7 +146,7 @@ function startListening() {
 
         setTimeout(() => {
             routeUser(message);
-        }, 100);
+        }, 400); // iPhone needs extra time
     };
 
     recognition.onerror = function() {
