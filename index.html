@@ -129,13 +129,11 @@ body {
 <a href="goals.html" class="card"><span>🎯</span>Goals Tracker</a>
 <a href="bot.html" class="card"><span>🗣</span>Voice Assistant</a>
 
-<!-- Testimonials -->
 <a href="testimonials.html" class="card">
   <span>💬</span>
   Testimonials
 </a>
 
-<!-- Survey (Opens Safely in Safari) -->
 <a href="https://docs.google.com/forms/d/e/1FAIpQLSdHkn_0W2xaXeeErb5x9hnT3I7CQLUm9-NyAA2E4jd549Jq8w/viewform"
    class="card"
    target="_blank"
@@ -144,7 +142,10 @@ body {
   Feedback Survey
 </a>
 
-<a href="share.html" class="card"><span>📲</span>Share App</a>
+<a href="#" class="card" onclick="shareApp(); return false;">
+  <span>📲</span>
+  Share App
+</a>
 
 </div>
 </div>
@@ -177,6 +178,23 @@ installBtn.addEventListener('click', async () => {
     deferredPrompt = null;
   }
 });
+
+/* SHARE FUNCTION */
+function shareApp() {
+  const shareData = {
+    title: "A New Me",
+    text: "Rebuilding. Restoring. Moving Forward.",
+    url: "https://anew-me-second-chance-github-io.vercel.app"
+  };
+
+  if (navigator.share) {
+    navigator.share(shareData)
+      .then(() => console.log("Shared successfully"))
+      .catch((error) => console.log("Error sharing:", error));
+  } else {
+    window.location.href = shareData.url;
+  }
+}
 </script>
 
 </body>
