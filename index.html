@@ -91,14 +91,14 @@ const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 function speak(text, redirectPage) {
 
-  // iPhone: NO TALKING — text only
+  // iPhone: NO TALKING — text only, but still navigate
   if (isIOS) {
     transcriptDiv.innerText = text;
 
     if (redirectPage) {
       setTimeout(() => {
         window.location.href = redirectPage;
-      }, 900);
+      }, 1200);
     }
     return;
   }
