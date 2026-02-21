@@ -87,7 +87,6 @@ const voiceSelect = document.getElementById("voiceSelect");
 /* ---------------- SPEAK FUNCTION ---------------- */
 
 function speak(text, redirectPage) {
-
   window.speechSynthesis.cancel();
 
   const speech = new SpeechSynthesisUtterance(text);
@@ -106,6 +105,13 @@ function speak(text, redirectPage) {
 
   speech.rate = 0.95;
 
+  // Fix for Safari's handling of speech
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.speak(speech);
+  } else {
+    alert("Speech synthesis not supported in this browser.");
+  }
+
   speech.onend = function() {
     if (redirectPage) {
       setTimeout(() => {
@@ -113,14 +119,11 @@ function speak(text, redirectPage) {
       }, 900);
     }
   };
-
-  window.speechSynthesis.speak(speech);
 }
 
 /* ---------------- FREE SPEECH RECOGNITION ---------------- */
 
 function startListening() {
-
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
   if (!SpeechRecognition) {
@@ -129,7 +132,6 @@ function startListening() {
   }
 
   const recognition = new SpeechRecognition();
-
   recognition.lang = "en-US";
   recognition.interimResults = false;
   recognition.continuous = false;
@@ -151,6 +153,7 @@ function startListening() {
 
   recognition.onerror = function() {
     statusDiv.innerText = "Speech failed.";
+    alert("Failed to process speech. Please try again.");
   };
 }
 
@@ -196,7 +199,6 @@ function routeUser(message) {
 /* ---------------- SAVE DATA ---------------- */
 
 function saveTopic(topic) {
-
   localStorage.setItem("lastTopic", topic);
 
   let visits = parseInt(localStorage.getItem("visits")) || 0;
